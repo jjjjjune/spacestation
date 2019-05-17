@@ -21,6 +21,10 @@ local effects = {
 			humanoid:ChangeState(Enum.HumanoidStateType.Physics)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+			if humanoid.Sit == true then
+				humanoid.Jump = true
+			end
 			humanoid.Sit = false
 		end,
 		doneEffect = function(humanoid)
@@ -28,6 +32,7 @@ local effects = {
 			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, true)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
 		end,
 	}
 }

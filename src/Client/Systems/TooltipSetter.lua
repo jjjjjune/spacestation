@@ -21,7 +21,7 @@ local tooltipSettings = {
 	{
 		validityCheck = function(part)
 			local check = part.Parent
-			if CollectionService:HasTag(check, "Item") then
+			if CollectionService:HasTag(check, "Item") and check.Parent == workspace then
 				return part.Parent
 			end
 			return nil
@@ -43,6 +43,19 @@ local tooltipSettings = {
 			return model.Quantity.Value.."/"..model.Quantity.MaxValue
 		end,
 		hotkey = "E",
+	},
+	{
+		validityCheck = function(part)
+			local check = part.Parent
+			if CollectionService:HasTag(check, "Ragdolled") and check~= player.Character then
+				return part.Parent
+			end
+			return nil
+		end,
+		descriptionGetter = function(model)
+			return "R to drag, X to execute"
+		end,
+		hotkey = "R, X",
 	},
 }
 

@@ -240,6 +240,9 @@ function Stats:start()
 	end)
 	Messages:hook("RagdollCharacter", function(char,duration)
 		ragdollOverride[char] = {start = time(), length = duration}
+		for _, track in pairs(char.Humanoid:GetPlayingAnimationTracks()) do
+			track:Stop()
+		end
 	end)
 	Messages:hook("CarryCharacter", function(player, targetCharacter)
 		local playerCharacter = player.Character

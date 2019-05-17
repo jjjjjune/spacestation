@@ -14,7 +14,10 @@ local buildRange = 40
 local function setProperty(model, property, value)
 	for _, p in pairs(model:GetChildren()) do
 		if p:IsA("BasePart") then
-			p[property] = value
+			local status, err = pcall(function() p[property] = value end)
+			if err then
+				warn(err)
+			end
 		end
 	end
 end
@@ -67,6 +70,7 @@ local function manageBuildingPlacement()
 	setProperty(buildingPlacingModel, "Anchored", true)
 	setProperty(buildingPlacingModel, "CanCollide", false)
 	setProperty(buildingPlacingModel, "Transparency", .5)
+	setProperty(buildingPlacingModel, "Disabled", true)
 	--setProperty(buildingPlacingModel, "Material", Enum.Material.ForceField)
 	if canPlace() then
 		setProperty(buildingPlacingModel, "BrickColor", BrickColor.new("Bright green"))

@@ -117,7 +117,7 @@ local function chopRock(player, plantModel)
 	plantModel:Destroy()
 	spawn(function()
 		wait(WorldConstants.PLANT_RESPAWN_TIME)
-		replacement.Health.Value = replacement.MaxHealth.Value
+		replacement.Health.Value = replacement.Health.MaxValue
 		replacement.Parent = workspace
 	end)
 end

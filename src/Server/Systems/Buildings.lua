@@ -78,10 +78,13 @@ local function makeSchematic(model)
 	for _, p in pairs(model:GetChildren()) do
 		if p:IsA("BasePart") then
 			if p.Name ~= "Base" then
-				p.Transparency =.9
+				p:Destroy()
 			else
 				p.Transparency = 0
 			end
+		end
+		if p:IsA("VehicleSeat") then
+			p:Destroy()
 		end
 	end
 	setProperty(model, "Anchored", true)
@@ -165,6 +168,23 @@ local function refreshProgress(schematicModel, player)
 	end
 end
 
+local function isWithin(pos, part)
+	local barrier = part
+	local headPos = pos
+	local barrierPos = barrier.Position
+	local barrierCorner1 = barrierPos - Vector3.new((barrier.Size.Z+2)/2,0,(barrier.Size.Z+2)/2)
+	local barrierCorner2 = barrierPos + Vector3.new((barrier.Size.X+2)/2,0,(barrier.Size.X+2)/2)
+	local x1, y1, x2, y2 = barrierCorner1.X, barrierCorner1.Z, barrierCorner2.X, barrierCorner2.Z
+	if headPos.X > x1 and headPos.X < x2 then
+		if headPos.Z > y1 and headPos.Z < y2 then
+			if math.abs(pos.Y - part.Position.Y) < 12 then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 local Buildings = {}
 
 function Buildings:start()
@@ -174,7 +194,7 @@ function Buildings:start()
 	Messages:hook("OnPlayerDroppedItem",function(player, itemModel, targetPos)
 		for _, schematicModel in pairs(CollectionService:GetTagged("Schematic")) do
 			local playerWhoOwns = modelOwnerMap[schematicModel]
-			if (targetPos - schematicModel.Base.Position).magnitude < 12 then
+			if isWithin(targetPos,schematicModel.Base) then
 				if schematicModel.Progress:FindFirstChild(itemModel.Name) then
 					schematicModel.Progress[itemModel.Name]:Destroy()
 					Messages:send("PlaySound", "Construct", schematicModel.Base.Position)
@@ -186,7 +206,7 @@ function Buildings:start()
 		end
 		for _, building in pairs(CollectionService:GetTagged("Building")) do
 			if building.Parent == workspace then
-				if (targetPos - building.Base.Position).magnitude < 12 then
+				if isWithin(targetPos,building.Base) then
 					if BuildingItemFunctions[building.Name] then
 						BuildingItemFunctions[building.Name](player, itemModel)
 					end
