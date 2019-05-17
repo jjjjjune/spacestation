@@ -1,0 +1,58 @@
+{
+  "name": "DEATH AMONG FRIENDS",
+  "tree": {
+    "$className": "DataModel",
+
+    "HttpService": {
+      "$className": "HttpService",
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
+
+   "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+
+      "UI": {
+        "$path": "src/UI"
+      },
+      "Shared": {
+        "$path": "src/Shared"
+      },
+      "Lib": {
+        "$path": "lib"
+      },
+
+      "ImportPaths": {
+        "$path": "src/ImportPaths.lua"
+      }
+  },
+
+  "ServerScriptService":{
+    "$className": "ServerScriptService",
+    "$path": "src/Server"
+  },
+
+  "ReplicatedFirst":{
+    "$className": "ReplicatedFirst",
+    "$path": "src/ReplicatedFirst"
+  },
+
+  "StarterPlayer":{
+    "$className": "StarterPlayer",
+    "StarterHumanoid": {
+      "$className": "Humanoid",
+      "$properties": {
+        "HealthDisplayDistance": { "Type": "Int64", "Value": 0 },
+        "NameDisplayDistance": { "Type": "Int64", "Value": 0 },
+        "JumpPower": { "Type": "Int64", "Value": 40 }
+      }
+    },
+
+    "StarterPlayerScripts": {
+      "$className": "StarterPlayerScripts",
+        "$path": "src/Client"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+
+local Chat = game:GetService("Chat")
+
+local function setUpChatWindow()
+	return {BubbleChatEnabled = true,ClassicChatEnabled = false}
+end
+
+while not pcall(function()
+		Chat:RegisterChatCallback(Enum.ChatCallbackType.OnCreatingChatWindow, setUpChatWindow)
+	end) do
+	wait()
+end
