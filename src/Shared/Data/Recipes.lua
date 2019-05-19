@@ -85,4 +85,11 @@ return {
 			"Reed",
 		}
 	},
+	{
+		name = "Hammer",
+		makes = {"Hammer"},
+		recipe = {
+			"Stick", "Stone", "Stone"
+		}
+	},
 }

@@ -60,7 +60,7 @@ local function getNearbyRocks(player)
 		end
 	end
 	for _, rock in pairs(CollectionService:GetTagged("Rock")) do
-		if (rock.Base.Position - origin).magnitude < 12 then
+		if (rock.Base.Position - origin).magnitude < 12 and rock:IsDescendantOf(workspace) then
 			table.insert(plants, rock)
 		end
 	end

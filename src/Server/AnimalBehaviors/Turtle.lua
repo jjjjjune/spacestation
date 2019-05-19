@@ -6,7 +6,7 @@ local GetNearestItemOfNameToPosition = import "Shared/Utils/GetNearestItemOfName
 local GetNearestTagToPosition = import "Shared/Utils/GetNearestTagToPosition"
 local LowerHealth = import "Shared/Utils/LowerHealth"
 local Drops = import "Shared/Data/Drops"
-local PhysicsService = game:GetService("PhysicsService")
+local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
 
 local FOOD_FIND_DISTANCE =  60
 local EAT_DISTANCE = 10
@@ -34,7 +34,7 @@ end
 function Turtle:onHumanoidDamaged(humanoid)
 	local character = humanoid.Parent
 	if CollectionService:HasTag(character, "Character") then
-		local knockbackForce = 40
+		local knockbackForce = 20
 		local wasRagdolled = CollectionService:HasTag(character, "Ragdolled")
 		if not wasRagdolled then
 			Messages:send("RagdollCharacter", character, 1.5)
@@ -46,12 +46,12 @@ function Turtle:onHumanoidDamaged(humanoid)
 
 		local bv = humanoid.RootPart.BodyVelocity
 		bv.Velocity = velocity
-		bv.MaxForce = Vector3.new(1,4,1)*800
+		bv.MaxForce = Vector3.new(1,1,1)*800
 
 		spawn(function()
 			wait(.2)
 			bv.MaxForce = Vector3.new()
-			wait(1)
+			wait(2)
 			if not wasRagdolled then
 				Messages:send("RagdollCharacter", character, -100)
 			end
@@ -215,7 +215,8 @@ function Turtle:init()
 		if self.model == model then
 			Messages:send("PlayParticle", "Shine", 1, part.Position)
 			Messages:send("PlaySound", "HitSword", self.model.HumanoidRootPart.Position)
-			self.model.Humanoid.Health = self.model.Humanoid.Health - weaponData.damage
+			local damage = GetPlayerDamage(player)
+			self.model.Humanoid.Health = self.model.Humanoid.Health - damage
 		end
 	end)
 	spawn(function()

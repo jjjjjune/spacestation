@@ -33,7 +33,7 @@ function Inventory:init(props)
 	self.itemSlots = {}
 	self.craftSlots = {}
 	self.viewportSizeListener = currentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-		self.gridSizeX = (currentCamera.ViewportSize.X * .2)/9
+		self.gridSizeX = (currentCamera.ViewportSize.X * .2)/5
 		self:setState({})
 	end)
 	self.dragInstance = nil
@@ -49,7 +49,7 @@ end
 
 function Inventory:getGrid(slots, fillDirection, verticalAlignment)
 	local gridItems = slots
-	self.gridSizeX = (currentCamera.ViewportSize.X * .2)/9
+	self.gridSizeX = (currentCamera.ViewportSize.X * .2)/5
 	gridItems["layout"] = Roact.createElement("UIGridLayout", {
 		VerticalAlignment = verticalAlignment or "Center",
 		HorizontalAlignment = "Center",
@@ -93,7 +93,6 @@ function Inventory:updateGridItems()
 	})
 	self.itemSlots = IconsForSlots(1, inventorySize,inventory,activatedCallback,self.refsTable, {StyleConstants.HEALTH_COLOR})
 	self.craftSlots = IconsForSlots(200,203,inventory,activatedCallback,self.refsTable,{StyleConstants.THIRST_COLOR})
-
 end
 
 function Inventory:releaseDrag()
@@ -145,6 +144,50 @@ function Inventory:connectEvents()
 			self.dragInstance.Size = UDim2.new(0,sizeX,0,sizeX)
 			self.dragInstance.Position = UDim2.new(0,mouseX,0,mouseY)
 		end
+		local position = Vector2.new(game.Players.LocalPlayer:GetMouse().X,game.Players.LocalPlayer:GetMouse().Y)
+		for i, ref in pairs(self.refsTable) do
+			if ref.current then
+				if isPointWithinBox(position, ref.current) then
+					ref.current.ItemLabel.Visible = true
+				else
+					ref.current.ItemLabel.Visible = false
+				end
+			end
+		end
+		for _, ref in pairs(self.refsTable) do
+			local instance = ref.current
+			if instance then
+				local props = self.props
+				local userId = tostring(game.Players.LocalPlayer.UserId)
+				local inventory = props.inventories[userId]
+				local itemName = inventory[instance.Name]
+				if itemName ~= "" and itemName ~= nil then
+					for _, frame in pairs(instance:GetChildren()) do
+						if frame:IsA("ViewportFrame") and not frame:FindFirstChild(itemName) then
+							frame:ClearAllChildren()
+							local asset = game.ReplicatedStorage.Assets.Items:FindFirstChild(itemName):Clone()
+							asset.Parent = frame
+							asset.PrimaryPart = asset.Base
+							--asset:SetPrimaryPartCFrame(asset.Base.CFrame * CFrame.Angles(0, math.deg(45),0))
+							local camera = Instance.new("Camera", frame)
+							local size = asset:GetModelSize()*1.5
+							camera.FieldOfView = 55
+							camera.CFrame = CFrame.new(asset.Base.Position) * CFrame.new(size.X,size.Y,size.Z)
+							camera.CFrame = CFrame.new(camera.CFrame.p, asset:GetModelCFrame().p)
+							--camera.CFrame = camera.CFrame * CFrame.new(0, size.Y/2,0)
+							asset:SetPrimaryPartCFrame(asset.Base.CFrame * CFrame.Angles(0,0,math.rad(25)))
+							frame.CurrentCamera = camera
+						end
+					end
+				else
+					for _, frame in pairs(instance:GetChildren()) do
+						if frame:IsA("ViewportFrame") then
+							frame:ClearAllChildren()
+						end
+					end
+				end
+			end
+		end
 	end)
 end
 
@@ -155,24 +198,6 @@ function Inventory:render()
 	local inventory = props.inventories[userId]
 	local showCrafting = inventory["200"] or inventory["201"] or inventory["202"] or inventory["203"] or false
 
-	--[[for _, ref in pairs(self.refsTable) do
-		local instance = ref.current
-		if instance then
-			local itemName = inventory[instance.Name]
-			if itemName ~= "" and itemName ~= nil then
-				if not instance.ViewportFrame:FindFirstChild(itemName) then
-					instance.ViewportFrame:ClearAllChildren()
-					local asset = game.ReplicatedStorage.Assets.Items:FindFirstChild(itemName):Clone()
-					asset.Parent = instance.ViewportFrame
-					local camera = Instance.new("Camera", instance.ViewportFrame)
-					camera.CFrame = asset.Base.CFrame * CFrame.new(5,5, 5)
-					camera.CFrame = CFrame.new(camera.CFrame.p, asset.Base.Position)
-					instance.ViewportFrame.CurrentCamera = camera
-				end
-			end
-		end
-	end--]]
-
 	local holderFrame = Roact.createElement("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1,0,1,0),
@@ -180,7 +205,7 @@ function Inventory:render()
 	},{
 		frame = Roact.createElement("Frame", {
 			Visible = self.props.isOpen,
-			Size = UDim2.new(.125,0,.5,0),
+			Size = UDim2.new(.25,0,.65,0),
 			AnchorPoint = Vector2.new(1,.5),
 			Position = UDim2.new(1,0,.5,0),
 			BorderSizePixel = 0,
@@ -234,7 +259,7 @@ function Inventory:render()
 			}),
 			tooltipInfo = Roact.createElement("TextLabel", {
 				Size = UDim2.new(1,0,.075,0),
-				Text = "double click to use, drag tools into the top two slots to equip them",
+				Text = "Double click to use, drag tools into the top two slots to equip them. To craft, drag items into the bottom slots. To build, double click a blueprint in your inventory.",
 				TextScaled = true,
 				AnchorPoint = Vector2.new(0,1),
 				Position = UDim2.new(0,0,0,-6),

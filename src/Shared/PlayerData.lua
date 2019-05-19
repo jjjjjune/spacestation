@@ -99,10 +99,14 @@ function data:start()
 
 	game.Players.PlayerRemoving:connect(function(player)
 		Messages:send("PlayerIsRemoving",player)
-        self:save(player)
+	end)
+
+	Messages:hook("DeathCheckDone", function(player)
+		self:save(player)
         self:clearFromCache(player)
-        dataReady[player.UserId] = nil
-    end)
+		dataReady[player.UserId] = nil
+		Messages:send("PlayerHasRemoved",player)
+	end)
 
     spawn(function()
         while wait(30) do

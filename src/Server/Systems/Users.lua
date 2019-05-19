@@ -14,6 +14,7 @@ local SetHealth = import "Shared/Actions/PlayerStats/SetHealth"
 local SetMaxHealth = import "Shared/Actions/PlayerStats/SetMaxHealth"
 local SetTimeAlive = import "Shared/Actions/PlayerStats/SetTimeAlive"
 local Messages = import "Shared/Utils/Messages"
+local GetMaxHealthModifier = import "Shared/Utils/GetMaxHealthModifier"
 local Data = import "Shared/PlayerData"
 local PhysicsService = game:GetService("PhysicsService")
 local WorldConstants = import "Shared/Data/WorldConstants"
@@ -30,7 +31,8 @@ local Users = {}
 
 
 local function setClass(character, className)
-    local classAsset = import("Assets/Races/"..className)
+	local classAsset = import("Assets/Races/"..className)
+	local player =game.Players:GetPlayerFromCharacter(character)
 
 	local humanoidDescription = character.Humanoid.HumanoidDescription
 
@@ -46,14 +48,14 @@ local function setClass(character, className)
 	humanoidDescription.WalkAnimation = 2510242378
 	humanoidDescription.IdleAnimation = 2510235063
 
-	character.Humanoid.MaxHealth = classAsset.Humanoid.MaxHealth
+	character.Humanoid.MaxHealth = (classAsset.Humanoid.MaxHealth * GetMaxHealthModifier(player))
 	character.Humanoid.Health = character.Humanoid.MaxHealth
 	character.Humanoid.WalkSpeed = classAsset.Humanoid.WalkSpeed
 	character.Humanoid.JumpPower = classAsset.Humanoid.JumpPower
 
-	Data:set(game.Players:GetPlayerFromCharacter(character), "walkspeed", classAsset.Humanoid.WalkSpeed)
+	Data:set(player, "walkspeed", classAsset.Humanoid.WalkSpeed)
 
-	local rand = Random.new(game.Players:GetPlayerFromCharacter(character).UserId)
+	local rand = Random.new(player.UserId)
 	local torsoColors = {
 		BrickColor.new("Bright blue"),
 		BrickColor.new("Bright red"),
@@ -82,9 +84,7 @@ local function setClass(character, className)
 
     for _, v in pairs(character:GetChildren()) do
         if v:IsA("Accessory") then
-            --if not v:FindFirstChild("HairAttachment", true) then
-                v:Destroy()
-		   -- end
+            v:Destroy()
 		elseif v:IsA("BasePart") then
 			PhysicsService:SetPartCollisionGroup(v, "CharacterGroup")
         end
@@ -160,9 +160,8 @@ function Users:start()
 		onPlayerAdded(player)
 	end)
 
-	Players.PlayerRemoving:Connect(function(player)
+	Messages:hook("PlayerHasRemoved", function(player)
 		local userId = tostring(player.UserId)
-
 		Store:dispatch(PlayerRemoving(userId))
 	end)
 
@@ -171,6 +170,7 @@ function Users:start()
 		if lastHit and time() - lastHit < WorldConstants.COMBAT_LOG_TIME then
 			Messages:send("PlayerDied", player)
 		end
+		Messages:send("DeathCheckDone", player)
 	end)
 
 	game:GetService("RunService").Stepped:connect(function()

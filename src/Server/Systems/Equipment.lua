@@ -113,10 +113,12 @@ function Equipment:start()
 		updateMask(player, mask)
 	end)
 	Messages:hook("OnInventoryUpdated",function(player)
-		if not player.Character then
-			repeat wait() until player.Character
-		end
-		refreshEquipment(player)
+		spawn(function()
+			if not player.Character then
+				repeat wait() until player.Character
+			end
+			refreshEquipment(player)
+		end)
 	end)
 	Messages:hook("CharacterAdded", function(player, character)
 		lastSlotContained[player] = nil

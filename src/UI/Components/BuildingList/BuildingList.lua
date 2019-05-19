@@ -28,12 +28,13 @@ local function getBuildingElements()
 
 	elements.List = Roact.createElement("UIListLayout", {
 		Padding = UDim.new(0,4),
+		HorizontalAlignment = "Center",
 	})
 
 	local buildingsTable = BlueprintTypes[selectedBlueprint]
 	for _, buildingName in pairs(buildingsTable) do
 		table.insert(elements, Roact.createElement("TextButton", {
-			Size = UDim2.new(1,0,.15,0),
+			Size = UDim2.new(.8,0,0,26),
 			BorderSizePixel = 0,
 			BackgroundColor3 = StyleConstants.WINDOW_BG,
 			TextColor3 = StyleConstants.TEXT,
@@ -50,12 +51,14 @@ local function getBuildingElements()
 end
 
 function BuildingList:render()
-	return Roact.createElement("Frame", {
+	return Roact.createElement("ScrollingFrame", {
 		AnchorPoint = Vector2.new(.5,0),
 		Size = UDim2.new(.125,0,.2,0),
 		Position = UDim2.new(.50,0,0.1,0),
 		BackgroundTransparency =1,
-		Visible = true,
+		Visible = (selectedBlueprint and true) or false,
+		ClipsDescendants = true,
+		BorderSizePixel = 0,
 	}, getBuildingElements())
 end
 

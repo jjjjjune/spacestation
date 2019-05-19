@@ -40,6 +40,7 @@ return {
 	["Small Tree"] = {
 		"Log",
 		"Log",
-		"Stick"
+		"Stick",
+		"Acorn",
 	}
 }

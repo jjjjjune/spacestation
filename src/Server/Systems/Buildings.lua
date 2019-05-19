@@ -4,9 +4,11 @@ local BuildData = import "Shared/Data/BuildData"
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 local BuildingItemFunctions = import "Shared/Data/BuildingItemFunctions"
+local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
 
 local schematicsTable = {}
 local modelOwnerMap = {}
+local lastHealthsTable = {}
 local SCHEMATICS_LIMIT = 10
 
 local function countSchematics(player)
@@ -66,7 +68,9 @@ local function checkWeld(building)
 				local attachWeld = Instance.new("WeldConstraint", building.Base)
 				attachWeld.Part0 = building.Base
 				attachWeld.Part1 = hit
-				setProperty(building, "CanCollide", true)
+				if not CollectionService:HasTag(building, "Schematic") then
+					setProperty(building, "CanCollide", true)
+				end
 				setProperty(building, "Anchored", false)
 				setProperty(building, "Massless", true)
 			end
@@ -115,6 +119,7 @@ local function placeSchematic(player, building, cf)
 	model.Parent = workspace
 	model.PrimaryPart = model.Base
 	model:SetPrimaryPartCFrame(cf)
+	model.Health.MaxValue = model.Health.MaxValue/4
 	modelOwnerMap[model] = player
 	CollectionService:AddTag(model, player.Name.."Owned")
 	CollectionService:AddTag(model, "Schematic")
@@ -185,9 +190,93 @@ local function isWithin(pos, part)
 	return false
 end
 
+local function damageBuilding(building, player, damage)
+	local maxHealth = building.Health.MaxValue
+	if not lastHealthsTable[building] then
+		lastHealthsTable[building] = maxHealth
+	end
+	building.Health.Value = building.Health.Value - damage
+	local healthBar = building:FindFirstChild("BuildingHealth") or import("Assets/BuildingAssets/BuildingHealth"):Clone()
+	healthBar.Parent = building
+	healthBar.Adornee = building.Base
+	healthBar.StudsOffsetWorldSpace = Vector3.new(0, building:GetModelSize().Y,0)
+	healthBar.Enabled = true
+	local percent = building.Health.Value/maxHealth
+	healthBar.foreground:TweenSize(UDim2.new(percent,0,1,0), "Out", "Quint", .3)
+	lastHealthsTable[building] = building.Health.Value
+	spawn(function()
+		local checkHealth = building.Health.Value
+		wait(6)
+		if building:FindFirstChild("Health") and building.Health.Value == checkHealth then
+			healthBar.Enabled = false
+		end
+	end)
+	if building.Health.Value == 0 then
+		CollectionService:RemoveTag(building, "Building")
+		for _, p in pairs(building:GetChildren()) do
+			if p:IsA("BasePart") then
+				p.Anchored = false
+				p:BreakJoints()
+			end
+		end
+		Messages:send("PlaySound", "Chop", player.Character.HumanoidRootPart.Position)
+		game:GetService("Debris"):AddItem(building, 5)
+	end
+	Messages:send("PlayParticle", "Sparks",20,player.Character.Head.Position)
+	Messages:send("PlaySound", "Construct", building.Base.Position)
+end
+
+local function getAngleRelativeToPlayer(character, target)
+	local originPart = character.HumanoidRootPart
+	local toTargetDirection = (target - originPart.Position).unit
+	local targetAngle = originPart.CFrame.lookVector:Dot(toTargetDirection)
+	return math.deg(math.acos(targetAngle))
+end
+
+local function getBuildings(character, range, angle)
+	local buildings = {}
+	local inserted = {}
+	local vec1 = (character.HumanoidRootPart.Position + Vector3.new(-range,-(range*4),-range))
+	local vec2 = (character.HumanoidRootPart.Position + Vector3.new(range,(range*4),range))
+	local region = Region3.new(vec1, vec2)
+	local parts = workspace:FindPartsInRegion3(region,nil, 10000)
+	for _, part in pairs(parts) do
+		if CollectionService:HasTag(part.Parent, "Building") or CollectionService:HasTag(part.Parent, "Schematic") then
+			local building = part.Parent
+			local ang = getAngleRelativeToPlayer(character, part.Position)
+			if ang < angle then
+				if not inserted[building] then
+					inserted[building] = true
+					table.insert(buildings, building)
+				end
+			end
+		end
+	end
+	return buildings
+end
+
+local function attemptSwing(player)
+	local damage = GetPlayerDamage(player)
+	damage = damage/2
+	local buildings = getBuildings(player.Character, 8, 80)
+	for _, building in pairs(buildings) do
+		if player.Character:FindFirstChild("Hammer") then
+			damage= - damage
+			damage = damage * 2
+		end
+		damageBuilding(building, player, damage)
+	end
+end
+
 local Buildings = {}
 
 function Buildings:start()
+	Messages:hook("Swing", function(player)
+		spawn(function()
+			wait(.3)
+			attemptSwing(player)
+		end)
+	end)
 	Messages:hook("PlaceSchematic", function(player, building, cf)
 		placeSchematic(player, building, cf)
 	end)
@@ -224,6 +313,22 @@ function Buildings:start()
 				building:Destroy()
 			end
 		end
+	end)
+	CollectionService:GetInstanceAddedSignal("Door"):connect(function(door)
+		door.Hitbox.Touched:connect(function(hit)
+			local character = hit.Parent
+			if character:FindFirstChild("Humanoid") then
+				if CollectionService:HasTag(door, character.Name.."Owned") then
+					if door.Hitbox.CanCollide == true then
+						door.Hitbox.CanCollide = false
+						spawn(function()
+							wait(4)
+							door.Hitbox.CanCollide = true
+						end)
+					end
+				end
+			end
+		end)
 	end)
 end
 

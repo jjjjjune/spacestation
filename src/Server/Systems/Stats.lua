@@ -233,8 +233,8 @@ function Stats:start()
 			local userId = tostring(player.UserId)
 			local state = Store:getState()
 			local myThirst = state.playerStats[userId].thirst
-			Store:dispatch(ReplicateTo(player, SetThirst(userId, math.min(100, math.max(0,myThirst + 1)))))
-			Data:set(player, "thirst", myThirst+1)
+			Store:dispatch(ReplicateTo(player, SetThirst(userId, math.min(100, math.max(0,myThirst + 3)))))
+			Data:set(player, "thirst", myThirst+3)
 			Messages:send("PlaySound", "Drinking", player.Character.HumanoidRootPart.Position)
 		end
 	end)

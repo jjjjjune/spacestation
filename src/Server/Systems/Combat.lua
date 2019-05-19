@@ -8,6 +8,7 @@ local Store = import "Shared/State/Store"
 local LowerHealth = import "Shared/Utils/LowerHealth"
 local CollectionService = game:GetService("CollectionService")
 local PlayerData = import "Shared/PlayerData"
+local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
 
 local Combat ={}
 
@@ -144,7 +145,8 @@ local function damageCharacter(character, attackerCharacter, weaponData, part)
 		end
 	end
 	if not blocked then
-		LowerHealth(character.Humanoid, weaponData.damage)
+		local attackerPlayer = game.Players:GetPlayerFromCharacter(attackerCharacter)
+		LowerHealth(character.Humanoid, GetPlayerDamage(attackerPlayer))
 		stunLock(character)
 		Messages:send("PlaySound", "HitSword", character.HumanoidRootPart.Position)
 		shieldHitCountTable[character] = 0
@@ -210,8 +212,8 @@ local function executeCharacter(executorPlayer, character)
 					LowerHealth(character.Humanoid,100, true)
 					Messages:send("PlaySound", "Execute", character.Head.Position)
 					character:BreakJoints()
+					PlayerData:add(executorPlayer, "playersExecutedTotal", 1)
 				end)
-
 			end
 		end
 	end

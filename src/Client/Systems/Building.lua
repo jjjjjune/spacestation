@@ -3,6 +3,7 @@ local Messages = import "Shared/Utils/Messages"
 local WorldConstants = import "Shared/Data/WorldConstants"
 local UserInputService = game:GetService("UserInputService")
 local BuildData = import "Shared/Data/BuildData"
+local CollectionService = game:GetService("CollectionService")
 
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
@@ -15,9 +16,6 @@ local function setProperty(model, property, value)
 	for _, p in pairs(model:GetChildren()) do
 		if p:IsA("BasePart") then
 			local status, err = pcall(function() p[property] = value end)
-			if err then
-				warn(err)
-			end
 		end
 	end
 end
@@ -82,6 +80,9 @@ local function manageBuildingPlacement()
 	local mouseCF = CFrame.new(pos)
 	mouseCF = mouseCF * CFrame.new(0, buildingPlacingModel.Base.Size.Y/2,0)
 	mouseCF = mouseCF* CFrame.Angles(0, math.rad(rotation),0)
+	if mouse.Target and mouse.Target.Name == buildingPlacingModel.Name.."Point" then
+		mouseCF = mouse.Target.CFrame
+	end
 	buildingPlacingModel:SetPrimaryPartCFrame(mouseCF)
 end
 
@@ -130,6 +131,10 @@ function Building:start()
 		cancelBuilding()
 	end)
 	Messages:hook("SetBuildingPlacing", function(buildingName)
+		if buildingPlacingModel then
+			buildingPlacingModel:Destroy()
+			buildingPlacingModel = nil
+		end
 		buildingPlacing = buildingName
 	end)
 end

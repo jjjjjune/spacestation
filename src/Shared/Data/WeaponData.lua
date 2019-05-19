@@ -115,6 +115,15 @@ local weapons = {
 		damage = 17,
 		range = 8.5,
 	},
+	Hammer = {
+		comboLength = 3,
+		swingSpeed = .6,
+		postComboSwingSpeed = 1.1,
+		wieldSpeedModifier = -1,
+		angle = 95,
+		damage = 22,
+		range = 8.25,
+	},
 	Default = defaults,
 }
 

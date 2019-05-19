@@ -111,6 +111,7 @@ function PlayerInventories:start()
 			Store:dispatch(ReplicateTo(player, SetItemPosition(userId,itemName,slot)))
 		end
 		Store:dispatch(ReplicateTo(player, SetItemPosition(userId,"Blueprint","2")))
+		saveInventory(player)
 	end)
 
 	Messages:hook("PlayerDied", function(player)

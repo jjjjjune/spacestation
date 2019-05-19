@@ -17,6 +17,7 @@ return {
 		thingsSacrificed = {},
 		treesCut = {},
 		treesCutTotal = 0,
+		playersExecutedTotal = 0,
 	},
 	TEST_DATA = {
 		hunger = 100,
@@ -36,6 +37,7 @@ return {
 		thingsSacrificed = {},
 		treesCut = {},
 		treesCutTotal = 0,
+		playersExecutedTotal = 0,
 	},
 	TEST_STORE = "test9",
 	PRODUCTION_STORE = "test9",

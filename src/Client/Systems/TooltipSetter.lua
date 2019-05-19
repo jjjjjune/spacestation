@@ -77,7 +77,13 @@ function TooltipSetter:start()
 				local check = Mouse.Target
 				local result = tooltipSetting.validityCheck(check)
 				if result then
-					local resultScreenPos = workspace.CurrentCamera:WorldToScreenPoint(result.Base.Position)
+					local pos
+					if result:FindFirstChild("Base") then
+						pos = result.Base.Position
+					else
+						pos = result.PrimaryPart.Position
+					end
+					local resultScreenPos = workspace.CurrentCamera:WorldToScreenPoint(pos)
 					Store:dispatch(SetTooltipName(result.Name))
 					Store:dispatch(SetTooltipPosition(UDim2.new(0,resultScreenPos.X,0,resultScreenPos.Y - 10)))
 					Store:dispatch(SetTooltipButton(tooltipSetting.hotkey))

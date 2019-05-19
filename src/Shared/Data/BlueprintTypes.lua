@@ -6,5 +6,8 @@ return {
 		"Small Storage",
 		"Large Storage",
 		"Campfire",
+		"Wood Hut",
+		"Door",
+		"Torch",
 	}
 }

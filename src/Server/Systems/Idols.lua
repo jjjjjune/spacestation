@@ -20,7 +20,6 @@ local function prepareIdol(idol)
 		local needed = info.needed
 		local myAmount = PlayerData:get(player, stat)
 		if myAmount >= needed then
-			print("yes!!!")
 			PlayerData:set(player, "idol", idol.Name)
 			Messages:send("OnMaskUpdated",player)
 		end

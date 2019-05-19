@@ -22,6 +22,12 @@ local effects = {
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Running, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing, false)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
 			if humanoid.Sit == true then
 				humanoid.Jump = true
 			end
@@ -33,6 +39,12 @@ local effects = {
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, true)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
 			humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Running, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing, true)
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, true)
 		end,
 	}
 }

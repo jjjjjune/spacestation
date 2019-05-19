@@ -23,7 +23,13 @@ local items = {
 	},
 	Blueprint = {
 		blueprint = true,
-	}
+	},
+	["Apple Seed"] = {
+		plant = "Apple Tree"
+	},
+	["Acorn"] = {
+		plant = "Small Tree"
+	},
 }
 
 local function copyTable(t)

@@ -15,6 +15,13 @@ function Hell:start()
 			Messages:send("FirstRespawn", player)
 		end
 	end)
+	local hellLava = CollectionService:GetTagged("HellLava")[1]
+	hellLava.Touched:connect(function(hit)
+		local char = hit.Parent
+		if char:FindFirstChild("Humanoid") then
+			char.Humanoid.Health = 0
+		end
+	end)
 end
 
 return Hell

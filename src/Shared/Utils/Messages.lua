@@ -68,7 +68,10 @@ end
 
 function Messages:sendClient(player, action, ...)
 	if not replicationReady[player] then
-		repeat wait() until replicationReady[player]
+		repeat wait() until replicationReady[player] or (player.Parent == nil)
+		if player.Parent == nil then
+			return
+		end
 	end
 	SIGNAL_REMOTE:FireClient(player, action, ...)
 end

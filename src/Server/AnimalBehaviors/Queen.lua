@@ -8,6 +8,7 @@ local LowerHealth = import "Shared/Utils/LowerHealth"
 local Drops = import "Shared/Data/Drops"
 local PhysicsService = game:GetService("PhysicsService")
 local Data = import "Shared/PlayerData"
+local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
 
 local EAT_TIME = 12
 local DOWN_RADIUS = 35
@@ -125,7 +126,6 @@ function Queen:eat(model)
 					wait(.25)
 					Messages:send("PlayParticle", "Eat",15, attachment1.Position)
 					Messages:send("PlaySound", "Eating", attachment1.Position)
-					print("lowerhealth")
 					model.Humanoid.Health = model.Humanoid.Health - 2
 				end
 			end)
@@ -205,7 +205,9 @@ function Queen:init()
 		if self.model == model then
 			Messages:send("PlayParticle", "Shine", 1, part.Position)
 			Messages:send("PlaySound", "HitSword", self.model.HumanoidRootPart.Position)
-			self.model.Humanoid.Health = self.model.Humanoid.Health - weaponData.damage
+			local damage = GetPlayerDamage(player)
+			self.model.Humanoid.Health = self.model.Humanoid.Health - damage
+			self.lastAte = time()
 		end
 	end)
 	spawn(function()

@@ -19,7 +19,9 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 			LayoutOrder = i,
 			[Roact.Ref] = myRef,
 			[Roact.Event.MouseButton1Down] = function() activatedCallback(myRef,i.."") end,
-			BorderSizePixel = 0
+			BorderSizePixel = 0,
+			BackgroundColor3 = col,
+			ClipsDescendants = true,
 		}, {
 			Constraint = Roact.createElement("UIAspectRatioConstraint", {
 				AspectRatio = 1,
@@ -29,7 +31,10 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 				Text = itemName,
 				TextScaled = true,
 				BackgroundColor3 = col,
-				BorderSizePixel = 0
+				BorderSizePixel = 0,
+				BackgroundTransparency = 1,
+				ZIndex = 5,
+				Font = "SourceSansBold",
 			}),
 			ViewportFrame = Roact.createElement("ViewportFrame", {
 				Size = UDim2.new(.9,0,.9,0),
@@ -38,7 +43,48 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 				BorderSizePixel = 0,
 				BackgroundTransparency = 1,
 				ZIndex = 4,
-				Visible = false,
+				Visible = true,
+			}),
+			Shadow1 = Roact.createElement("ViewportFrame", {
+				Size = UDim2.new(.9,0,.9,0),
+				Position = UDim2.new(.05,-3,.05,0),
+				BackgroundColor3 = col,
+				BorderSizePixel = 0,
+				BackgroundTransparency = 1,
+				ZIndex = 3,
+				Visible = true,
+				ImageColor3 = Color3.new(0,0,0),
+			}),
+			Shadow2 = Roact.createElement("ViewportFrame", {
+				Size = UDim2.new(.9,0,.9,0),
+				Position = UDim2.new(.05,3,.05,0),
+				BackgroundColor3 = col,
+				BorderSizePixel = 0,
+				BackgroundTransparency = 1,
+				ZIndex = 3,
+				Visible = true,
+				ImageColor3 = Color3.new(0,0,0),
+			}),
+			Shadow3 = Roact.createElement("ViewportFrame", {
+				Size = UDim2.new(.9,0,.9,0),
+				Position = UDim2.new(.05,0,.05,3),
+				BackgroundColor3 = col,
+				BorderSizePixel = 0,
+				BackgroundTransparency = 1,
+				ZIndex = 3,
+				Visible = true,
+
+				ImageColor3 = Color3.new(0,0,0),
+			}),
+			Shadow4 = Roact.createElement("ViewportFrame", {
+				Size = UDim2.new(.9,0,.9,0),
+				Position = UDim2.new(.05,0,.05,-3),
+				BackgroundColor3 = col,
+				BorderSizePixel = 0,
+				BackgroundTransparency = 1,
+				ZIndex = 3,
+				Visible = true,
+				ImageColor3 = Color3.new(0,0,0),
 			}),
 			ImageLabel = Roact.createElement("ImageLabel", {
 				Image = "rbxassetid://3150329645",

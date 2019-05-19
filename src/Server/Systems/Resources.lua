@@ -144,6 +144,14 @@ function Plants:start()
 	Messages:hook("ChopRockServer", function(player, plantModel)
 		chopRock(player, plantModel)
 	end)
+	Messages:hook("CreatePlant", function(player, plant, position)
+		print("creating plant")
+		local plantModel = import("Assets/Plants/"..plant.."/1"):Clone()
+		plantModel.Parent = workspace
+		plantModel.PrimaryPart = plantModel.Base
+		plantModel:SetPrimaryPartCFrame(CFrame.new(position))
+		addPlant(plantModel, plant, true)
+	end)
 	Messages:hook("GrowAllPlants", function(n)
 		for i, plantTable in pairs(plantsCache) do
 			plantTable.phase = math.min(3, plantTable.phase + n)

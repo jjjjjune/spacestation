@@ -1,11 +1,11 @@
 return {
 	["Mask Of Brutality"] = {
 		name = "Mask Of Brutality",
-		startItem = "Axe",
-		stat = "treesCutTotal",
-		needed = 10,
+		startItem = "Badsword",
+		stat = "playersExecutedTotal",
+		needed = 100,
 		model = "Mask Of Brutality",
-		verb = " trees cut",
-		description = "SPAWNS WITH AN AXE."
+		verb = " players executed",
+		description = "70% HP 150% DAMAGE."
 	}
 }

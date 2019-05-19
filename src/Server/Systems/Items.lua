@@ -41,21 +41,24 @@ local function useConsumable(player, consumableData)
 	local userId = tostring(player.UserId)
 	local state = Store:getState()
 	local myHunger = state.playerStats[userId].hunger
-	if myHunger >= 100 and consumableData.thirst == 0 and (not consumableData.health) then
-		return false
-	end
-	myHunger = math.min(100, myHunger + consumableData.hunger)
-	Store:dispatch(ReplicateTo(player, SetHunger(userId, myHunger)))
-
 	local myThirst = state.playerStats[userId].thirst
-	if myThirst >= 100 and (not consumableData.health) then
-		return false
+	local didHunger = false
+	local didHealth = false
+	local didThirst = false
+	if consumableData.hunger then
+		myHunger = math.min(100, myHunger + consumableData.hunger)
+		Store:dispatch(ReplicateTo(player, SetHunger(userId, myHunger)))
+		didHunger = true
 	end
-	myThirst = math.min(100, myThirst + consumableData.thirst)
-	Store:dispatch(ReplicateTo(player, SetThirst(userId, myThirst)))
+	if consumableData.thirst then
+		myThirst = math.min(100, myThirst + consumableData.thirst)
+		Store:dispatch(ReplicateTo(player, SetThirst(userId, myThirst)))
+		didThirst = true
+	end
 
 	if consumableData.health then
 		player.Character.Humanoid.Health = player.Character.Humanoid.Health + consumableData.health
+		didHealth = true
 	end
 
 	if consumableData.eatSound then
@@ -74,7 +77,28 @@ local function useConsumable(player, consumableData)
 		end)
 	end
 
-	return true
+	if didThirst or didHunger or didHealth then
+		return true
+	else
+		return false
+	end
+end
+
+local function usePlant(player, data, itemName)
+	if data.plant then
+		local character = player.Character
+		local r = Ray.new(character.HumanoidRootPart.Position, Vector3.new(0,-10,0))
+		local hit, pos = workspace:FindPartOnRay(r, character)
+		if hit then
+			if hit ~= workspace.Terrain then
+				if hit.Anchored == true then
+					Messages:send("CreatePlant", player, data.plant, pos)
+					return true
+				end
+			end
+		end
+	end
+	return false
 end
 
 local function isInStorage(item)
@@ -97,7 +121,6 @@ end
 
 local function createCookedItems()
 	for _, item in pairs(game.ReplicatedStorage.Assets.Items:GetChildren()) do
-		print(item.Name)
 		local data = ItemData[item.Name]
 		if data and data.consumable then
 			local cookedItem = item:Clone()
@@ -119,14 +142,19 @@ function Items:start()
 	Messages:hook("UseItem", function(player, inventorySlot)
 		local data = getItemData(player, inventorySlot)
 		local inventory = getInventory(player)
+		local itemName =inventory[inventorySlot]
 		if data.consumable then
-			if useConsumable(player, data) then
+			if useConsumable(player, data, itemName) then
 				local userId = tostring(player.UserId)
 				Store:dispatch(ReplicateTo(player, SetItemPosition(userId, nil, inventorySlot)))
 			end
 		end
+		if usePlant(player, data, itemName) then
+			local userId = tostring(player.UserId)
+			Store:dispatch(ReplicateTo(player, SetItemPosition(userId, nil, inventorySlot)))
+		end
 		if data.blueprint then
-			Messages:sendClient(player, "SetBlueprint", inventory[inventorySlot])
+			Messages:sendClient(player, "SetBlueprint", itemName)
 		end
 	end)
 	Messages:hook("OnPlayerDroppedItem", function(player, itemModel, targetPos)

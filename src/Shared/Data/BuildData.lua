@@ -34,6 +34,22 @@ data["Campfire"] = {
 		["Log"] = 2,
 	},
 }
+data["Torch"] = {
+	recipe = {
+		["Coal"] = 1,
+		["Stick"] = 1,
+	},
+}
+data["Wood Hut"] = {
+	recipe = {
+		["Log"] = 1,
+	},
+}
+data["Door"] = {
+	recipe = {
+		["Log"] = 1,
+	},
+}
 
 for _,  building in pairs(game.ReplicatedStorage.Assets.Buildings:GetChildren()) do
 	if not data[building.Name] then
