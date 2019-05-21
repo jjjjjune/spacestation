@@ -135,6 +135,45 @@ local function createCookedItems()
 	end
 end
 
+local function setProperty(model, property, value)
+	for _, p in pairs(model:GetChildren()) do
+		if p:IsA("BasePart") then
+			p[property] = value
+		end
+	end
+end
+
+local function checkWeld(building)
+	local r = Ray.new(building.Base.Position, Vector3.new(0,-10,0))
+	local hit, pos = workspace:FindPartOnRay(r, building)
+	if hit then
+		local hitBuilding = hit.Parent
+		--if CollectionService:HasTag(hitBuilding, "Building") then
+			if hit.Anchored == false then
+				setProperty(building, "Anchored", true)
+				setProperty(building, "CanCollide", false)
+				for _, p in pairs(building:GetChildren()) do
+					if p.Name ~= "Base" and p:IsA("BasePart") then
+						local w = Instance.new("WeldConstraint", p)
+						w.Part0 = p
+						w.Part1 = building.Base
+					end
+				end
+				local attachWeld = Instance.new("WeldConstraint", building.Base)
+				attachWeld.Part0 = building.Base
+				attachWeld.Part1 = hit
+				if not CollectionService:HasTag(building, "Schematic") then
+					setProperty(building, "CanCollide", true)
+				end
+				setProperty(building, "Anchored", false)
+				setProperty(building, "Massless", true)
+				return true
+			end
+		--end
+	end
+	return false
+end
+
 local Items = {}
 
 function Items:start()
@@ -170,11 +209,20 @@ function Items:start()
 			end
 		end
 	end)
-	Messages:hook("MakeItem", function(itemName, position)
+	Messages:hook("MakeItem", function(itemName, position, tag, player)
 		local model = import("Assets/Items/"..itemName):Clone()
 		model.Parent = workspace
 		model.PrimaryPart = model.Base
-		model:SetPrimaryPartCFrame(CFrame.new(position))
+		model:SetPrimaryPartCFrame(CFrame.new(position) * CFrame.new(0,model:GetModelSize().Y/2,0))
+		if checkWeld(model) then
+			Messages:send("PlaySound", "Construct", model.Base.Position)
+		end
+		if tag then
+			tag.Parent = model
+		end
+		if player then
+			Messages:send("OnPlayerDroppedItem", player, model, position)
+		end
 	end)
 	CollectionService:GetInstanceAddedSignal(ITEM_TAG):connect(function(item)
 		if item.Parent == workspace then

@@ -3,6 +3,7 @@ local Store = import "Shared/State/Store"
 local PlayerData = import "Shared/PlayerData"
 local WeaponData = import "Shared/Data/WeaponData"
 local EquipmentConstants = import "Shared/Data/EquipmentConstants"
+local CollectionService = game:GetService("CollectionService")
 
 local function getEquipmentSlot(inventory, tagName)
 	local slotNumber = "1"
@@ -26,12 +27,25 @@ local function getWeaponData(player)
 	return WeaponData[sword] or WeaponData["Default"]
 end
 
+local function getSwordModel(player)
+	local char = player.Character
+	local inventory = getInventory(player)
+	local sword = getEquipmentSlot(inventory, "Sword")
+	if sword then
+		return char:FindFirstChild(sword)
+	end
+end
+
 return function(player)
 	local mask = PlayerData:get(player, "idol")
 	local damage = getWeaponData(player).damage
 	local modifier = 1
+	local model = getSwordModel(player)
 	if mask == "Mask Of Brutality" then
 		modifier = 1.5
+	end
+	if model and CollectionService:HasTag(model, "Fruit") and mask == "Mask Of Growth" then
+		modifier = 2
 	end
 	return damage*modifier
 end

@@ -63,6 +63,11 @@ function UserStatusEffects:start()
 			end
 			for _, effect in pairs(effects) do
 				if CollectionService:HasTag(humanoid.Parent, effect.tag) then
+					if lastHadEffect[humanoid][effect] == false then
+						for _, t in pairs(humanoid:GetPlayingAnimationTracks()) do
+							t:Stop()
+						end
+					end
 					effect.effect(humanoid)
 					lastHadEffect[humanoid][effect] = true
 				else

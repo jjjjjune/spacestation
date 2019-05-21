@@ -77,15 +77,15 @@ function PlayerInventories:start()
 		local inventory = getInventory(player)
 		local item = inventory[slot]
 		local userId = tostring(player.UserId)
+		local start = player.Character.Head.Position
+		local length = math.min(30, (start - targetPos).magnitude)
+		local r = Ray.new(start, (targetPos-start).unit*length)
+		local hit, targetPos = workspace:FindPartOnRay(r, workspace)
 		if item then
-			local itemModel = import("Assets/Items/"..item):Clone()
-			itemModel.Parent = workspace
-			itemModel.PrimaryPart = itemModel.Base
-			itemModel:SetPrimaryPartCFrame(CFrame.new(targetPos))
-			local droppedTag = Instance.new("StringValue", itemModel)
+			local droppedTag = Instance.new("StringValue")
 			droppedTag.Name = "DroppedBy"
 			droppedTag.Value = player.Name
-			Messages:send("OnPlayerDroppedItem", player, itemModel, targetPos)
+			Messages:send("MakeItem", item, targetPos, droppedTag, player)
 			Store:dispatch(ReplicateTo(player, SetItemPosition(userId,nil,slot)))
 			saveInventory(player)
 		end

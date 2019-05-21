@@ -54,7 +54,7 @@ function Inventory:getGrid(slots, fillDirection, verticalAlignment)
 		VerticalAlignment = verticalAlignment or "Center",
 		HorizontalAlignment = "Center",
 		CellSize = UDim2.new(0,self.gridSizeX,0,self.gridSizeX),
-		CellPadding = UDim2.new(0,8,0,8),
+		CellPadding = UDim2.new(0,12,0,12),
 		FillDirection = fillDirection,
 		SortOrder = "LayoutOrder",
 		FillDirectionMaxCells = 4,
@@ -171,7 +171,7 @@ function Inventory:connectEvents()
 							--asset:SetPrimaryPartCFrame(asset.Base.CFrame * CFrame.Angles(0, math.deg(45),0))
 							local camera = Instance.new("Camera", frame)
 							local size = asset:GetModelSize()*1.5
-							camera.FieldOfView = 55
+							camera.FieldOfView = 45
 							camera.CFrame = CFrame.new(asset.Base.Position) * CFrame.new(size.X,size.Y,size.Z)
 							camera.CFrame = CFrame.new(camera.CFrame.p, asset:GetModelCFrame().p)
 							--camera.CFrame = camera.CFrame * CFrame.new(0, size.Y/2,0)

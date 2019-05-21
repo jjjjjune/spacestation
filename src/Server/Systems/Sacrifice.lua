@@ -5,11 +5,15 @@ local PlayerData = import "Shared/PlayerData"
 
 local CollectionService = game:GetService("CollectionService")
 
-local function onSuccesfulSacrifice(godName, lava)
-
+local function onSuccesfulSacrifice(godName, lava, item)
+	item:Destroy()
 end
 
-local function onSacrifice(lava)
+local function onFailedSacrifice(godName, lava, item)
+	item.Base.Velocity = Vector3.new(300, 700,0)
+end
+
+local function onSacrifice(lava, item)
 	Messages:send("PlaySound", "Sacrifice", lava.Position)
 end
 
@@ -28,13 +32,19 @@ local function onSacrificeLavaTouched(godName, hit, lava)
 					sacrifices[godName] = sacrifices[godName] + sacrificeValue
 				end
 				PlayerData:set(player, "sacrifices", sacrifices)
+				if not PlayerData:get(player, "sacrificeTotal"..godName) then
+					PlayerData:set(player, "sacrificeTotal"..godName,1)
+				else
+					PlayerData:add(player, "sacrificeTotal"..godName,1)
+				end
 				if sacrificeValue > 0 then
-					onSuccesfulSacrifice(godName, lava)
+					onSuccesfulSacrifice(godName, lava, item)
+				else
+					onFailedSacrifice(godName, lava, item)
 				end
 			end
 		end
-		onSacrifice(lava)
-		item:Destroy()
+		onSacrifice(lava, item)
 	end
 	if item:FindFirstChild("Humanoid") then
 		item.Humanoid.Health = 0

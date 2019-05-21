@@ -34,6 +34,12 @@ local function setClass(character, className)
 	local classAsset = import("Assets/Races/"..className)
 	local player =game.Players:GetPlayerFromCharacter(character)
 
+	--[[for _, dec in pairs(character:GetDescendants()) do
+		if dec.Name == "OriginalSize" then
+			dec:Destroy()
+		end
+	end--]]
+
 	local humanoidDescription = character.Humanoid.HumanoidDescription
 
 	humanoidDescription.TorsoColor =classAsset.UpperTorso.BrickColor.Color

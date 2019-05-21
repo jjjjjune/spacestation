@@ -9,6 +9,9 @@ local tags = {
 	},
 	["Queen"] = {
 		"Queen"
+	},
+	["Droolabou"] = {
+		"Droolabou"
 	}
 }
 

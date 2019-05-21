@@ -10,20 +10,23 @@ function FallDamage:start()
 	Messages:hook("CharacterAdded", function(player)
 		local character = player.Character
 		spawn(function()
-			local fallTime = 0
+			local fallDistance = 0
 			local lastY = 1000000
-			while true do
-				local x = wait()
+			local currentY = 1000000
+			while wait() do
+				currentY =character.HumanoidRootPart.Position.Y
 				if character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall or character.Humanoid:GetState() == Enum.HumanoidStateType.PlatformStanding or character.Humanoid:GetState() == Enum.HumanoidStateType.Physics and character:FindFirstChild("HumanoidRootPart") then
-					if character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart.Velocity.Y < -13 then
-						fallTime = fallTime + x
-						lastY = character.HumanoidRootPart.Position.Y
+					if character:FindFirstChild("HumanoidRootPart") and (character.HumanoidRootPart.Velocity.Y < -8) and currentY < lastY then
+						fallDistance = fallDistance + math.min(4, lastY - currentY)
 					end
 				end
-				if character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart.Velocity.Y >= -13 then
-					if fallTime >= .5 then
-						local damage = (fallTime*6)^2.5
-						if fallTime > 1 then
+				lastY = currentY
+				if character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart.Velocity.Y >= -8 then
+					print("distance was: ", fallDistance)
+					if fallDistance >= 25 then
+						local damage = (fallDistance/3)^1.1
+						print("damage is: ", damage)
+						if fallDistance > 50 then
 							LowerHealth(character.Humanoid,damage, true)
 							if character.Humanoid.Health == 0 then
 								character.HumanoidRootPart.Velocity = Vector3.new()
@@ -33,12 +36,12 @@ function FallDamage:start()
 						else
 							LowerHealth(character.Humanoid,damage)
 						end
-						if fallTime > .6 then
-							Messages:send("RagdollCharacter", character, fallTime * 6)
+						if fallDistance > 40 then
+							Messages:send("RagdollCharacter", character, fallDistance/10)
 						end
 						Messages:send("PlaySound", "BoneBreak", character.Head.Position)
 					end
-					fallTime = 0
+					fallDistance = 0
 					lastY = 100000000
 				end
 				if character.Parent == nil then

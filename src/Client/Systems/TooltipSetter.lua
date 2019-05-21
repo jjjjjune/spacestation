@@ -57,6 +57,19 @@ local tooltipSettings = {
 		end,
 		hotkey = "R, X",
 	},
+	{
+		validityCheck = function(part)
+			local check = part.Parent
+			if CollectionService:HasTag(check, "Plant") then
+				return part.Parent
+			end
+			return nil
+		end,
+		descriptionGetter = function(model)
+			return "This can be chopped down."
+		end,
+		hotkey = "",
+	},
 }
 
 local function inRange()

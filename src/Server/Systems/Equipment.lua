@@ -85,23 +85,15 @@ local function updateMask(player, mask)
 		end
 		local maskModel = game.ReplicatedStorage.Assets.Idols[mask]:Clone()
 		maskModel.PrimaryPart = maskModel.Base
-		setProperty(maskModel, "Massless", true)
 		setProperty(maskModel, "CanCollide", false)
-		setProperty(maskModel, "Anchored", true)
-		for _, p in pairs(maskModel:GetChildren()) do
-			if p:IsA("BasePart") and p.Name ~= "Base" then
-				local x = Instance.new("WeldConstraint", p)
-				x.Part0 = p
-				x.Part1 = p.Parent.Base
-			end
-		end
-		maskModel.Parent = character
+		setProperty(maskModel, "Massless", true)
 		maskModel:SetPrimaryPartCFrame(character.Head.CFrame)
 		local x = Instance.new("WeldConstraint", character.Head)
 		x.Part0 = maskModel.Base
 		x.Part1 = character.Head
-		setProperty(maskModel, "Anchored", false)
 		maskModel.Name = "Mask"
+		maskModel.Parent = character
+		setProperty(maskModel, "Anchored", false)
 	end
 end
 

@@ -42,5 +42,19 @@ return {
 		"Log",
 		"Stick",
 		"Acorn",
+	},
+	["Big Tree"] = {
+		"Log",
+		"Log",
+		"Log",
+		"Log",
+		"Log",
+		"Log",
+		"Acorn"
+	},
+	["Hemp"] = {
+		"Hemp Seed",
+		"Hemp",
+		"Hemp",
 	}
 }

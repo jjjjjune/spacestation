@@ -29,24 +29,8 @@ local function setProperty(model, property, value)
 	end
 end
 
-local function addRecipe(model)
-	local recipe = BuildData[model.Name].recipe
-	local recipeDisplay = (import "Assets/BuildingAssets/BuildingCanvas"):Clone()
-	recipeDisplay.Parent = model.Base
-	recipeDisplay.Adornee = model.Base
-	local completeFolder = Instance.new("Folder", model)
-	completeFolder.Name = "Progress"
-	for item, amount in pairs(recipe) do
-		local display = recipeDisplay.TemplateFrame:Clone()
-		display.Parent = recipeDisplay
-		display.Visible = true
-		display.Label.Text = item.." x"..amount
-		display.Name = item
-		for _ = 1, amount do
-			local itemCounter = Instance.new("BoolValue", completeFolder)
-			itemCounter.Name = item
-		end
-	end
+local function isAnimal(model)
+	return model:FindFirstChild("Humanoid") and not game.Players:GetPlayerFromCharacter(model)
 end
 
 local function checkWeld(building)
@@ -54,7 +38,7 @@ local function checkWeld(building)
 	local hit, pos = workspace:FindPartOnRay(r, building)
 	if hit then
 		local hitBuilding = hit.Parent
-		if CollectionService:HasTag(hitBuilding, "Building") then
+		if CollectionService:HasTag(hitBuilding, "Building") or isAnimal(hitBuilding) then
 			if hit.Anchored == false then
 				setProperty(building, "Anchored", true)
 				setProperty(building, "CanCollide", false)
@@ -74,6 +58,26 @@ local function checkWeld(building)
 				setProperty(building, "Anchored", false)
 				setProperty(building, "Massless", true)
 			end
+		end
+	end
+end
+
+local function addRecipe(model)
+	local recipe = BuildData[model.Name].recipe
+	local recipeDisplay = (import "Assets/BuildingAssets/BuildingCanvas"):Clone()
+	recipeDisplay.Parent = model.Base
+	recipeDisplay.Adornee = model.Base
+	local completeFolder = Instance.new("Folder", model)
+	completeFolder.Name = "Progress"
+	for item, amount in pairs(recipe) do
+		local display = recipeDisplay.TemplateFrame:Clone()
+		display.Parent = recipeDisplay
+		display.Visible = true
+		display.Label.Text = item.." x"..amount
+		display.Name = item
+		for _ = 1, amount do
+			local itemCounter = Instance.new("BoolValue", completeFolder)
+			itemCounter.Name = item
 		end
 	end
 end
