@@ -125,10 +125,10 @@ function PlayerInventories:start()
 			if player.Character and player.Character:FindFirstChild("Head") then
 				pos = player.Character.Head.Position
 			end
-			if math.random(1,5) == 1 then
+			if math.random(1,3) == 1 then
 				Messages:send("MakeItem", item, pos + Vector3.new(math.random(-10,10), 4, math.random(-10,10)))
 			end
-			if math.random(1,3) == 1 then
+			if math.random(1,6) == 1 then
 				Messages:send("MakeItem", "Bone", pos + Vector3.new(math.random(-10,10), 4, math.random(-10,10)))
 			end
 		end

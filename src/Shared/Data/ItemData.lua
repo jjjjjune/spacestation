@@ -21,6 +21,12 @@ local items = {
 		thirst = 0,
 		health = 8,
 	},
+	["Droolabou Meat"] = {
+		consumable = true,
+		hunger = 15,
+		thirst = 1,
+		health = 2,
+	},
 	Blueprint = {
 		blueprint = true,
 	},

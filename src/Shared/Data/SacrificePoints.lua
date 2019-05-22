@@ -7,5 +7,10 @@ return {
 		["Stick"] =1,
 		["Acorn"] = 1,
 		["Apple Seed"]= 1
+	},
+	["Stone God"] = {
+		["Stone"] = 1,
+		["Coal"] = 2,
+		["Iron"] = 3,
 	}
 }

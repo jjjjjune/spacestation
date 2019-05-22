@@ -39,6 +39,20 @@ function Inventory:init(props)
 	self.dragInstance = nil
 	self:populateRefsTable()
 	self:connectEvents()
+	self:setState(function(state)
+		return {
+			isOpen = true
+		}
+	end)
+	game:GetService("UserInputService").InputBegan:connect(function(inputObject, gameProcessed)
+		if inputObject.KeyCode == Enum.KeyCode.G and not gameProcessed then
+			self:setState(function(state)
+				return {
+					isOpen = not state.isOpen
+				}
+			end)
+		end
+	end)
 end
 
 function Inventory:populateRefsTable()
@@ -198,6 +212,11 @@ function Inventory:render()
 	local inventory = props.inventories[userId]
 	local showCrafting = inventory["200"] or inventory["201"] or inventory["202"] or inventory["203"] or false
 
+	local anchorPoint = Vector2.new(1,.5)
+	if not self.state.isOpen then
+		anchorPoint = Vector2.new(0,.5)
+	end
+
 	local holderFrame = Roact.createElement("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1,0,1,0),
@@ -206,7 +225,7 @@ function Inventory:render()
 		frame = Roact.createElement("Frame", {
 			Visible = self.props.isOpen,
 			Size = UDim2.new(.25,0,.65,0),
-			AnchorPoint = Vector2.new(1,.5),
+			AnchorPoint = anchorPoint,
 			Position = UDim2.new(1,0,.5,0),
 			BorderSizePixel = 0,
 			BackgroundColor3 = StyleConstants.WINDOW_BG,
@@ -268,7 +287,27 @@ function Inventory:render()
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
 				TextColor3 = StyleConstants.TEXT,
 				Font = StyleConstants.FONT_BOLD,
-			})
+			}),
+			ShowHideButton = Roact.createElement("TextButton", {
+				AnchorPoint = Vector2.new(1,.5),
+				BackgroundColor3 = StyleConstants.WINDOW_BG,
+				BorderSizePixel = 0,
+				Size = UDim2.new(0, 50,0,50),
+				Position = UDim2.new(0,0,.5,0),
+				ZIndex = 5,
+				Text = (self.props.isOpen and ">") or "<",
+				TextColor3 = StyleConstants.TEXT,
+				Font = StyleConstants.FONT_BOLD,
+				TextScaled = true,
+				Visible = true,
+				[Roact.Event.Activated] = function()
+					self:setState(function(state)
+						return {
+							isOpen = not state.isOpen
+						}
+					end)
+				end
+			}),
 		}),
 	})
 	return holderFrame

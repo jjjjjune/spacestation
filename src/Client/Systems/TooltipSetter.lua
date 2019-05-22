@@ -69,6 +69,7 @@ local tooltipSettings = {
 			return "This can be chopped down."
 		end,
 		hotkey = "",
+		noName = true,
 	},
 }
 
@@ -97,7 +98,11 @@ function TooltipSetter:start()
 						pos = result.PrimaryPart.Position
 					end
 					local resultScreenPos = workspace.CurrentCamera:WorldToScreenPoint(pos)
-					Store:dispatch(SetTooltipName(result.Name))
+					if not tooltipSetting.noName then
+						Store:dispatch(SetTooltipName(result.Name))
+					else
+						Store:dispatch(SetTooltipName("Plant"))
+					end
 					Store:dispatch(SetTooltipPosition(UDim2.new(0,resultScreenPos.X,0,resultScreenPos.Y - 10)))
 					Store:dispatch(SetTooltipButton(tooltipSetting.hotkey))
 					Store:dispatch(SetTooltipDescription(tooltipSetting.descriptionGetter(result)))

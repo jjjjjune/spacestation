@@ -37,7 +37,7 @@ local weapons = {
 		damage = 13,
 		range = 8.3,
 	},
-	Dagger = {
+	Handle = {
 		comboLength = 5,
 		swingSpeed = .4,
 		postComboSwingSpeed = 1.5,

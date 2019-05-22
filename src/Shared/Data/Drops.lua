@@ -56,5 +56,14 @@ return {
 		"Hemp Seed",
 		"Hemp",
 		"Hemp",
+	},
+	["Droolabou"]= {
+		"Droolabou Meat",
+		"Droolabou Meat",
+		"Bone",
+	},
+	["Iron Rock"] ={
+		"Iron",
+		"Iron",
 	}
 }

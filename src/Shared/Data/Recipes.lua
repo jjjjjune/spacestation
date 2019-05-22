@@ -1,7 +1,7 @@
 return {
 	{
-		name = "Dagger",
-		makes = {"Dagger"},
+		name = "Handle",
+		makes = {"Handle"},
 		recipe = {
 			"Stick",
 		}
@@ -17,8 +17,8 @@ return {
 		name = "Stick",
 		makes = {"Stick"},
 		recipe = {
-			"Dagger",
-			"Dagger",
+			"Handle",
+			"Handle",
 		}
 	},
 	{
@@ -48,7 +48,7 @@ return {
 		name = "Axe",
 		makes = {"Axe"},
 		recipe = {
-			"Dagger",
+			"Handle",
 			"Stone",
 		}
 	},
@@ -64,7 +64,7 @@ return {
 		name = "Badsword",
 		makes = {"Badsword"},
 		recipe = {
-			"Dagger",
+			"Handle",
 			"Stone",
 			"Stone",
 			"Stone",

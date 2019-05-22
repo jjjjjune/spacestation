@@ -9,5 +9,7 @@ return {
 		"Wood Hut",
 		"Door",
 		"Torch",
+		"Chair",
+		"Furnace",
 	}
 }

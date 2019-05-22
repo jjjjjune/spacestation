@@ -22,10 +22,8 @@ function FallDamage:start()
 				end
 				lastY = currentY
 				if character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart.Velocity.Y >= -8 then
-					print("distance was: ", fallDistance)
 					if fallDistance >= 25 then
 						local damage = (fallDistance/3)^1.1
-						print("damage is: ", damage)
 						if fallDistance > 50 then
 							LowerHealth(character.Humanoid,damage, true)
 							if character.Humanoid.Health == 0 then

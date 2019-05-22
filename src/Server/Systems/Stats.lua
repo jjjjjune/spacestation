@@ -191,14 +191,16 @@ local function startLoops()
 			for _, player in pairs(game.Players:GetPlayers()) do
 				local userId = tostring(player.UserId)
 				local state = Store:getState()
-				local myThirst = state.playerStats[userId].thirst
-				Store:dispatch(ReplicateTo(player, SetThirst(userId, math.max(0,myThirst - 1))))
-				Data:set(player, "thirst", myThirst-1)
-				if myThirst <= 0 then
-					player.Character.Humanoid:TakeDamage(Constants.THIRST_DAMAGE)
-				else
-					if player.Character then
-						player.Character.Humanoid.Health = player.Character.Humanoid.Health + (myThirst/60)
+				if state.playerStats[userId] then
+					local myThirst = state.playerStats[userId].thirst
+					Store:dispatch(ReplicateTo(player, SetThirst(userId, math.max(0,myThirst - 1))))
+					Data:set(player, "thirst", myThirst-1)
+					if myThirst <= 0 then
+						player.Character.Humanoid:TakeDamage(Constants.THIRST_DAMAGE)
+					else
+						if player.Character then
+							player.Character.Humanoid.Health = player.Character.Humanoid.Health + (myThirst/60)
+						end
 					end
 				end
 			end

@@ -5,8 +5,19 @@ local IdolsList = import "Shared/Data/Idols"
 
 local CollectionService = game:GetService("CollectionService")
 
+local function setProperty(model, property, value)
+	for _, p in pairs(model:GetChildren()) do
+		if p:IsA("BasePart") then
+			p[property] = value
+		end
+	end
+end
+
+
 local function prepareIdol(idol)
 	local display = import("Assets/Idols/"..idol.Name):Clone()
+	setProperty(idol, "CanCollide", false)
+	setProperty(idol, "Anchored", true)
 	display.Name = "Display"
 	display.PrimaryPart = display.Base
 	display.Parent = idol

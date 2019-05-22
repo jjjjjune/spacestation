@@ -123,7 +123,7 @@ local function placeSchematic(player, building, cf)
 	model.Parent = workspace
 	model.PrimaryPart = model.Base
 	model:SetPrimaryPartCFrame(cf)
-	model.Health.MaxValue = model.Health.MaxValue/4
+	model.Health.MaxValue = math.min(200, model.Health.MaxValue/4)
 	modelOwnerMap[model] = player
 	CollectionService:AddTag(model, player.Name.."Owned")
 	CollectionService:AddTag(model, "Schematic")

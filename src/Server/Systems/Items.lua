@@ -168,6 +168,12 @@ local function checkWeld(building)
 				setProperty(building, "Anchored", false)
 				setProperty(building, "Massless", true)
 				return true
+			else
+				spawn(function()
+					wait(4)
+					setProperty(building, "Anchored", true)
+					setProperty(building, "CanCollide", false)
+				end)
 			end
 		--end
 	end

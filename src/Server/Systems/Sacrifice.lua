@@ -46,7 +46,7 @@ local function onSacrificeLavaTouched(godName, hit, lava)
 		end
 		onSacrifice(lava, item)
 	end
-	if item:FindFirstChild("Humanoid") then
+	if item and item:FindFirstChild("Humanoid") then
 		item.Humanoid.Health = 0
 	end
 end

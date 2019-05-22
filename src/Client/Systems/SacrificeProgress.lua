@@ -32,8 +32,7 @@ function SacrificeProgress:start()
 					if value >= progressBar.Amount.Value then
 						for _, p in pairs(progressBar:GetChildren()) do
 							if p:IsA("BasePart") then
-								p.CanCollide = false
-								p.Transparency = 1
+								p:Destroy()
 							end
 						end
 					else
