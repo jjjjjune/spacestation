@@ -5,6 +5,7 @@ local Connect = import("RoactRodux", { "connect" })
 local Bar = import "../Bar"
 
 local StyleConstants = import "Shared/Data/StyleConstants"
+local StatConstants = import "Shared/Data/StatConstants"
 
 local function HungerThirst(props)
 	local userId = tostring(game.Players.LocalPlayer.UserId)
@@ -75,7 +76,7 @@ local function HungerThirst(props)
 				}),
 				TextShadow = Roact.createElement("TextLabel", {
 					Font = StyleConstants.FONT_BOLD,
-					Text = math.floor(stats.timeAlive/1800),
+					Text = math.floor(stats.timeAlive/StatConstants.DAY),
 					BorderSizePixel = 0,
 					Size = UDim2.new(1,0,1,0),
 					Position = UDim2.new(0,0,0,2),

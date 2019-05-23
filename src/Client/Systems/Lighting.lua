@@ -14,8 +14,8 @@ local function doLighting()
 			game.Lighting.FogColor = Color3.fromRGB(0, 0, 0)
 			game.Lighting.ClockTime = 0
 		else
-			game.Lighting.FogColor = Color3.fromRGB(151, 250, 255)
-			game.Lighting.ClockTime = 12
+			--[[game.Lighting.FogColor = Color3.fromRGB(151, 250, 255)
+			game.Lighting.ClockTime = 12--]]
 		end
 	end
 end

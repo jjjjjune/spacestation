@@ -2,6 +2,12 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 local MONSTER_RESPAWN_TIME = 20
+local PhysicsService = game:GetService("PhysicsService")
+local WorldConstants = import "Shared/Data/WorldConstants"
+
+PhysicsService:CreateCollisionGroup("AnimalGroup")
+PhysicsService:CollisionGroupSetCollidable("CharacterGroup","AnimalGroup", true)
+PhysicsService:CollisionGroupSetCollidable("Default","AnimalGroup", true)
 
 local tags = {
 	["Turtle"] = {
@@ -28,7 +34,13 @@ local function setupMonster(monster, scripts)
 		behavior:init()
 		behavior:onSpawn()
 		monster:MoveTo(monster.HumanoidRootPart.Position)
-		monster.Humanoid:SetStateEnabled("Swimming", false)
+		monster.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
+		CollectionService:AddTag(monster, "Animal")
+		for _, p in pairs(monster:GetChildren()) do
+			if p:IsA("BasePart") then
+				PhysicsService:SetPartCollisionGroup(p, "AnimalGroup")
+			end
+		end
 		monster.Humanoid.Died:connect(function()
 			behavior:onDied()
 			wait(MONSTER_RESPAWN_TIME)
@@ -46,6 +58,18 @@ function Animals:start()
 			setupMonster(model, scripts)
 		end
 	end
+	spawn(function()
+		while wait(1) do
+			for _, animal in pairs(CollectionService:GetTagged("Animal")) do
+				local rp = animal:FindFirstChild("HumanoidRootPart")
+				if rp then
+					if rp.Position.Y < WorldConstants.WATER_LEVEL then
+						rp.Parent.Humanoid:TakeDamage(1)
+					end
+				end
+			end
+		end
+	end)
 end
 
 return Animals

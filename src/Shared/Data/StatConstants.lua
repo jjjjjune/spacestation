@@ -4,4 +4,5 @@ return {
 	HUNGER_DAMAGE = 10,
 	THIRST_DAMAGE = 10,
 	POISON_DAMAGE = 15,
+	DAY = 1530,
 }

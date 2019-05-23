@@ -33,9 +33,9 @@ local function onSacrificeLavaTouched(godName, hit, lava)
 				end
 				PlayerData:set(player, "sacrifices", sacrifices)
 				if not PlayerData:get(player, "sacrificeTotal"..godName) then
-					PlayerData:set(player, "sacrificeTotal"..godName,1)
+					PlayerData:set(player, "sacrificeTotal"..godName,sacrificeValue)
 				else
-					PlayerData:add(player, "sacrificeTotal"..godName,1)
+					PlayerData:add(player, "sacrificeTotal"..godName,sacrificeValue)
 				end
 				if sacrificeValue > 0 then
 					onSuccesfulSacrifice(godName, lava, item)

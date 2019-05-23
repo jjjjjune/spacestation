@@ -10,22 +10,22 @@ data["Raft"] = {
 data["Stone Wall"] = {
 	recipe = {
 		["Log"] = 2,
-		["Stone"] = 8,
+		["Stone"] = 4,
 	},
 }
 data["Wood Wall"] = {
 	recipe = {
-		["Log"] = 8,
+		["Log"] = 4,
 	},
 }
 data["Small Storage"] = {
 	recipe = {
-		["Log"] = 4,
+		["Log"] = 2,
 	},
 }
 data["Large Storage"] = {
 	recipe = {
-		["Log"] = 6,
+		["Log"] = 3,
 	},
 }
 data["Campfire"] = {
@@ -42,7 +42,7 @@ data["Torch"] = {
 }
 data["Wood Hut"] = {
 	recipe = {
-		["Log"] = 1,
+		["Log"] = 8,
 	},
 }
 data["Door"] = {
@@ -61,6 +61,20 @@ data["Furnace"] = {
 		["Coal"] = 2,
 	},
 }
+data["Grindstone"] = {
+	recipe = {
+		["Stone"] = 4,
+	},
+}
+data["Sailboat"] = {
+	recipe = {
+		["Log"] = 6,
+		["Rope"] = 6,
+	},
+	water = true,
+}
+
+
 
 for _,  building in pairs(game.ReplicatedStorage.Assets.Buildings:GetChildren()) do
 	if not data[building.Name] then

@@ -166,13 +166,14 @@ local function refreshProgress(schematicModel, player)
 		CollectionService:AddTag(realBuilding, "Building")
 		realBuilding.PrimaryPart = realBuilding.Base
 		realBuilding:SetPrimaryPartCFrame(schematicModel.Base.CFrame)
+		local owner = modelOwnerMap[schematicModel]
 
 		checkWeld(realBuilding)
 
-		CollectionService:AddTag(realBuilding, player.Name.."Owned")
+		CollectionService:AddTag(realBuilding, owner.Name.."Owned")
+		modelOwnerMap[realBuilding] = owner
 		Messages:send("PlaySound", "Construct", realBuilding.Base.Position)
 		Messages:send("PlayParticle", "Sparks",20,realBuilding.Base.Position)
-		schematicsTable[player] = nil
 		schematicModel:Destroy()
 	end
 end
@@ -267,6 +268,9 @@ local function attemptSwing(player)
 		if player.Character:FindFirstChild("Hammer") then
 			damage= - damage
 			damage = damage * 2
+		elseif player.Character:FindFirstChild("Iron Hammer") then
+			damage= - damage
+			damage = damage * 4
 		end
 		damageBuilding(building, player, damage)
 	end

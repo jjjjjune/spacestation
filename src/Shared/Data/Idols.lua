@@ -26,4 +26,22 @@ return {
 		verb = " plant god sacrifices",
 		description = "2X DAMAGE WHEN WIELDING FRUITS."
 	},
+	["Mask Of Stone"] = {
+		name = "Mask Of Stone",
+		startItem = "Pickaxe",
+		stat = "sacrificeTotalStone God",
+		needed = 100,
+		model = "Mask Of Stone",
+		verb = " stone god sacrifices",
+		description = "MINE ROCKS FAST."
+	},
+	["Mask Of Iron"] = {
+		name = "Mask Of Iron",
+		startItem = "Iron Pickaxe",
+		stat = "sacrificeTotalStone God",
+		needed = 1000,
+		model = "Mask Of Iron",
+		verb = " stone god sacrifices",
+		description = "MINE ROCKS VERY FAST."
+	},
 }

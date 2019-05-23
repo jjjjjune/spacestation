@@ -98,8 +98,24 @@ local weapons = {
 		guardDamage = 1,
 		damage = 12
 	},
+	["Iron Axe"] = {
+		chopPower = 4.5,
+		comboLength = 5,
+		swingSpeed = .6,
+		wieldSpeedModifier = 2,
+		guardDamage = 1,
+		damage = 12
+	},
 	Pickaxe = {
 		minePower = 2.5,
+		comboLength = 4,
+		swingSpeed = .6,
+		wieldSpeedModifier = 2,
+		guardDamage = 1,
+		damage = 14
+	},
+	["Iron Pickaxe"] = {
+		minePower = 4.5,
 		comboLength = 4,
 		swingSpeed = .6,
 		wieldSpeedModifier = 2,
@@ -115,6 +131,15 @@ local weapons = {
 		damage = 17,
 		range = 8.5,
 	},
+	["Iron Sword"] = {
+		comboLength = 4,
+		swingSpeed = .5,
+		postComboSwingSpeed = 1,
+		wieldSpeedModifier = -1,
+		angle = 90,
+		damage = 27,
+		range = 8.5,
+	},
 	Hammer = {
 		comboLength = 3,
 		swingSpeed = .6,
@@ -122,6 +147,15 @@ local weapons = {
 		wieldSpeedModifier = -1,
 		angle = 95,
 		damage = 22,
+		range = 8.25,
+	},
+	["Iron Hammer"] = {
+		comboLength = 4,
+		swingSpeed = .6,
+		postComboSwingSpeed = 1.1,
+		wieldSpeedModifier = -1,
+		angle = 95,
+		damage = 28,
 		range = 8.25,
 	},
 	Default = defaults,

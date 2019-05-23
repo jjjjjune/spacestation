@@ -36,6 +36,9 @@ local items = {
 	["Acorn"] = {
 		plant = "Small Tree"
 	},
+	["Hemp Seed"] = {
+		plant = "Hemp",
+	}
 }
 
 local function copyTable(t)

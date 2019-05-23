@@ -25,4 +25,12 @@ return {
 			item:Destroy()
 		end
 	end,
+	Grindstone = function(player, item)
+		if CollectionService("HasTag", item, "Grindable") then
+			Messages:send("MakeItem", string.gsub(item.Name, " Bar", "").." Blade", item.Base.Position)
+			Messages:send("PlayParticle", "CookSmoke", 15, item.Base.Position)
+			Messages:send("PlaySound", "GoodCraft", item.Base.Position)
+			item:Destroy()
+		end
+	end,
 }

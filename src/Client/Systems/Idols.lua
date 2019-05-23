@@ -16,8 +16,8 @@ end
 
 local function prepareIdol(idol)
 	local display = import("Assets/Idols/"..idol.Name):Clone()
-	setProperty(idol, "CanCollide", false)
-	setProperty(idol, "Anchored", true)
+	setProperty(display, "CanCollide", false)
+	setProperty(display, "Anchored", true)
 	display.Name = "Display"
 	display.PrimaryPart = display.Base
 	display.Parent = idol
@@ -32,7 +32,7 @@ local function manageIdols()
 		local myAmount = _G.Data[stat]
 		local needed = info.needed
 		local descriptionText = myAmount.."/"..needed.." "..info.verb
-		if myAmount > needed then
+		if myAmount and myAmount > needed then
 			descriptionText = "CLICK TO EQUIP"
 		end
 		local nameText = string.upper(info.name)

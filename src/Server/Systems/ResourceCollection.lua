@@ -4,6 +4,8 @@ local Messages = import "Shared/Utils/Messages"
 local Store = import "Shared/State/Store"
 local EquipmentConstants = import "Shared/Data/EquipmentConstants"
 local WeaponData = import "Shared/Data/WeaponData"
+local GetMineModifier = import "Shared/Utils/GetMineModifier"
+local GetChopModifier = import "Shared/Utils/GetChopModifier"
 
 local CollectionService = game:GetService("CollectionService")
 
@@ -70,7 +72,7 @@ end
 local function attemptSwing(player)
 	local weaponData = getWeaponData(player)
 	local trees = getNearbyPlants(player)
-	local chopPower = weaponData.chopPower
+	local chopPower = weaponData.chopPower* GetChopModifier(player)
 	if #trees > 0 then
 		Messages:send("PlaySound", "Chop", player.Character.HumanoidRootPart.Position)
 	end
@@ -96,7 +98,7 @@ local function attemptSwing(player)
 		Messages:send("PlaySound", "Chop", player.Character.HumanoidRootPart.Position)
 	end
 	local foundRock = false
-	local minePower = weaponData.minePower
+	local minePower = weaponData.minePower * GetMineModifier(player)
 	for _, rock in pairs(rocks) do
 		rock.Health.Value = rock.Health.Value - minePower
 		foundRock= true

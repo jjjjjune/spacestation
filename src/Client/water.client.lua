@@ -10,7 +10,7 @@ swimPart.Transparency = 1
 swimPart.Size = Vector3.new(32,1,32)
 
 local function inWater(root)
-	local r = Ray.new(root.Position + Vector3.new(0,6,0), Vector3.new(0,-8,0))
+	local r = Ray.new(root.Position + Vector3.new(0,6,0), Vector3.new(0,-13,0))
 	local hit, pos = workspace:FindPartOnRay(r, root.Parent)
 	if hit and hit == workspace.Terrain then
 		return true
@@ -18,7 +18,7 @@ local function inWater(root)
 end
 
 game:GetService("RunService").RenderStepped:connect(function()
-    if player then
+   --[[ if player then
         local character = player.Character
         if character then
             local root = character:FindFirstChild("HumanoidRootPart")
@@ -31,5 +31,5 @@ game:GetService("RunService").RenderStepped:connect(function()
                 end
             end
         end
-    end
+    end--]]
 end)

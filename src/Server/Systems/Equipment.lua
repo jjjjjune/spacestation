@@ -77,6 +77,31 @@ local function refreshEquipment(player)
 	end
 end
 
+local function weldBetween(a, b)
+	if not a or not b then return end
+	local weld = Instance.new("ManualWeld")
+    weld.Part0 = a
+    weld.Part1 = b
+    weld.C0 = CFrame.new()
+    weld.C1 = b.CFrame:inverse() * a.CFrame
+	weld.Name = "Weld"
+    weld.Parent = b
+	return weld
+end
+
+local function autoWeld(model)
+	for i, v in pairs(model:GetChildren()) do
+		if v:IsA("BasePart") then
+			weldBetween(v, model.Base)
+		end
+	end
+	for i, v in pairs(model:GetChildren()) do
+		if v:IsA("BasePart") then
+			v.Anchored = false
+		end
+	end
+end
+
 local function updateMask(player, mask)
 	if mask then
 		local character = player.Character
@@ -85,15 +110,14 @@ local function updateMask(player, mask)
 		end
 		local maskModel = game.ReplicatedStorage.Assets.Idols[mask]:Clone()
 		maskModel.PrimaryPart = maskModel.Base
-		setProperty(maskModel, "CanCollide", false)
-		setProperty(maskModel, "Massless", true)
 		maskModel:SetPrimaryPartCFrame(character.Head.CFrame)
+		maskModel.Name = "Mask"
+		autoWeld(maskModel)
 		local x = Instance.new("WeldConstraint", character.Head)
 		x.Part0 = maskModel.Base
 		x.Part1 = character.Head
-		maskModel.Name = "Mask"
-		maskModel.Parent = character
 		setProperty(maskModel, "Anchored", false)
+		maskModel.Parent = character
 	end
 end
 

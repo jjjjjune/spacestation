@@ -18,8 +18,8 @@ end
 
 function Boats:start()
 	CollectionService:GetInstanceAddedSignal("Building"):connect(function(boat)
+		wait()
 		if CollectionService:HasTag(boat, "Boat") then
-			print("boat is: ", boat.Name)
 			boat:WaitForChild("VehicleSeat")
 			local seat = boat.VehicleSeat
 			local signal = seat:GetPropertyChangedSignal("Occupant")
@@ -31,7 +31,7 @@ function Boats:start()
 					if player and player == game.Players.LocalPlayer then
 						myBoat = boat
 					else
-						boat = nil
+						myBoat = nil
 					end
 				end
 			end)
@@ -39,7 +39,6 @@ function Boats:start()
 	end)
 	game:GetService("RunService").RenderStepped:connect(function()
 		if myBoat then
-
 			steerBoat(myBoat, myBoat.VehicleSeat)
 		end
 	end)

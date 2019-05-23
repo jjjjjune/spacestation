@@ -123,7 +123,7 @@ local function determineRace(player)
 end
 
 local function addCharacter(player, firstTime)
-	Data:set(player, "lastHit", time() -1000)
+	Data:set(player, "lastHit",  -1000000)
 	player:LoadCharacter()
 	local race = Data:get(player, "race")
 	setClass(player.Character, race)
@@ -158,7 +158,7 @@ function Users:start()
 	end)
 
 	Players.PlayerAdded:Connect(function(player)
-		Data:set(player, "lastHit", time() - 1000)
+		Data:set(player, "lastHit", -1000000)
 		local userId = tostring(player.UserId)
 		Store:dispatch(PlayerAdded(userId))
 		Store:dispatch(ReplicateTo(player, PlayerAdded(userId)))

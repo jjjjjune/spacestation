@@ -11,5 +11,7 @@ return {
 		"Torch",
 		"Chair",
 		"Furnace",
+		"Grindstone",
+		"Sailboat",
 	}
 }

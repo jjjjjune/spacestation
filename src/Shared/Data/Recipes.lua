@@ -92,4 +92,46 @@ return {
 			"Stick", "Stone", "Stone"
 		}
 	},
+	{
+		name = "Iron Hammer",
+		makes = {"Iron Hammer"},
+		recipe = {
+			"Stick", "Iron Bar", "Iron Bar"
+		}
+	},
+	{
+		name = "Iron Sword",
+		makes = {"Iron Sword"},
+		recipe = {
+			"Stick", "Iron Blade", "Iron Blade", "Iron Blade"
+		}
+	},
+	{
+		name = "Iron Pickaxe",
+		makes = {"Iron Pickaxe"},
+		recipe = {
+			"Stick", "Iron Blade", "Iron Blade"
+		}
+	},
+	{
+		name = "Iron Axe",
+		makes = {"Iron Axe"},
+		recipe = {
+			"Stick", "Iron Blade"
+		}
+	},
+	{
+		name = "Rope",
+		makes = {"Rope"},
+		recipe = {
+			"Hemp", "Hemp"
+		}
+	},
+	{
+		name = "Torch",
+		makes = {"Torch"},
+		recipe = {
+			"Stick", "Coal"
+		}
+	},
 }
