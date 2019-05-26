@@ -1,9 +1,10 @@
+local import = require(game.ReplicatedStorage.Shared.Import)
+local Messages = import "Shared/Utils/Messages"
+
 return function (_, itemID, position)
 	if typeof(position) == "Instance" then
 		position = position.Character.Head.Position
 	end
-	local item = game.ReplicatedStorage.Assets.Items[itemID]:Clone()
-	item.Parent = workspace
-	item:MoveTo(position)
+	Messages:send("MakeItem", itemID, position + Vector3.new(0,3,0))
 	return "spawned: "..itemID
 end

@@ -11,7 +11,7 @@ local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
 local FOOD_FIND_DISTANCE =  60
 local EAT_DISTANCE = 10
 local RUN_RADIUS = 70
-local FOOD = "Apple"
+local FOOD = "Apple Seed"
 
 local Droolabou = {}
 Droolabou.__index = Droolabou
@@ -28,6 +28,14 @@ function Droolabou:onStoppedEating()
 	Messages:send("StopAnimation",self.model, "DroolEat")
 	self.model.Humanoid.WalkSpeed= 24
 	self.eating = false
+end
+
+function Droolabou:onSucessfullyAte(apple)
+	if apple:FindFirstChild("Base") then
+		local r = Ray.new(apple.Base.Position, Vector3.new(0,-10,0))
+		local _, pos = workspace:FindPartOnRay(r, apple)
+		Messages:send("CreatePlant", nil, "Apple Tree", pos)
+	end
 end
 
 function Droolabou:eat(apple)
@@ -53,6 +61,7 @@ function Droolabou:eat(apple)
 				return
 			end
 		end
+		self:onSucessfullyAte(apple)
 		self:onStoppedEating()
 		apple:Destroy()
 	end)
@@ -119,6 +128,28 @@ function Droolabou:walkTo(pos)
 	self.model.Humanoid:MoveTo(pos)
 end
 
+function Droolabou:hasBuildingAttached()
+	local shouldCalculate= false
+	if not self.lastBuildingCheck then
+		self.lastBuildingCheck = time()
+		shouldCalculate = true
+	else
+		if time() - self.lastBuildingCheck > 5 then
+			shouldCalculate = true
+			self.lastBuildingCheck = time()
+		end
+	end
+	if shouldCalculate then
+		local parts = self.model.HumanoidRootPart:GetConnectedParts(true)
+		for _, p in pairs(parts) do
+			if CollectionService:HasTag(p.Parent, "Building") then
+				self.lastBuildingResult =  true
+			end
+		end
+	end
+	return self.lastBuildingResult
+end
+
 function Droolabou:resetIdle()
 	local length = math.random(1, 3)
 	self.nextIdle = time() + length
@@ -133,6 +164,10 @@ end
 function Droolabou:idle()
 	if not self.nextIdle then
 		self:resetIdle()
+	end
+	if self:hasBuildingAttached() then
+		self.idlePosition = self.model.HumanoidRootPart.Position
+		self.nextIdle = time() + 2
 	end
 	if time() < self.nextIdle then
 		self:walkTo(self.idlePosition)
@@ -206,10 +241,8 @@ function Droolabou:onDied()
 	local drops = Drops[self.model.Name]
 	local cframe = self.model.PrimaryPart.CFrame
 	for _, itemName in pairs(drops) do
-		local item = import("Assets/Items/"..itemName):Clone()
-		item.Parent = workspace
-		item.PrimaryPart = item.Base
-		item:SetPrimaryPartCFrame(cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)))
+		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
+		Messages:send("MakeItem", itemName, pos)
 	end
 end
 

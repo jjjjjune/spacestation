@@ -13,7 +13,7 @@ function SacrificeProgress:start()
 			local godProgress = CollectionService:GetTagged("GodProgress")
 			for _, progressBar in pairs(godProgress) do
 				local godName = progressBar.Name
-				local value = _G.Data.sacrifices[godName]
+				local value = _G.Data.sacrifices[godName] or 0
 				if value then
 					for _, part in pairs(progressBar:GetChildren()) do
 						if tonumber(part.Name) <= value then
@@ -27,21 +27,12 @@ function SacrificeProgress:start()
 			local godGates = CollectionService:GetTagged("Sacrifice Gate")
 			for _, progressBar in pairs(godGates) do
 				local godName = progressBar.Name
-				local value = _G.Data.sacrifices[godName]
+				local value = _G.Data.sacrifices[godName] or 0
 				if value then
 					if value >= progressBar.Amount.Value then
-						for _, p in pairs(progressBar:GetChildren()) do
-							if p:IsA("BasePart") then
-								p:Destroy()
-							end
-						end
+						progressBar.Parent = game.ReplicatedStorage
 					else
-						for _, p in pairs(progressBar:GetChildren()) do
-							if p:IsA("BasePart") then
-								p.CanCollide = true
-								p.Transparency = 0
-							end
-						end
+						progressBar.Parent = workspace
 					end
 				end
 			end

@@ -98,7 +98,7 @@ end
 local function place()
 	local placementCF = buildingPlacingModel.PrimaryPart.CFrame
 	Messages:sendServer("PlaceSchematic", buildingPlacing, placementCF)
-	cancelBuilding()
+	--cancelBuilding()
 end
 
 local Building = {}

@@ -10,9 +10,11 @@ return {
 		local data = ItemData[item.Name]
 		if data and data.consumable then
 			if not string.find(item.Name, "Cooked") then
-				Messages:send("MakeItem", "Cooked "..item.Name, item.Base.Position)
-				Messages:send("PlayParticle", "CookSmoke", 15, item.Base.Position)
+				local itemName = item.Name
+				local itemPosition = item.Base.Position
 				item:Destroy()
+				Messages:send("MakeItem", "Cooked "..itemName, itemPosition)
+				Messages:send("PlayParticle", "CookSmoke", 15, itemPosition)
 				--if math.random(1, 10) < BURN_CHANCE t
 			end
 		end
@@ -31,6 +33,25 @@ return {
 			Messages:send("PlayParticle", "CookSmoke", 15, item.Base.Position)
 			Messages:send("PlaySound", "GoodCraft", item.Base.Position)
 			item:Destroy()
+		end
+	end,
+	["Compost Bin"] = function(player, item, building)
+		local data = ItemData[item.Name]
+		if data and data.consumable then
+			--if CollectionService("HasTag", item, "Compostable") then
+			local progress = building.Progress
+			if progress.Value == progress.MaxValue then
+				progress.Value = 1
+				Messages:send("MakeItem", "Compost", item.Base.Position)
+			else
+				progress.Value = progress.Value + 1
+			end
+			building.compost.Transparency = (1 ) - (progress.Value/progress.MaxValue)
+
+			Messages:send("PlayParticle", "CookSmoke", 15, item.Base.Position)
+			--Messages:send("PlaySound", "GoodCraft", item.Base.Position)
+			item:Destroy()
+			--end
 		end
 	end,
 }

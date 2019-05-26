@@ -201,6 +201,16 @@ function Items:start()
 		if data.blueprint then
 			Messages:sendClient(player, "SetBlueprint", itemName)
 		end
+		if data.plantGrow then
+			for _, plant in pairs(CollectionService:GetTagged("Plant")) do
+				if (plant.Base.Position - player.Character.HumanoidRootPart.Position).magnitude < 12 then
+					Messages:send("GrowPlantsNear", player.Character.HumanoidRootPart.Position, data.plantGrow)
+					local userId = tostring(player.UserId)
+					Store:dispatch(ReplicateTo(player, SetItemPosition(userId, nil, inventorySlot)))
+					break
+				end
+			end
+		end
 	end)
 	Messages:hook("OnPlayerDroppedItem", function(player, itemModel, targetPos)
 		local data = ItemData[itemModel.Name]
@@ -217,6 +227,7 @@ function Items:start()
 	end)
 	Messages:hook("MakeItem", function(itemName, position, tag, player)
 		local model = import("Assets/Items/"..itemName):Clone()
+		setProperty(model, "CanCollide", true)
 		model.Parent = workspace
 		model.PrimaryPart = model.Base
 		model:SetPrimaryPartCFrame(CFrame.new(position) * CFrame.new(0,model:GetModelSize().Y/2,0))

@@ -7,9 +7,9 @@ local CollectionService = game:GetService("CollectionService")
 local Drops = import "Shared/Data/Drops"
 local WorldConstants = import "Shared/Data/WorldConstants"
 local PlayerData = import "Shared/PlayerData"
+local SeedsTable = import "Shared/Data/SeedsTable"
 
 local plantsCache = {}
-
 
 local function addPlant(model, type, isDefault, phase)
 	local start = tick()
@@ -38,10 +38,10 @@ end
 local function onPlantChopped(player, type, cframe)
 	local drops = Drops[type]
 	for _, itemName in pairs(drops) do
-		local item = import("Assets/Items/"..itemName):Clone()
+		Messages:send("MakeItem", itemName, (cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10))).p)
+		--[[local item = import("Assets/Items/"..itemName):Clone()
 		item.Parent = workspace
-		item.PrimaryPart = item.Base
-		item:SetPrimaryPartCFrame(cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)))
+		item.PrimaryPart = item.Base--]]
 	end
 end
 
@@ -76,6 +76,15 @@ local function populateDefaultSpawners()
 	end
 end
 
+local function maturedPlantTick(newModel, plantTable)
+	if math.random(1, 3) == 1 then
+		local seed = SeedsTable[plantTable.type]
+		if seed then
+			Messages:send("MakeItem",seed, plantTable.model.Base.Position)
+		end
+	end
+end
+
 local mainLoop = function()
 	while wait() do
 		for i, plantTable in pairs(plantsCache) do
@@ -90,6 +99,7 @@ local mainLoop = function()
 					plantTable.model = newModel
 					if plantTable.phase >= 3 then
 						CollectionService:AddTag(newModel, "Finished")
+						maturedPlantTick(newModel, plantTable)
 					end
 				end
 				plantTable.lastGrow = tick()
@@ -104,10 +114,7 @@ end
 local function onRockChopped(player, type, cframe)
 	local drops = Drops[type]
 	for _, itemName in pairs(drops) do
-		local item = import("Assets/Items/"..itemName):Clone()
-		item.Parent = workspace
-		item.PrimaryPart = item.Base
-		item:SetPrimaryPartCFrame(cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)))
+		Messages:send("MakeItem", itemName, (cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10))).p)
 	end
 end
 
@@ -150,7 +157,7 @@ function Plants:start()
 		plantModel.Parent = workspace
 		plantModel.PrimaryPart = plantModel.Base
 		plantModel:SetPrimaryPartCFrame(CFrame.new(position))
-		addPlant(plantModel, plant, true)
+		addPlant(plantModel, plant, false)
 	end)
 	Messages:hook("GrowAllPlants", function(n)
 		for i, plantTable in pairs(plantsCache) do
@@ -163,10 +170,34 @@ function Plants:start()
 			plantTable.model = newModel
 			if plantTable.phase >= 3 then
 				CollectionService:AddTag(newModel, "Finished")
+				maturedPlantTick(newModel, plantTable)
 			end
 			plantTable.lastGrow = tick()
 			if plantTable.model.Parent == nil then
 				table.remove(plantsCache, i)
+			end
+		end
+	end)
+	Messages:hook("GrowPlantsNear", function(position, n)
+		for i, plantTable in pairs(plantsCache) do
+			if (plantTable.model.Base.Position - position).magnitude < 12 then
+				plantTable.phase = math.min(3, plantTable.phase + n)
+				local newModel = import("Assets/Plants/"..plantTable.type..("/"..plantTable.phase)):Clone()
+				newModel.Parent = workspace
+				newModel.PrimaryPart = newModel.Base
+				newModel:SetPrimaryPartCFrame(plantTable.model.Base.CFrame)
+				plantTable.model:Destroy()
+				plantTable.model = newModel
+				if plantTable.phase >= 3 then
+					CollectionService:AddTag(newModel, "Finished")
+					maturedPlantTick(newModel, plantTable)
+				end
+				plantTable.lastGrow = tick()
+				if plantTable.model.Parent == nil then
+					table.remove(plantsCache, i)
+				end
+				Messages:send("PlaySound", "Flowers", newModel.Base.Position)
+				Messages:send("PlayParticle","CookSmoke", 15, newModel.Base.Position)
 			end
 		end
 	end)

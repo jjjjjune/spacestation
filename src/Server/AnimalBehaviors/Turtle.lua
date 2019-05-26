@@ -271,10 +271,8 @@ function Turtle:onDied()
 	local drops = Drops[self.model.Name]
 	local cframe = self.model.PrimaryPart.CFrame
 	for _, itemName in pairs(drops) do
-		local item = import("Assets/Items/"..itemName):Clone()
-		item.Parent = workspace
-		item.PrimaryPart = item.Base
-		item:SetPrimaryPartCFrame(cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)))
+		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
+		Messages:send("MakeItem", itemName, pos)
 	end
 end
 

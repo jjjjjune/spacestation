@@ -38,6 +38,9 @@ local items = {
 	},
 	["Hemp Seed"] = {
 		plant = "Hemp",
+	},
+	["Compost"] = {
+		plantGrow = 1,
 	}
 }
 

@@ -34,7 +34,7 @@ local function getEnemies(character, range, angle)
 	for _, part in pairs(parts) do
 		local humanoid = part.Parent:FindFirstChild("Humanoid")
 		if not CollectionService:HasTag(part.Parent, "Ragdolled") then
-			if humanoid and humanoid ~= character.Humanoid then
+			if humanoid and (humanoid ~= character.Humanoid) then
 				local ang = getAngleRelativeToPlayer(character, part.Position)
 				if ang < angle then
 					if not inserted[humanoid] then
@@ -203,9 +203,10 @@ end
 
 local function executeCharacter(executorPlayer, character)
 	local executor = executorPlayer.Character
-	if CollectionService:HasTag(character, "Ragdolled") then
+	if CollectionService:HasTag(character, "Ragdolled") and not CollectionService:HasTag(character, "Dead") then
 		if character.Humanoid.Health < 4 then
 			if (executor.HumanoidRootPart.Position - character.HumanoidRootPart.Position).magnitude < 12 then
+				CollectionService:AddTag(character, "Dead")
 				Messages:send("PlayAnimation", executor, "SwingFinal")
 				spawn(function()
 					wait(.45)

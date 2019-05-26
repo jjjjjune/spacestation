@@ -69,8 +69,8 @@ local function refreshEquipment(player)
 	end
 	for slot, equipData in pairs(data) do
 		local equippedItem = inventory[slot]
-		--local lastEquippedItem =lastSlotContained[player][slot]
-		if equippedItem ~= nil then
+		local lastEquippedItem =lastSlotContained[player][slot]
+		if equippedItem ~= nil and (equippedItem ~= lastEquippedItem) then
 			equip(player, equippedItem, equipData)
 		end
 		lastSlotContained[player][slot] = equippedItem

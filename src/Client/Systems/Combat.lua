@@ -245,7 +245,7 @@ function Combat:start()
 			if CollectionService:HasTag(player.Character, "Ragdolled") then
 				return
 			end
-			lunge()
+			--lunge()
 		end
 		if inputObject.UserInputType == Enum.UserInputType.MouseButton1 and not gameProcessed then
 			if CollectionService:HasTag(player.Character, "Ragdolled") then

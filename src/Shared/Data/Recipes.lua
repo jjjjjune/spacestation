@@ -56,7 +56,8 @@ return {
 		name = "Pickaxe",
 		makes = {"Pickaxe"},
 		recipe = {
-			"Stick",
+			"Handle",
+			"Stone",
 			"Stone",
 		}
 	},
@@ -89,35 +90,35 @@ return {
 		name = "Hammer",
 		makes = {"Hammer"},
 		recipe = {
-			"Stick", "Stone", "Stone"
+			"Handle", "Stone", "Stone"
 		}
 	},
 	{
 		name = "Iron Hammer",
 		makes = {"Iron Hammer"},
 		recipe = {
-			"Stick", "Iron Bar", "Iron Bar"
+			"Handle", "Iron Bar", "Iron Bar"
 		}
 	},
 	{
 		name = "Iron Sword",
 		makes = {"Iron Sword"},
 		recipe = {
-			"Stick", "Iron Blade", "Iron Blade", "Iron Blade"
+			"Handle", "Iron Blade", "Iron Blade", "Iron Blade"
 		}
 	},
 	{
 		name = "Iron Pickaxe",
 		makes = {"Iron Pickaxe"},
 		recipe = {
-			"Stick", "Iron Blade", "Iron Blade"
+			"Handle", "Iron Blade", "Iron Blade"
 		}
 	},
 	{
 		name = "Iron Axe",
 		makes = {"Iron Axe"},
 		recipe = {
-			"Stick", "Iron Blade"
+			"Handle", "Iron Blade"
 		}
 	},
 	{

@@ -22,9 +22,9 @@ function FallDamage:start()
 				end
 				lastY = currentY
 				if character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart.Velocity.Y >= -8 then
-					if fallDistance >= 30 then
+					if fallDistance >= 40 then
 						local damage = (fallDistance/3)^1.1
-						if fallDistance > 60 then
+						if fallDistance > 70 then
 							LowerHealth(character.Humanoid,damage, true)
 							if character.Humanoid.Health == 0 then
 								character.HumanoidRootPart.Velocity = Vector3.new()
@@ -34,7 +34,7 @@ function FallDamage:start()
 						else
 							LowerHealth(character.Humanoid,damage)
 						end
-						if fallDistance > 40 then
+						if fallDistance > 50 then
 							Messages:send("RagdollCharacter", character, fallDistance/10)
 						end
 						Messages:send("PlaySound", "BoneBreak", character.Head.Position)

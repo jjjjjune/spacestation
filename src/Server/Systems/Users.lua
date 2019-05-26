@@ -48,6 +48,7 @@ local function setClass(character, className)
 	humanoidDescription.HeadColor =classAsset.Head.BrickColor.Color
 	humanoidDescription.LeftLegColor =classAsset.LeftUpperLeg.BrickColor.Color
 	humanoidDescription.RightLegColor =classAsset.RightUpperLeg.BrickColor.Color
+	humanoidDescription.HeadScale = classAsset.Humanoid.HeadScale.Value
 
 	--humanoidDescription.Head = 2510332695
 	humanoidDescription.RunAnimation = 2510238627
@@ -79,7 +80,7 @@ local function setClass(character, className)
 	local weld = Instance.new("WeldConstraint")
 	weld.Part0 = horns.Base
 	weld.Part1 = character.Head
-	horns:SetPrimaryPartCFrame(character.Head.CFrame)
+	horns.Base.CFrame = (character.Head.CFrame)
 	weld.Parent = character.Head
 	for _, v in pairs(horns:GetChildren()) do
 		if v:IsA("BasePart") then
@@ -112,6 +113,10 @@ local function setClass(character, className)
 	character.Humanoid.BreakJointsOnDeath = false
 	local vel = Instance.new("BodyVelocity", character.HumanoidRootPart)
 	vel.MaxForce = Vector3.new(0,0,0)
+	spawn(function()
+		wait(1)
+		character.Humanoid.HeadScale.Value = classAsset.Humanoid.HeadScale.Value - .05
+	end)
 end
 
 local function determineRace(player)

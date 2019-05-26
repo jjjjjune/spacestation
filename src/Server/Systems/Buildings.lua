@@ -53,7 +53,13 @@ local function checkWeld(building)
 				attachWeld.Part0 = building.Base
 				attachWeld.Part1 = hit
 				if not CollectionService:HasTag(building, "Schematic") then
-					setProperty(building, "CanCollide", true)
+					for _, p in pairs(building:GetChildren()) do
+						if p:IsA("BasePart") then
+							if p.Transparency < 1 or p.Name == "Barrier" then
+								p.CanCollide = true
+							end
+						end
+					end
 				end
 				setProperty(building, "Anchored", false)
 				setProperty(building, "Massless", true)
@@ -263,7 +269,7 @@ end
 local function attemptSwing(player)
 	local damage = GetPlayerDamage(player)
 	damage = damage/2
-	local buildings = getBuildings(player.Character, 8, 80)
+	local buildings = getBuildings(player.Character, 2, 80)
 	for _, building in pairs(buildings) do
 		if player.Character:FindFirstChild("Hammer") then
 			damage= - damage
@@ -272,7 +278,34 @@ local function attemptSwing(player)
 			damage= - damage
 			damage = damage * 4
 		end
+		if damage > 0 and CollectionService:HasTag(building, player.Name.."Owned") then
+			return
+		end
 		damageBuilding(building, player, damage)
+	end
+end
+
+local function getOwner(building)
+	for _, player in pairs(game.Players:GetPlayers()) do
+		if CollectionService:HasTag(building, player.Name.."Owned") then
+			return player
+		end
+	end
+end
+
+local function checkBuildingFunctions(building)
+	-- sets up the hitbox functions for a building
+	if building.Parent == workspace and not CollectionService:HasTag(building, "Hooked") then
+		CollectionService:AddTag(building, "Hooked")
+		building.Hitbox.Touched:connect(function(hit)
+			local item = hit.Parent
+			if item:FindFirstChild("Base") and item.Parent == workspace then
+				if BuildingItemFunctions[building.Name] then
+					local player = getOwner(building)
+					BuildingItemFunctions[building.Name](player, item, building)
+				end
+			end
+		end)
 	end
 end
 
@@ -305,18 +338,25 @@ function Buildings:start()
 			if building.Parent == workspace then
 				if isWithin(targetPos,building.Base) then
 					if BuildingItemFunctions[building.Name] then
-						BuildingItemFunctions[building.Name](player, itemModel)
+						BuildingItemFunctions[building.Name](player, itemModel, building)
 					end
 				end
 			end
 		end
 	end)
-	game.Players.PlayerRemoving:connect(function(player)
-		if schematicsTable[player] then
-			schematicsTable[player]:Destroy()
-			schematicsTable[player] = nil
+	Messages:hook("DestroyBuilding", function(player, building)
+		if CollectionService:HasTag(building, player.Name.."Owned") then
+			Messages:send("PlaySound", "Destruct", building.Base.Position)
+			building:Destroy()
 		end
+	end)
+	game.Players.PlayerRemoving:connect(function(player)
 		for _, building in pairs(CollectionService:GetTagged("Building")) do
+			if CollectionService:HasTag(building, player.Name.."Owned") then
+				building:Destroy()
+			end
+		end
+		for _, building in pairs(CollectionService:GetTagged("Schematics")) do
 			if CollectionService:HasTag(building, player.Name.."Owned") then
 				building:Destroy()
 			end
@@ -337,6 +377,26 @@ function Buildings:start()
 				end
 			end
 		end)
+	end)
+	for _, building in pairs(CollectionService:GetTagged("Building")) do
+		if building.Parent == workspace then
+			checkBuildingFunctions(building)
+		end
+	end
+	for _, building in pairs(game.ReplicatedStorage.Assets.Buildings:GetChildren()) do
+		if not building:FindFirstChild("Hitbox") and BuildingItemFunctions[building.Name] then
+			local hitbox = Instance.new("Part")
+			hitbox.Size = building:GetModelSize()* Vector3.new(1,2,1)
+			hitbox.CFrame = building:GetModelCFrame()
+			hitbox.CanCollide = false
+			hitbox.Anchored = true
+			hitbox.Transparency = 1
+			hitbox.Name = "Hitbox"
+			hitbox.Parent = building
+		end
+	end
+	CollectionService:GetInstanceAddedSignal("Building"):connect(function(building)
+		checkBuildingFunctions(building)
 	end)
 end
 

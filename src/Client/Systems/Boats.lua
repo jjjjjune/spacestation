@@ -30,7 +30,15 @@ function Boats:start()
 					local player = game.Players:GetPlayerFromCharacter(character)
 					if player and player == game.Players.LocalPlayer then
 						myBoat = boat
-					else
+					end
+				else
+					local foundBoat = false
+					for _, boat in pairs(CollectionService:GetTagged("Boat")) do
+						if boat:FindFirstChild("VehicleSeat") and boat.VehicleSeat.Occupant == game.Players.LocalPlayer.Character.Humanoid then
+							foundBoat = true
+						end
+					end
+					if not foundBoat then
 						myBoat = nil
 					end
 				end

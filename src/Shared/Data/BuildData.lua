@@ -45,6 +45,11 @@ data["Wood Hut"] = {
 		["Log"] = 8,
 	},
 }
+data["Wood Cage"] = {
+	recipe = {
+		["Log"] = 8,
+	},
+}
 data["Door"] = {
 	recipe = {
 		["Log"] = 1,
@@ -73,7 +78,21 @@ data["Sailboat"] = {
 	},
 	water = true,
 }
-
+data["Well"] = {
+	recipe = {
+		["Stone"] = 8,
+		["Log"] =2,
+		["Rope"] = 2,
+	},
+}
+data["Compost Bin"] = {
+	recipe = {
+		["Apple Seed"] = 4,
+		["Hemp Seed"] =4,
+		["Acorn"] = 4,
+		["Green Mushroom"] = 4,
+	},
+}
 
 
 for _,  building in pairs(game.ReplicatedStorage.Assets.Buildings:GetChildren()) do

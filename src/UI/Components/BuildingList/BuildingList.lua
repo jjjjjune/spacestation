@@ -7,8 +7,10 @@ local StyleConstants = import "Shared/Data/StyleConstants"
 local WorldConstants = import "Shared/Data/WorldConstants"
 local Messages = import "Shared/Utils/Messages"
 local BlueprintTypes = import "Shared/Data/BlueprintTypes"
+local player = game.Players.LocalPlayer
 
 local BuildingList = Roact.PureComponent:extend("BuildingList")
+local CollectionService = game:GetService("CollectionService")
 
 local selectedBlueprint
 
@@ -17,6 +19,26 @@ function BuildingList:init()
 	Messages:hook("SetBlueprint", function(blueprint)
 		selectedBlueprint = blueprint
 		self:setState({})
+	end)
+	self:setState(function(state)
+		return {
+			buildingsOwned = CollectionService:GetTagged(player.Name.."Owned")
+		}
+	end)
+	CollectionService:GetInstanceAddedSignal(player.Name.."Owned"):connect(function(building)
+		repeat wait() until building:FindFirstChild("Base")
+		self:setState(function(state)
+			return {
+				buildingsOwned = CollectionService:GetTagged(player.Name.."Owned")
+			}
+		end)
+	end)
+	CollectionService:GetInstanceRemovedSignal(player.Name.."Owned"):connect(function(building)
+		self:setState(function(state)
+			return {
+				buildingsOwned = CollectionService:GetTagged(player.Name.."Owned")
+			}
+		end)
 	end)
 end
 
@@ -50,7 +72,40 @@ local function getBuildingElements()
 	return elements
 end
 
+local function getDestroyButtons(buildings)
+
+	local elements ={}
+
+	for _, buildingModel in pairs(buildings) do
+		table.insert(elements, Roact.createElement("BillboardGui", {
+			Size = UDim2.new(1,0,1,0),
+			Adornee = buildingModel:FindFirstChild("Base") and buildingModel.Base,
+			AlwaysOnTop = true,
+			Enabled = selectedBlueprint ~= nil,
+			Active = true,
+		},{
+			Button = Roact.createElement("TextButton", {
+				BackgroundColor3 = StyleConstants.HEALTH_COLOR,
+				TextColor3 = StyleConstants.TEXT,
+				Font = StyleConstants.FONT_BOLD,
+				Text = "X",
+				TextScaled = true,
+				--Rotation = 45,
+				Size = UDim2.new(1,0,1,0),
+				[Roact.Event.Activated] = function()
+					print("here we go")
+					Messages:sendServer("DestroyBuilding", buildingModel)
+				end,
+			})
+		}))
+	end
+
+	return elements
+end
+
 function BuildingList:render()
+	local elements = getBuildingElements()
+	local destroyButtons = getDestroyButtons(self.state.buildingsOwned)
 	return
 	Roact.createElement("Frame", {
 		AnchorPoint = Vector2.new(.5,0),
@@ -63,9 +118,10 @@ function BuildingList:render()
 		ListFrame = Roact.createElement("ScrollingFrame", {
 			Size = UDim2.new(1,0,1,0),
 			BackgroundTransparency =1,
+			CanvasSize = UDim2.new(1,0,0, #elements*(26+10)),
 			ClipsDescendants = true,
 			BorderSizePixel = 0,
-		}, getBuildingElements()),
+		}, elements),
 		CloseButton = Roact.createElement("TextButton", {
 			AnchorPoint = Vector2.new(.5,0),
 			Size = UDim2.new(.5, 0,.1,0),
@@ -81,7 +137,7 @@ function BuildingList:render()
 				selectedBlueprint = nil
 				self:setState({})
 			end,
-		})
+		},destroyButtons),
 	})
 
 end

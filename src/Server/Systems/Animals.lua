@@ -47,6 +47,7 @@ local function setupMonster(monster, scripts)
 			spawnClone.Parent = workspace
 			setupMonster(spawnClone, tags[spawnClone.Name])
 		end)
+		Messages:sendAllClients("SetupAnimalClient", monster)
 	end
 end
 
@@ -63,8 +64,11 @@ function Animals:start()
 			for _, animal in pairs(CollectionService:GetTagged("Animal")) do
 				local rp = animal:FindFirstChild("HumanoidRootPart")
 				if rp then
-					if rp.Position.Y < WorldConstants.WATER_LEVEL then
-						rp.Parent.Humanoid:TakeDamage(1)
+					local yPos = animal:GetModelCFrame().p.Y - animal:GetModelSize().Y/2
+					if yPos < (WorldConstants.WATER_LEVEL) then
+						rp.Parent.Humanoid:TakeDamage(5)
+					else
+						rp.Parent.Humanoid.Health = rp.Parent.Humanoid.Health + .25
 					end
 				end
 			end

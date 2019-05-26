@@ -173,10 +173,12 @@ local function startLoops()
 					local myHunger = state.playerStats[userId].hunger
 					Store:dispatch(ReplicateTo(player, SetHunger(userId, math.max(0,myHunger - 1))))
 					Data:set(player, "hunger", myHunger-1)
-					if myHunger <= 0 then
+					if myHunger <= 0 and player.Character then
 						character.Humanoid:TakeDamage(Constants.HUNGER_DAMAGE)
 					else
-						character.Humanoid.Health = character.Humanoid.Health + (myHunger/60)
+						if player.Character then
+							character.Humanoid.Health = character.Humanoid.Health + (myHunger/60)
+						end
 					end
 					if CollectionService:HasTag(character, "Poisoned") then
 						Data:set(player, "lastHit", time())
@@ -195,7 +197,7 @@ local function startLoops()
 					local myThirst = state.playerStats[userId].thirst
 					Store:dispatch(ReplicateTo(player, SetThirst(userId, math.max(0,myThirst - 1))))
 					Data:set(player, "thirst", myThirst-1)
-					if myThirst <= 0 then
+					if myThirst <= 0 and player.Character then
 						player.Character.Humanoid:TakeDamage(Constants.THIRST_DAMAGE)
 					else
 						if player.Character then

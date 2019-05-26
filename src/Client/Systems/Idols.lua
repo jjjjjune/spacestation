@@ -5,33 +5,25 @@ local IdolsList = import "Shared/Data/Idols"
 
 local CollectionService = game:GetService("CollectionService")
 
-local function setProperty(model, property, value)
-	for _, p in pairs(model:GetChildren()) do
-		if p:IsA("BasePart") then
-			p[property] = value
-		end
-	end
-end
-
-
 local function prepareIdol(idol)
 	local display = import("Assets/Idols/"..idol.Name):Clone()
-	setProperty(display, "CanCollide", false)
-	setProperty(display, "Anchored", true)
 	display.Name = "Display"
 	display.PrimaryPart = display.Base
-	display.Parent = idol
 	display:SetPrimaryPartCFrame(idol.Base.CFrame * CFrame.new(0, 5,0))
+	display.Parent = idol
 end
 
 local function manageIdols()
 	for _, idol in pairs(CollectionService:GetTagged("Idol")) do
-		idol.Display:SetPrimaryPartCFrame(idol.Display.PrimaryPart.CFrame * CFrame.Angles(0,math.rad(1),0))
+		--idol.Display:SetPrimaryPartCFrame(idol.Display.PrimaryPart.CFrame * CFrame.Angles(0,math.rad(1),0))
 		local info = IdolsList[idol.Name]
 		local stat = info.stat
 		local myAmount = _G.Data[stat]
 		local needed = info.needed
-		local descriptionText = myAmount.."/"..needed.." "..info.verb
+		local descriptionText = ""
+		if myAmount then
+			descriptionText = myAmount.."/"..needed.." "..info.verb
+		end
 		if myAmount and myAmount > needed then
 			descriptionText = "CLICK TO EQUIP"
 		end

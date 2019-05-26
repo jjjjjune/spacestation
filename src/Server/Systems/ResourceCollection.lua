@@ -45,7 +45,9 @@ local function getNearbyPlants(player)
 	for _, plant in pairs(CollectionService:GetTagged("Plant")) do
 		if CollectionService:HasTag(plant, "Finished") then
 			if (plant.Base.Position - origin).magnitude < 12 then
-				table.insert(plants, plant)
+				if #plants < 3 then
+					table.insert(plants, plant)
+				end
 			end
 		end
 	end
@@ -63,7 +65,9 @@ local function getNearbyRocks(player)
 	end
 	for _, rock in pairs(CollectionService:GetTagged("Rock")) do
 		if (rock.Base.Position - origin).magnitude < 12 and rock:IsDescendantOf(workspace) then
-			table.insert(plants, rock)
+			if #plants < 3 then
+				table.insert(plants, rock)
+			end
 		end
 	end
 	return plants
@@ -88,9 +92,9 @@ local function attemptSwing(player)
 	end
 	if foundTree then
 		if sword ~= nil then
-			Messages:send("PlayParticle", "Sparks",20,player.Character[sword].Base.Position)
+			Messages:send("PlayParticle", "Sparks",5,player.Character[sword].Base.Position)
 		else
-			Messages:send("PlayParticle", "Sparks",20,player.Character.Head.Position)
+			Messages:send("PlayParticle", "Sparks",5,player.Character.Head.Position)
 		end
 	end
 	local rocks = getNearbyRocks(player)
@@ -108,9 +112,9 @@ local function attemptSwing(player)
 	end
 	if foundRock then
 		if sword ~= nil then
-			Messages:send("PlayParticle", "Sparks",20,player.Character[sword].Base.Position)
+			Messages:send("PlayParticle", "Sparks",5,player.Character[sword].Base.Position)
 		else
-			Messages:send("PlayParticle", "Sparks",20,player.Character.Head.Position)
+			Messages:send("PlayParticle", "Sparks",5,player.Character.Head.Position)
 		end
 	end
 end

@@ -13,5 +13,8 @@ return {
 		"Furnace",
 		"Grindstone",
 		"Sailboat",
+		"Wood Cage",
+		"Compost Bin",
+		"Well",
 	}
 }

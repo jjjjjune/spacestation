@@ -48,7 +48,7 @@ end
 
 function Queen:canGoUp()
 	local ropeRay = Ray.new(self.model.Back.Position, Vector3.new(0,8,0))
-	local hit, _ = workspace:FindPartOnRay(ropeRay, self.model)
+	local hit, _ = workspace:FindPartOnRayWithIgnoreList(ropeRay, {self.model, unpack(CollectionService:GetTagged("Building")),unpack(CollectionService:GetTagged("Character"))})
 	if hit == nil then
 		return true
 	else
@@ -242,10 +242,8 @@ function Queen:onDied()
 	local drops = Drops[self.model.Name]
 	local cframe = self.model.PrimaryPart.CFrame
 	for _, itemName in pairs(drops) do
-		local item = import("Assets/Items/"..itemName):Clone()
-		item.Parent = workspace
-		item.PrimaryPart = item.Base
-		item:SetPrimaryPartCFrame(cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)))
+		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
+		Messages:send("MakeItem", itemName, pos)
 	end
 end
 

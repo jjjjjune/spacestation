@@ -11,11 +11,9 @@ local function doLighting()
 			end
 		end
 		if isInHell then
-			game.Lighting.FogColor = Color3.fromRGB(0, 0, 0)
-			game.Lighting.ClockTime = 0
+			game.Lighting.FogEnd = 100000
 		else
-			--[[game.Lighting.FogColor = Color3.fromRGB(151, 250, 255)
-			game.Lighting.ClockTime = 12--]]
+			game.Lighting.FogEnd = 4400
 		end
 	end
 end
