@@ -4,6 +4,11 @@ local PlayerData = import "Shared/PlayerData"
 local WeaponData = import "Shared/Data/WeaponData"
 local EquipmentConstants = import "Shared/Data/EquipmentConstants"
 local CollectionService = game:GetService("CollectionService")
+local WorldConstants = import "Shared/Data/WorldConstants"
+
+local function isDay()
+	return (game.Lighting.ClockTime > WorldConstants.DAY_MIN and game.Lighting.ClockTime < WorldConstants.DAY_MAX) or false
+end
 
 local function getEquipmentSlot(inventory, tagName)
 	local slotNumber = "1"
@@ -43,6 +48,13 @@ return function(player)
 	local model = getSwordModel(player)
 	if mask == "Mask Of Brutality" then
 		modifier = 1.5
+	end
+	if mask == "Mask Of Vampirism" then
+		if isDay() then
+			modifier = .5
+		else
+			modifier = 2
+		end
 	end
 	if model and CollectionService:HasTag(model, "Fruit") and mask == "Mask Of Growth" then
 		modifier = 2

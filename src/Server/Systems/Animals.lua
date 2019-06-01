@@ -1,7 +1,7 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
-local MONSTER_RESPAWN_TIME = 20
+local MONSTER_RESPAWN_TIME = 60
 local PhysicsService = game:GetService("PhysicsService")
 local WorldConstants = import "Shared/Data/WorldConstants"
 
@@ -18,6 +18,9 @@ local tags = {
 	},
 	["Droolabou"] = {
 		"Droolabou"
+	},
+	["Cactus"] = {
+		"Cactus"
 	}
 }
 
@@ -59,6 +62,31 @@ function Animals:start()
 			setupMonster(model, scripts)
 		end
 	end
+
+	Messages:hook("SpawnAnimal", function(player, tagName, position)
+		local model = game.ReplicatedStorage.Assets.Animals[tagName]:Clone()
+		local scripts = tags[tagName]
+		local monster = model
+		for _, scriptName in pairs(scripts) do
+			monster.Parent = workspace
+			monster:MoveTo(position)
+			local behavior = import("Server/AnimalBehaviors/"..scriptName).new(monster)
+			behavior:init()
+			behavior:onSpawn()
+			monster.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
+			CollectionService:AddTag(monster, "Animal")
+			for _, p in pairs(monster:GetChildren()) do
+				if p:IsA("BasePart") then
+					PhysicsService:SetPartCollisionGroup(p, "AnimalGroup")
+				end
+			end
+			monster.Humanoid.Died:connect(function()
+				behavior:onDied()
+			end)
+			Messages:sendAllClients("SetupAnimalClient", monster)
+		end
+	end)
+
 	spawn(function()
 		while wait(1) do
 			for _, animal in pairs(CollectionService:GetTagged("Animal")) do

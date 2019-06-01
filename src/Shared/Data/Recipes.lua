@@ -45,11 +45,27 @@ return {
 		}
 	},
 	{
+		name = "Iron Shield",
+		makes = {"Iron Shield"},
+		recipe = {
+			"Iron Bar",
+			"Iron Bar",
+		}
+	},
+	{
+		name = "Bone Shield",
+		makes = {"Bone Shield"},
+		recipe = {
+			"Bone",
+			"Bone",
+		}
+	},
+	{
 		name = "Axe",
 		makes = {"Axe"},
 		recipe = {
 			"Handle",
-			"Stone",
+			"Stone Blade",
 		}
 	},
 	{
@@ -57,8 +73,8 @@ return {
 		makes = {"Pickaxe"},
 		recipe = {
 			"Handle",
-			"Stone",
-			"Stone",
+			"Stone Blade",
+			"Stone Blade",
 		}
 	},
 	{
@@ -66,9 +82,9 @@ return {
 		makes = {"Badsword"},
 		recipe = {
 			"Handle",
-			"Stone",
-			"Stone",
-			"Stone",
+			"Stone Blade",
+			"Stone Blade",
+			"Stone Blade",
 		}
 	},
 	{
@@ -115,6 +131,27 @@ return {
 		}
 	},
 	{
+		name = "Bone Hammer",
+		makes = {"Bone Hammer"},
+		recipe = {
+			"Handle", "Bone", "Bone"
+		}
+	},
+	{
+		name = "Bone Sword",
+		makes = {"Bone Sword"},
+		recipe = {
+			"Handle", "Bone Blade", "Bone Blade", "Bone Blade"
+		}
+	},
+	{
+		name = "Bone Pickaxe",
+		makes = {"Bone Pickaxe"},
+		recipe = {
+			"Handle", "Bone Blade", "Bone Blade"
+		}
+	},
+	{
 		name = "Iron Axe",
 		makes = {"Iron Axe"},
 		recipe = {
@@ -133,6 +170,75 @@ return {
 		makes = {"Torch"},
 		recipe = {
 			"Stick", "Coal"
+		}
+	},
+	{
+		name = "Dart",
+		makes = {"Dart", "Dart"},
+		recipe = {
+			"Handle", "Spike",
+		}
+	},
+	{
+		name = "Spear",
+		makes = {"Spear"},
+		recipe = {
+			"Handle", "Stick", "Rope"
+		}
+	},
+	{
+		name = "Stone Spear",
+		makes = {"Stone Spear"},
+		recipe = {
+			"Stone Blade", "Stick", "Rope",
+		}
+	},
+	{
+		name = "Bone Spear",
+		makes = {"Bone Spear"},
+		recipe = {
+			"Bone Blade", "Stick", "Rope",
+		}
+	},
+	{
+		name = "Iron Spear",
+		makes = {"Iron Spear"},
+		recipe = {
+			"Iron Blade", "Stick", "Rope",
+		}
+	},
+	{
+		name = "Enchanted Blueprint",
+		makes = {"Enchanted Blueprint"},
+		recipe = {
+			"Sapphire",
+			"Blueprint",
+		}
+	},
+	{
+		name = "Running Stone",
+		makes = {"Running Stone"},
+		recipe = {
+			"Sapphire",
+			"Sapphire",
+		}
+	},
+	{
+		name = "Gunpowder",
+		makes = {"Gunpowder"},
+		recipe = {
+			"Sulfur",
+			"Coal",
+		}
+	},
+	{
+		name = "Leather Pack",
+		makes = {"Leather Pack"},
+		recipe = {
+			"Tanned Leather",
+			"Tanned Leather",
+			"Tanned Leather",
+			"Tanned Leather",
 		}
 	},
 }

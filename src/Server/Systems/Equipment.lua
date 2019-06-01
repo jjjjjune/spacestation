@@ -37,6 +37,10 @@ local function equip(player, item, data)
 	itemModel.PrimaryPart = itemModel.Base
 	itemModel:SetPrimaryPartCFrame(character[data.attach].CFrame)
 	itemModel.Parent = character
+	local trail = itemModel:FindFirstChild("Trail", true)
+	if trail then
+		trail.Enabled = false
+	end
 	local weld = Instance.new("WeldConstraint",itemModel.Base)
 	weld.Part0 = itemModel.Base
 	weld.Part1 = character[data.attach]

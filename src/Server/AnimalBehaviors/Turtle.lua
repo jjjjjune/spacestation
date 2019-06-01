@@ -274,6 +274,10 @@ function Turtle:onDied()
 		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
 		Messages:send("MakeItem", itemName, pos)
 	end
+	if math.random(1, 10) == 1 then
+		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
+		Messages:send("MakeItem", "Turtle Egg", pos)
+	end
 end
 
 function Turtle.new(model)

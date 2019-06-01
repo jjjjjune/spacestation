@@ -356,7 +356,7 @@ function Buildings:start()
 				building:Destroy()
 			end
 		end
-		for _, building in pairs(CollectionService:GetTagged("Schematics")) do
+		for _, building in pairs(CollectionService:GetTagged("Schematic")) do
 			if CollectionService:HasTag(building, player.Name.."Owned") then
 				building:Destroy()
 			end

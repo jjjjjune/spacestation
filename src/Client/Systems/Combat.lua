@@ -25,11 +25,17 @@ local animationIterator = 0
 local mouse2Down = false
 local lastSwingAnimation = "Swing1"
 local guardBroken = time()
+local mouse = player:GetMouse()
+local lastThrow = time()
 
 local function getInventory(player)
 	local state = Store:getState()
 	local inventory = state.inventories[tostring(player.UserId)]
 	return inventory
+end
+
+local function isThrowing()
+	return time() - lastThrow < CombatConstants.THROW_DEBOUNCE
 end
 
 local function getEquipmentSlot(inventory, tagName)
@@ -93,7 +99,11 @@ local function getWalkspeed()
 	if (player.Character:FindFirstChild("HumanoidRootPart")) and (player.Character.HumanoidRootPart.Position.Y < WorldConstants.WATER_LEVEL) and inWater() then
 		waterModifier = CombatConstants.SWIM_SPEED_MODIFIER
 	end
-	return (baseWalkspeed + weaponModifier + shieldModifier) * waterModifier
+	local globalMod = 1
+	if isThrowing() then
+		globalMod = .1
+	end
+	return ((baseWalkspeed + weaponModifier + shieldModifier) * waterModifier) * globalMod
 end
 
 local function getJumpPower()
@@ -127,7 +137,7 @@ local function getSwingDebounce(weaponData)
 end
 
 local function attemptSwing()
-	if stunLocked() or shieldUp then
+	if stunLocked() or shieldUp or isThrowing() then
 		return
 	end
 
@@ -164,6 +174,9 @@ end
 
 local function attemptRaiseShield()
 	-- as long as right click is down it will try to raise your shield
+	if isThrowing() then
+		return
+	end
 	if stunLocked() then
 		return
 	end
@@ -221,6 +234,8 @@ local function nearbyRagdolledCharacter()
 	return char
 end
 
+
+
 function Combat:start()
 	Messages:hook("GuardBroken", function()
 		shieldPutDown = time()
@@ -230,6 +245,10 @@ function Combat:start()
 	Messages:hook("StunLocked", function()
 		lastHit = time()
 		lowerShield()
+	end)
+	Messages:hook("Throw", function()
+		lastThrow = time()
+		Messages:send("PlayAnimationClient", "Throw")
 	end)
 	Messages:hook("Knockback", function(amount, direction)
 		player.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame + (direction*amount)
@@ -267,15 +286,9 @@ function Combat:start()
 			attemptRaiseShield()
 		end
 		manageWalkspeed()
-		if shieldUp then
-			local flat = Vector3.new(1,0,1)
-			local character = player.Character
-			local direction = workspace.CurrentCamera.CFrame.lookVector
-			if character:FindFirstChild("Humanoid") then
-				--local y = Vector3.new(0, character.HumanoidRootPart.Position.Y,0)
-				--character.HumanoidRootPart.CFrame = CFrame.new((character.HumanoidRootPart.Position*flat) + y, ((character.HumanoidRootPart.CFrame + direction*5).p*flat)+ y)
-			end
-		end
+	end)
+	mouse.Move:connect(function()
+		Messages:sendServer("UpdatePlayerTargetPosition", mouse.Hit.p)
 	end)
 end
 

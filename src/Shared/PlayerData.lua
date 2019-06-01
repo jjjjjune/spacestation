@@ -43,7 +43,10 @@ end
 
 function data:add(player, key, value)
     yieldUntilDataReady(player)
-    local data = self.cache[player.UserId]
+	local data = self.cache[player.UserId]
+	if not data[key] then
+		data[key] = 0
+	end
     data[key] = data[key] + value
     self:onDataChanged(player)
 end

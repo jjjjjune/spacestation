@@ -22,6 +22,23 @@ function Boats:start()
 			end)
 		end
 	end)
+	spawn(function()
+		while wait() do
+			for _, boat in pairs(CollectionService:GetTagged("Boat")) do
+				local  seat = boat:FindFirstChild("VehicleSeat")
+				if seat then
+					if seat.Occupant then
+						local occupant = seat.Occupant
+						local character = occupant.Parent
+						local player = game.Players:GetPlayerFromCharacter(character)
+						if player then
+							seat:SetNetworkOwner(player)
+						end
+					end
+				end
+			end
+		end
+	end)
 end
 
 return Boats

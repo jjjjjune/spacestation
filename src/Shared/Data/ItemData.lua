@@ -8,6 +8,17 @@ local items = {
 		thirst = 1,
 		eatSound = "Eating",
 	},
+	Banana = {
+		consumable = true,
+		hunger = 15,
+		thirst = 15,
+		eatSound = "Eating",
+	},
+	["Cactus Fruit"] = {
+		consumable = true,
+		hunger = 15,
+		thirst = 35,
+	},
 	["Green Mushroom"] = {
 		consumable = true,
 		hunger = 12,
@@ -30,6 +41,9 @@ local items = {
 	Blueprint = {
 		blueprint = true,
 	},
+	["Enchanted Blueprint"] = {
+		blueprint = true,
+	},
 	["Apple Seed"] = {
 		plant = "Apple Tree"
 	},
@@ -39,8 +53,26 @@ local items = {
 	["Hemp Seed"] = {
 		plant = "Hemp",
 	},
+	["Banana Seed"] = {
+		plant = "Banana Tree",
+	},
 	["Compost"] = {
 		plantGrow = 1,
+	},
+	["Bandage"] ={
+		health = 8,
+	},
+	["Cactus Egg"] = {
+		animal = "Cactus",
+	},
+	["Droolabou Egg"] = {
+		animal = "Droolabou",
+	},
+	["Jungle Queen Egg"] = {
+		animal = "Queen",
+	},
+	["Turtle Egg"] = {
+		animal = "Turtle"
 	}
 }
 

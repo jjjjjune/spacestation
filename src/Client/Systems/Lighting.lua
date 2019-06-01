@@ -11,9 +11,9 @@ local function doLighting()
 			end
 		end
 		if isInHell then
-			game.Lighting.FogEnd = 100000
+			game.Lighting.FogStart = 3999
 		else
-			game.Lighting.FogEnd = 4400
+			game.Lighting.FogStart = 0
 		end
 	end
 end

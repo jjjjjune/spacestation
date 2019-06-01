@@ -16,5 +16,12 @@ return {
 		"Wood Cage",
 		"Compost Bin",
 		"Well",
+		"Longship",
+		"Cannon",
+		"Tannery",
+	},
+	["Enchanted Blueprint"] = {
+		"Stone God Altar",
+		"Plant God Altar",
 	}
 }

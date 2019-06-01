@@ -7,6 +7,11 @@ local SetItemPosition = import "Shared/Actions/Inventories/SetItemPosition"
 local Store = import "Shared/State/Store"
 local PlayerData = import "Shared/PlayerData"
 local IdolsList = import "Shared/Data/Idols"
+local ProjectileFunctions = import "Shared/Data/ProjectileFunctions"
+local HttpService = game:GetService("HttpService")
+local GetInventorySize = import "Shared/Utils/GetInventorySize"
+
+local playerTargetPositions ={}
 
 local PlayerInventories = {}
 
@@ -23,7 +28,7 @@ local function saveInventory(player) -- gonna have to use this to save them manu
 end
 
 local function canPickupItem(player,item)
-	local inventorySize = PlayerData:get(player, "inventorySize")
+	local inventorySize = GetInventorySize(player)
 	local occupiedSlots = 0
 	local savedInventory = getInventory(player)
 	for i = 1, inventorySize do
@@ -43,7 +48,7 @@ local function pickupItem(player, item)
 	end
 	item.Parent = game.ServerStorage
 	local inventory = getInventory(player)
-	local inventorySize = PlayerData:get(player, "inventorySize")
+	local inventorySize = GetInventorySize(player)
 	local chosenSlot = "100000"
 	for i = 1, inventorySize do
 		if not inventory[i..""] then
@@ -58,6 +63,18 @@ end
 
 local function isAlive(player)
 	return player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 and not player.Character:FindFirstChildOfClass("ForceField", true)
+end
+
+local function throwItem(player, item, targetPos)
+	Messages:sendClient(player, "Throw")
+	spawn(function()
+		wait(.5)
+		Messages:send("PlaySound", "DeepWhip", player.Character.Head.Position)
+		local id = HttpService:GenerateGUID()
+		Messages:send("CreateProjectile", id, player.Character.Head.Position, playerTargetPositions[player] or targetPos,
+		game.ReplicatedStorage.Assets.Items[item]:Clone(),
+		player.Character, player)
+	end)
 end
 
 function PlayerInventories:start()
@@ -82,10 +99,14 @@ function PlayerInventories:start()
 		local r = Ray.new(start, (targetPos-start).unit*length)
 		local hit, targetPos = workspace:FindPartOnRay(r, workspace)
 		if item then
-			local droppedTag = Instance.new("StringValue")
-			droppedTag.Name = "DroppedBy"
-			droppedTag.Value = player.Name
-			Messages:send("MakeItem", item, targetPos, droppedTag, player)
+			if ProjectileFunctions[item] then
+				throwItem(player, item, targetPos)
+			else
+				local droppedTag = Instance.new("StringValue")
+				droppedTag.Name = "DroppedBy"
+				droppedTag.Value = player.Name
+				Messages:send("MakeItem", item, targetPos, droppedTag, player)
+			end
 			Store:dispatch(ReplicateTo(player, SetItemPosition(userId,nil,slot)))
 			saveInventory(player)
 		end
@@ -101,7 +122,9 @@ function PlayerInventories:start()
 		end)
 		Messages:send("OnInventoryUpdated", player)
 	end)
-
+	Messages:hook("UpdatePlayerTargetPosition", function(player, position)
+		playerTargetPositions[player] = position
+	end)
 	Messages:hook("FirstRespawn", function(player)
 		local idol = PlayerData:get(player, "idol")
 		local userId = tostring(player.UserId)

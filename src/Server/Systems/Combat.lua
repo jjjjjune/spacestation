@@ -9,6 +9,7 @@ local LowerHealth = import "Shared/Utils/LowerHealth"
 local CollectionService = game:GetService("CollectionService")
 local PlayerData = import "Shared/PlayerData"
 local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
+local HttpService = game:GetService("HttpService")
 
 local Combat ={}
 
@@ -16,6 +17,7 @@ local stunLockedTable = {}
 local shieldUpTable = {}
 local shieldHitCountTable = {}
 local swingTable = {}
+local alreadyDead = {}
 
 local function getAngleRelativeToPlayer(character, target)
 	local originPart = character.HumanoidRootPart
@@ -124,6 +126,13 @@ local function isBehind(attacker, victim)
 	end
 end
 
+local function isPositionBehind(position, victim)
+	local angle = getAngleRelativeToPlayer(victim, position)
+	if angle > 130 then
+		return true
+	end
+end
+
 local function damageCharacter(character, attackerCharacter, weaponData, part)
 	local blocked = false
 	if shieldUpTable[character] == true and not isBehind(attackerCharacter, character) then
@@ -165,6 +174,12 @@ local function attemptDamage(character, attackerCharacter,weaponData, part)
 	else
 		local attackerPlayer = game.Players:GetPlayerFromCharacter(attackerCharacter)
 		Messages:send("PlayerTriedDamageMonster", attackerPlayer, character, weaponData, part)
+		if character.Humanoid.Health <= 0 then
+			if not alreadyDead[character] then
+				alreadyDead[character] = true
+			end
+			PlayerData:add(attackerPlayer, character.Name.."Killed", 1)
+		end
 	end
 end
 
@@ -188,6 +203,10 @@ end
 local function attemptSwing(character, isLunge)
 	local player = game.Players:GetPlayerFromCharacter(character)
 	local weaponData = getWeaponData(player)
+	if character.Head.Position.Y > 1000 then
+		-- in hell maybe
+		return
+	end
 	if canSwing(character, weaponData.swingSpeed) then
 		swingTable[character] = time()
 		spawn(function() -- using this rn to make up for the fact that i dont have keyframeReached
@@ -196,6 +215,19 @@ local function attemptSwing(character, isLunge)
 			end
 			if not isStunLocked(character) then
 				swing(character, weaponData)
+				local inventory = getInventory(player)
+				local sword = getEquipmentSlot(inventory, "Sword")
+				if sword then
+					local itemModel = character:FindFirstChild(sword)
+					local trail = itemModel and itemModel:FindFirstChild("Trail", true)
+					if trail then
+						trail.Enabled = true
+						spawn(function()
+							wait(.5)
+							trail.Enabled = false
+						end)
+					end
+				end
 			end
 		end)
 	end
@@ -210,7 +242,7 @@ local function executeCharacter(executorPlayer, character)
 				Messages:send("PlayAnimation", executor, "SwingFinal")
 				spawn(function()
 					wait(.45)
-					LowerHealth(character.Humanoid,100, true)
+					LowerHealth(character.Humanoid,1000, true)
 					Messages:send("PlaySound", "Execute", character.Head.Position)
 					character:BreakJoints()
 					PlayerData:add(executorPlayer, "playersExecutedTotal", 1)
@@ -223,6 +255,47 @@ end
 function Combat:start()
 	Messages:hook("DebugStunLock", function(player)
 		stunLock(player.Character)
+	end)
+	Messages:hook("DamageHumanoid", function(humanoid, damage, projectileName)
+		if not shieldUpTable[humanoid.Parent] then
+			print("damaging", damage)
+			LowerHealth(humanoid, damage, true)
+		else
+			local character = humanoid.Parent
+			local blocked = false
+			local hitAmount = shieldHitCountTable[character]
+			shieldHitCountTable[character] = (hitAmount and hitAmount + 1) or 1
+			local player = game.Players:GetPlayerFromCharacter(character)
+			local shieldData = getShieldData(player)
+			if hitAmount >= shieldData.guardLength then
+				Messages:sendClient(player, "GuardBroken")
+				Messages:send("PlayAnimation", character, "GuardBreak")
+				shieldUpTable[character] = false
+				Messages:send("PlaySound", "HitStrong", character.HumanoidRootPart.Position)
+				blocked = false
+			else
+				Messages:send("PlayAnimation", character, "Hit2")
+				Messages:send("PlaySound", "HitSlap", character.HumanoidRootPart.Position)
+				knockback(character, 2, character.HumanoidRootPart.CFrame.lookVector * Vector3.new(1,1,-1))
+				blocked = true
+			end
+			if not blocked then
+				print("did nbot block")
+				LowerHealth(humanoid, damage, true)
+			else
+				print("did block")
+				if projectileName then
+					print("richochet")
+					-- ricochet!!!
+					local id = HttpService:GenerateGUID()
+					local pos = humanoid.RootPart.Position
+					local goal = (humanoid.RootPart.CFrame * CFrame.new(0,30,-200)).p
+					local model = game.ReplicatedStorage.Assets.Items[projectileName]:Clone()
+					local player = game.Players:GetPlayerFromCharacter(character)
+					Messages:send("CreateProjectile", id, pos, goal, model, humanoid.Parent, player)
+				end
+			end
+		end
 	end)
 	Messages:hook("Swing", function(player, isLunge)
 		if CollectionService:HasTag(player.Character, "Ragdolled") then

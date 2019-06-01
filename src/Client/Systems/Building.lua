@@ -80,6 +80,16 @@ local function manageBuildingPlacement()
 	local mouseCF = CFrame.new(pos)
 	mouseCF = mouseCF * CFrame.new(0, buildingPlacingModel.Base.Size.Y/2,0)
 	mouseCF = mouseCF* CFrame.Angles(0, math.rad(rotation),0)
+	local building = mouse.Target and mouse.Target.Parent
+	local objRotation = CFrame.Angles(0,0,0)
+	if building and (CollectionService:HasTag(building, "Building") or CollectionService:HasTag(building, "Schematic") or mouse.Target.Anchored == false) then
+		local x, y, z = mouse.Target.CFrame:ToEulerAnglesXYZ()
+		if building:FindFirstChild("Base") then
+			x, y, z = building.Base.CFrame:ToEulerAnglesXYZ()
+		end
+		objRotation = CFrame.Angles(0, y, 0)
+	end
+	mouseCF = mouseCF * objRotation
 	if mouse.Target and mouse.Target.Name == buildingPlacingModel.Name.."Point" then
 		mouseCF = mouse.Target.CFrame
 	end

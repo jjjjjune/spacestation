@@ -61,9 +61,39 @@ return {
 		"Droolabou Meat",
 		"Droolabou Meat",
 		"Bone",
+		"Hide",
 	},
 	["Iron Rock"] ={
 		"Iron",
 		"Iron",
+	},
+	["Sapphire Rock"] ={
+		"Sapphire",
+	},
+	["Emerald Rock"] ={
+		"Emerald",
+	},
+	["Banana Tree"] ={
+		"Banana",
+		"Banana",
+		"Banana Seed",
+		"Log",
+		"Log",
+		"Log",
+		"Stick",
+	},
+	["Niter Rock"] ={
+		"Niter",
+		"Niter",
+	},
+	["Sulfur Rock"] ={
+		"Sulfur",
+		"Sulfur",
+	},
+	["Cactus"] = {
+		"Cactus Spine",
+		"Cactus Spine",
+		"Cactus Fruit",
+		"Cactus Fruit",
 	}
 }

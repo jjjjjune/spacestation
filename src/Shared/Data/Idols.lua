@@ -44,4 +44,22 @@ return {
 		verb = " stone god sacrifices",
 		description = "MINE ROCKS VERY FAST."
 	},
+	["Mask Of Vampirism"] = {
+		name = "Mask Of Vampirism",
+		startItem = "Bone",
+		stat = "QueenKilled",
+		needed = 200,
+		model = "Mask Of Vampirism",
+		verb = "Jungle Queens Slain",
+		description = "2X DAMAGE AND HEALTH AT NIGHT. .5X DURING THE DAY."
+	},
+	["Mask Of Survival"] = {
+		name = "Mask Of Survival",
+		startItem = "Cooked Droolabou Meat",
+		stat = "ThingsCooked",
+		needed = 500,
+		model = "Mask Of Survival",
+		verb = "Items Cooked",
+		description = "50% HUNGER AND THIRST DECAY."
+	}
 }

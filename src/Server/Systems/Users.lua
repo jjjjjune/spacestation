@@ -116,6 +116,7 @@ local function setClass(character, className)
 	spawn(function()
 		wait(1)
 		character.Humanoid.HeadScale.Value = classAsset.Humanoid.HeadScale.Value - .05
+		character.Humanoid.BodyHeightScale.Value = classAsset.Humanoid.BodyHeightScale.Value - .05
 	end)
 end
 
@@ -123,7 +124,8 @@ local function determineRace(player)
 	local races = {
 		"Brave","Meek","Forgotten",
 	}
-	local rand = math.random(1, #races)
+	local rand = Random.new(player.UserId)
+	rand = rand:NextInteger(1, #races)
 	Data:set(player, "race", races[rand])
 end
 

@@ -78,6 +78,13 @@ data["Sailboat"] = {
 	},
 	water = true,
 }
+data["Longship"] = {
+	recipe = {
+		["Log"] = 1,
+		--["Rope"] = 6,
+	},
+	water = true,
+}
 data["Well"] = {
 	recipe = {
 		["Stone"] = 8,
@@ -87,13 +94,21 @@ data["Well"] = {
 }
 data["Compost Bin"] = {
 	recipe = {
-		["Apple Seed"] = 4,
-		["Hemp Seed"] =4,
-		["Acorn"] = 4,
-		["Green Mushroom"] = 4,
+		["Apple"] = 2,
+		["Acorn"] = 2,
 	},
 }
-
+data["Cannon"] = {
+	recipe = {
+		["Iron Bar"] = 2,
+		["Gunpowder"] =2,
+	}
+}
+data["Tannery"] = {
+	recipe = {
+		["Stone"] = 12,
+	}
+}
 
 for _,  building in pairs(game.ReplicatedStorage.Assets.Buildings:GetChildren()) do
 	if not data[building.Name] then

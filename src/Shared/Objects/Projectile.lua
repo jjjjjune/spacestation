@@ -6,7 +6,32 @@ local speed = 5
 local Projectile = {}
 Projectile.__index = Projectile
 
+function Projectile:anyNearbyPeople(pos)
+	for _, p in pairs(game.Players:GetPlayers()) do
+		local character = p.Character
+		if character then
+
+			local hrp = character:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				local add = true
+				for _, ignore in pairs(self.ignored) do
+					if hrp:IsDescendantOf(ignore) then
+						add = false
+						return
+					end
+				end
+				if (hrp.Position - pos).magnitude < 6 and add then
+					return hrp
+				end
+			end
+		end
+	end
+end
+
 function Projectile:tick(dt)
+	if not self.model:FindFirstChild("Base") then
+		self:destroy()
+	end
 	local r = Ray.new(self.model.Base.Position, self.model.Base.CFrame.lookVector * speed)
 	local hit, pos = workspace:FindPartOnRayWithIgnoreList(r, self.ignored)
 	local t = self.t or 0
@@ -15,10 +40,17 @@ function Projectile:tick(dt)
 	else
 		self.t = self.t + dt
 	end
-	if hit then
+	if hit or self.t > 10 then
+		Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
 		self:destroy()
 	else
-		self.model:SetPrimaryPartCFrame(self.model.PrimaryPart.CFrame * CFrame.new(0,-(t^1.2), -speed))
+		local hit= self:anyNearbyPeople(pos)
+		if hit then
+			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
+			self:destroy()
+		else
+			self.model:SetPrimaryPartCFrame(self.model.PrimaryPart.CFrame * CFrame.new(0,-(t^1.2), -speed))
+		end
 	end
 end
 
@@ -28,8 +60,8 @@ function Projectile:destroy()
 	else
 		self.destroyed = true
 	end
+	Messages:send("RemoveProjectile", self.id, self.model.Base.Position)
 	self.model:Destroy()
-	Messages:send("RemoveProjectile", self.id)
 end
 
 function Projectile:spawn(pos, goal, model)
@@ -37,6 +69,8 @@ function Projectile:spawn(pos, goal, model)
 	self.model.Parent = workspace
 	self.model.PrimaryPart = self.model.Base
 	self.model:SetPrimaryPartCFrame(CFrame.new(pos, goal))
+	local trail = self.model:FindFirstChild("Trail", true)
+	if trail then trail.Enabled = true end
 	for _, p in pairs(self.model:GetChildren()) do
 		if p:IsA("BasePart") then
 			p.Anchored = true

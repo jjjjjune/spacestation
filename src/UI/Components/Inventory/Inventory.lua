@@ -9,6 +9,7 @@ local RemoveItem = import "Shared/Actions/Inventories/RemoveItem"
 local SetItemPosition = import "Shared/Actions/Inventories/SetItemPosition"
 local Messages = import "Shared/Utils/Messages"
 local StyleConstants = import "Shared/Data/StyleConstants"
+local GetInventorySize = import "Shared/Utils/GetInventorySize"
 
 local Inventory = Roact.PureComponent:extend("Inventory")
 
@@ -25,15 +26,31 @@ local function isPointWithinBox(point, box)
     return (x >= left.X and x <= right.X) and (y >= left.Y and y <= right.Y)
 end
 
+function Inventory:getGridSizeX()
+	local containerInstance = self.itemFrameRef.current
+	if containerInstance then
+		local padding = 24
+		local inventorySize = GetInventorySize(game.Players.LocalPlayer)
+		local maxPerRow = math.max(4, math.ceil(math.sqrt(inventorySize)))
+		local absSize = containerInstance.AbsoluteSize
+		local gridCellSize = (math.floor(absSize.X/maxPerRow)) - padding
+		return gridCellSize, maxPerRow
+	else
+		return 40, 4
+	end
+end
+
 function Inventory:init(props)
 	self.frameRef = Roact.createRef()
 	self.dragHolderRef = Roact.createRef()
+	self.itemFrameRef = Roact.createRef()
+	self.maxFillCells = 4
 	self.refsTable = {}
 	self.swordShieldSlots = {}
 	self.itemSlots = {}
 	self.craftSlots = {}
 	self.viewportSizeListener = currentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-		self.gridSizeX = (currentCamera.ViewportSize.X * .2)/5
+		self.gridSizeX, self.maxFillCells = self:getGridSizeX()
 		self:setState({})
 	end)
 	self.dragInstance = nil
@@ -61,17 +78,17 @@ function Inventory:populateRefsTable()
 	end
 end
 
-function Inventory:getGrid(slots, fillDirection, verticalAlignment)
+function Inventory:getGrid(slots, fillDirection, verticalAlignment, size)
 	local gridItems = slots
-	self.gridSizeX = (currentCamera.ViewportSize.X * .2)/5
+	self.gridSizeX, self.maxFillCells = self:getGridSizeX()
 	gridItems["layout"] = Roact.createElement("UIGridLayout", {
 		VerticalAlignment = verticalAlignment or "Center",
 		HorizontalAlignment = "Center",
-		CellSize = UDim2.new(0,self.gridSizeX,0,self.gridSizeX),
+		CellSize = size or UDim2.new(0,self.gridSizeX,0,self.gridSizeX),
 		CellPadding = UDim2.new(0,12,0,12),
 		FillDirection = fillDirection,
 		SortOrder = "LayoutOrder",
-		FillDirectionMaxCells = 4,
+		FillDirectionMaxCells = self.maxFillCells,
 	})
 	gridItems["padding"] = Roact.createElement("UIPadding",{
 		PaddingLeft = UDim.new(0,6),
@@ -86,9 +103,12 @@ function Inventory:updateGridItems()
 	local props = self.props
 	local userId = tostring(game.Players.LocalPlayer.UserId)
 	local inventory = props.inventories[userId]
-	local inventorySize = 16
+	local inventorySize = GetInventorySize(game.Players.LocalPlayer)
 	local activatedCallback = function(ref,inventoryIndex)
 		local instance = ref.current:Clone()
+		instance.BG.BackgroundTransparency =1
+		instance.BackgroundTransparency = 1
+		instance.ItemLabel:Destroy()
 		self.dragSizeX = self.gridSizeX
 		self.dragInstance = instance
 		if not lastClickedTable[inventoryIndex] then
@@ -156,7 +176,7 @@ function Inventory:connectEvents()
 			local sizeX = self.dragSizeX
 			self.dragInstance.Parent = self.dragHolderRef.current
 			self.dragInstance.Size = UDim2.new(0,sizeX,0,sizeX)
-			self.dragInstance.Position = UDim2.new(0,mouseX,0,mouseY)
+			self.dragInstance.Position = UDim2.new(0,mouseX - self.dragInstance.AbsoluteSize.X/2,0,mouseY- self.dragInstance.AbsoluteSize.Y/2)
 		end
 		local position = Vector2.new(game.Players.LocalPlayer:GetMouse().X,game.Players.LocalPlayer:GetMouse().Y)
 		for i, ref in pairs(self.refsTable) do
@@ -244,12 +264,13 @@ function Inventory:render()
 				Size = UDim2.new(1,0,.2,0),
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
-			}, self:getGrid(self.swordShieldSlots, "Horizontal", "Center")),
+			}, self:getGrid(self.swordShieldSlots, "Horizontal", "Center", UDim2.new(.2,0,.65,0))),
 			ItemsFrame = Roact.createElement("Frame", {
 				Size = UDim2.new(1,0,.6,0),
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
 				Position = UDim2.new(0, 0,.2,0),
+				[Roact.Ref] = self.itemFrameRef,
 			},self:getGrid(self.itemSlots, "Horizontal", "Center")),
 			CraftButton = Roact.createElement("ImageButton", {
 				AnchorPoint = Vector2.new(0,.5),
@@ -269,7 +290,7 @@ function Inventory:render()
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
 				Position = UDim2.new(0, 0,.8,0),
-			},self:getGrid(self.craftSlots, "Horizontal", "Center")),
+			},self:getGrid(self.craftSlots, "Horizontal", "Center", UDim2.new(.2,0,.65,0))),
 			Shadow = Roact.createElement("Frame", {
 				Size = UDim2.new(1,0,0,4),
 				BorderSizePixel = 0,

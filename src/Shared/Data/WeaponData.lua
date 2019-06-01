@@ -104,7 +104,15 @@ local weapons = {
 		swingSpeed = .6,
 		wieldSpeedModifier = 2,
 		guardDamage = 1,
-		damage = 12
+		damage = 18
+	},
+	["Bone Axe"] = {
+		chopPower = 4,
+		comboLength = 5,
+		swingSpeed = .6,
+		wieldSpeedModifier = 2,
+		guardDamage = 1,
+		damage = 16
 	},
 	Pickaxe = {
 		minePower = 2.5,
@@ -120,7 +128,15 @@ local weapons = {
 		swingSpeed = .6,
 		wieldSpeedModifier = 2,
 		guardDamage = 1,
-		damage = 14
+		damage = 18
+	},
+	["Bone Pickaxe"] = {
+		minePower = 4,
+		comboLength = 4,
+		swingSpeed = .6,
+		wieldSpeedModifier = 2,
+		guardDamage = 1,
+		damage = 16
 	},
 	Badsword = {
 		comboLength = 3,
@@ -140,6 +156,15 @@ local weapons = {
 		damage = 27,
 		range = 8.5,
 	},
+	["Bone Sword"] = {
+		comboLength = 4,
+		swingSpeed = .5,
+		postComboSwingSpeed = 1,
+		wieldSpeedModifier = -1,
+		angle = 90,
+		damage = 22,
+		range = 8.5,
+	},
 	Hammer = {
 		comboLength = 3,
 		swingSpeed = .6,
@@ -157,6 +182,54 @@ local weapons = {
 		angle = 95,
 		damage = 28,
 		range = 8.25,
+	},
+	["Bone Hammer"] = {
+		comboLength = 4,
+		swingSpeed = .6,
+		postComboSwingSpeed = 1.1,
+		wieldSpeedModifier = -1,
+		angle = 95,
+		damage = 22,
+		range = 8,
+	},
+	["Spear"] = {
+		comboLength = 2,
+		swingSpeed = .8,
+		postComboSwingSpeed = 1,
+		wieldSpeedModifier = 3,
+		angle = 95,
+		damage = 14,
+		range = 10,
+	},
+	["Stone Spear"] = {
+		comboLength = 2,
+		swingSpeed = .8,
+		postComboSwingSpeed = 1,
+		wieldSpeedModifier = 3,
+		angle = 95,
+		damage = 18,
+		range = 10,
+	},
+	["Bone Spear"] = {
+		comboLength = 2,
+		swingSpeed = .8,
+		postComboSwingSpeed = 1,
+		wieldSpeedModifier = 3,
+		angle = 95,
+		damage = 22,
+		range = 10,
+	},
+	["Iron Spear"] = {
+		comboLength = 2,
+		swingSpeed = .8,
+		postComboSwingSpeed = 1,
+		wieldSpeedModifier = 3,
+		angle = 95,
+		damage = 28,
+		range = 10,
+	},
+	["Running Stone"] = {
+		wieldSpeedModifier = 20
 	},
 	Default = defaults,
 }

@@ -171,8 +171,14 @@ local function startLoops()
 					local userId = tostring(player.UserId)
 					local state = Store:getState()
 					local myHunger = state.playerStats[userId].hunger
-					Store:dispatch(ReplicateTo(player, SetHunger(userId, math.max(0,myHunger - 1))))
-					Data:set(player, "hunger", myHunger-1)
+					local lowerAmount = 1
+					local modifier = 1
+					local mask = Data:get(player, "idol")
+					if mask == "Mask Of Survival" then
+						modifier = .5
+					end
+					Store:dispatch(ReplicateTo(player, SetHunger(userId, math.max(0,myHunger - (lowerAmount*modifier)))))
+					Data:set(player, "hunger", myHunger-(lowerAmount*modifier))
 					if myHunger <= 0 and player.Character then
 						character.Humanoid:TakeDamage(Constants.HUNGER_DAMAGE)
 					else
@@ -195,8 +201,14 @@ local function startLoops()
 				local state = Store:getState()
 				if state.playerStats[userId] then
 					local myThirst = state.playerStats[userId].thirst
-					Store:dispatch(ReplicateTo(player, SetThirst(userId, math.max(0,myThirst - 1))))
-					Data:set(player, "thirst", myThirst-1)
+					local lowerAmount = 1
+					local modifier = 1
+					local mask = Data:get(player, "idol")
+					if mask == "Mask Of Survival" then
+						modifier = .5
+					end
+					Store:dispatch(ReplicateTo(player, SetThirst(userId, math.max(0,myThirst - (lowerAmount*modifier)))))
+					Data:set(player, "thirst", myThirst-(lowerAmount*modifier))
 					if myThirst <= 0 and player.Character then
 						player.Character.Humanoid:TakeDamage(Constants.THIRST_DAMAGE)
 					else

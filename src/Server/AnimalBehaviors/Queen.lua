@@ -131,7 +131,7 @@ function Queen:eat(model)
 			end)
 			local player = game.Players:GetPlayerFromCharacter(model)
 			if player then
-				Data:set(player, "lastHit", time())
+				Data:set(player, "lastHit", time() - 60)
 			end
 		end
 		wait(EAT_TIME)
@@ -244,6 +244,10 @@ function Queen:onDied()
 	for _, itemName in pairs(drops) do
 		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
 		Messages:send("MakeItem", itemName, pos)
+	end
+	if math.random(1, 10) == 1 then
+		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
+		Messages:send("MakeItem", "Jungle Queen Egg", pos)
 	end
 end
 
