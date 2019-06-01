@@ -119,6 +119,8 @@ return {
 		local alreadyHit = {}
 		exp.Position = pos
 		exp.DestroyJointRadiusPercent = 0
+		exp.BlastPressure = 0
+		exp.BlastRadius = 10
 		exp.Hit:connect(function(hit)
 			local hum = hit.Parent:FindFirstChild("Humanoid")
 			if hum then
@@ -129,6 +131,24 @@ return {
 			end
 		end)
 		Messages:send("PlaySound", "Explosion", pos)
+		return true
+	end,
+	["Fireball"] = function(hit, owner, pos, projectileName)
+		Messages:send("PlayParticle", "CookSmoke", 15, pos)
+		Messages:send("PlayParticle", "Sparks", 15, pos)
+		if hit.Parent:FindFirstChild("Humanoid") then
+			local mod = 1
+			if owner then
+				mod = GetProjectileDamageModifier(owner)
+			end
+			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 100*mod, projectileName)
+			for _, p in pairs(hit.Parent:GetChildren()) do
+				if p:IsA("BasePart") then
+					p.BrickColor = BrickColor.new("Black")
+				end
+			end
+		end
+		Messages:send("PlaySound", "Smoke", pos)
 		return true
 	end,
 }

@@ -1,32 +1,32 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 
-local speed = 5
+local speed = 4
 
 local Projectile = {}
 Projectile.__index = Projectile
 
-function Projectile:anyNearbyPeople(pos)
-	for _, p in pairs(game.Players:GetPlayers()) do
-		local character = p.Character
-		if character then
-
-			local hrp = character:FindFirstChild("HumanoidRootPart")
-			if hrp then
-				local add = true
-				for _, ignore in pairs(self.ignored) do
-					if hrp:IsDescendantOf(ignore) then
-						add = false
-						return
-					end
+function Projectile:anyNearbyPeople(start, range)
+	local vec1 = (start + Vector3.new(-range,-(range),-range))
+	local vec2 = (start + Vector3.new(range,(range),range))
+	local region = Region3.new(vec1, vec2)
+	local parts = workspace:FindPartsInRegion3(region,nil, 10000)
+	for _, part in pairs(parts) do
+		local humanoid = part.Parent:FindFirstChild("Humanoid")
+		if humanoid then
+			local canReturn = true
+			for _, ignore in pairs(self.ignored) do
+				if part:IsDescendantOf(ignore) then
+					canReturn = false
 				end
-				if (hrp.Position - pos).magnitude < 6 and add then
-					return hrp
-				end
+			end
+			if canReturn then
+				return part
 			end
 		end
 	end
 end
+
 
 function Projectile:tick(dt)
 	if not self.model:FindFirstChild("Base") then
@@ -41,10 +41,12 @@ function Projectile:tick(dt)
 		self.t = self.t + dt
 	end
 	if hit or self.t > 10 then
-		Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
+		if hit then
+			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
+		end
 		self:destroy()
 	else
-		local hit= self:anyNearbyPeople(pos)
+		local hit= self:anyNearbyPeople(pos, speed)
 		if hit then
 			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
 			self:destroy()

@@ -31,7 +31,9 @@ function ServerProjectiles:start()
 	Messages:hook("CreateProjectile", function(id, pos, goal, model, ignore, owner)
 		local testProjectile = Projectile.new(id)
 		testProjectile:ignore(ignore)
-		testProjectile:ignore(owner.Character)
+		if owner then
+			testProjectile:ignore(owner.Character)
+		end
 		testProjectile:spawn(pos, goal, model)
 		testProjectile.model.Parent = game.ServerStorage
 		testProjectile.owner = owner

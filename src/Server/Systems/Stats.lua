@@ -53,20 +53,28 @@ local function makeRagdoll(character)
 	if player then
 		releaseCarried(player)
 	end
-	for _, part in pairs(character:GetChildren()) do
-		if part:IsA("BasePart") then
-			PhysicsService:SetPartCollisionGroup(part, "RagdollGroup")
-			if part.Name ~= "HumanoidRootPart" then
-				part.Massless = true
-			end
-			part.CanCollide = true
-			if character:FindFirstChild("CarrierValue") then
-				part:SetNetworkOwner(game.Players:GetPlayerFromCharacter(character.CarrierValue.Value))
+	if isBeingCarried(character) then
+		for _, part in pairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				PhysicsService:SetPartCollisionGroup(part, "RagdollGroup")
+				if part.Name ~= "HumanoidRootPart" then
+					part.Massless = true
+				end
+				part.CanCollide = true
+				if character:FindFirstChild("CarrierValue") then
+					part:SetNetworkOwner(game.Players:GetPlayerFromCharacter(character.CarrierValue.Value))
+				end
 			end
 		end
-	end
-	if isBeingCarried(character) then
 		Data:set(player, "lastHit", tick())
+	else
+		for _, part in pairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				if part.Name ~= "HumanoidRootPart" then
+					part.Massless = false
+				end
+			end
+		end
 	end
 	if (not playingAnims[character]) and (isBeingCarried(character)) then
 		spawn(function() Messages:send("PlayAnimation", character, "KickingLegs") end)

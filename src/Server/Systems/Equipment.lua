@@ -41,6 +41,7 @@ local function equip(player, item, data)
 	if trail then
 		trail.Enabled = false
 	end
+	itemModel.Base:SetNetworkOwner(player)
 	local weld = Instance.new("WeldConstraint",itemModel.Base)
 	weld.Part0 = itemModel.Base
 	weld.Part1 = character[data.attach]

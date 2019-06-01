@@ -7,12 +7,14 @@ local GetNearestTagToPosition = import "Shared/Utils/GetNearestTagToPosition"
 local LowerHealth = import "Shared/Utils/LowerHealth"
 local Drops = import "Shared/Data/Drops"
 local GetPlayerDamage = import "Shared/Utils/GetPlayerDamage"
+local HttpService = game:GetService("HttpService")
 
 local FOOD_FIND_DISTANCE =  60
 local EAT_DISTANCE = 7
-local RUN_RADIUS = 70
+local RUN_RADIUS = 120
 local FOOD = "Cactus Fruit"
 local DEFAULT_WALKSPEED = 8
+local TAIL_SLAM_RANGE = 30
 
 --[[
 	makes fireball and produces 1x coal when it eats something
@@ -129,9 +131,111 @@ function Dragon:idle()
 	end
 end
 
+local function getEnemies(character, start, range, angle)
+	local enemies = {}
+	local inserted = {}
+	local vec1 = (start + Vector3.new(-range,-(range),-range))
+	local vec2 = (start + Vector3.new(range,(range),range))
+	local region = Region3.new(vec1, vec2)
+	local parts = workspace:FindPartsInRegion3(region,nil, 10000)
+	for _, part in pairs(parts) do
+		local humanoid = part.Parent:FindFirstChild("Humanoid")
+		if humanoid and (humanoid ~= character.Humanoid) then
+			if not inserted[humanoid] then
+				table.insert(enemies, {humanoid = humanoid, part = part})
+				inserted[humanoid] = true
+			end
+		end
+	end
+	return enemies
+end
+
 function Dragon:findHuman()
 	local character = GetNearestTagToPosition("Character", self.model.PrimaryPart.Position, RUN_RADIUS)
 	return character
+end
+
+function Dragon:damagePlayersNear(pos)
+	local enemies = getEnemies(self.model, pos, 7, 1000)
+	for _, enemy in pairs(enemies) do
+		local character = enemy.humanoid.Parent
+		local wasRagdolled = CollectionService:HasTag(character, "Ragdolled")
+		if not wasRagdolled then
+			--Messages:send("RagdollCharacter", character, 1.5)
+		end
+		enemy.humanoid:TakeDamage(40)
+		Messages:send("PlayParticle", "Sparks", 5, enemy.part.Position)
+	end
+end
+
+function Dragon:tailSlam(character)
+	spawn(function()
+		-- checks for nearby characters, slams tail down if there's a target within range
+		-- next approach might just be me making an animation that turns the whole ass boy around
+		local walkTime = 4
+		local frames = 20
+		for _ = 1, frames do
+			wait(walkTime/frames)
+			local pos= (character.HumanoidRootPart.CFrame).p
+			self:walkTo(pos)
+			local flatVec = Vector3.new(1,0,1)
+			if (character.Head.Position*flatVec - self.model.TailSegment3.Position*flatVec).magnitude < 12 then
+				break
+			end
+		end
+		Messages:send("PlayAnimation", self.model, "DragonTailSlap")
+		spawn(function()
+			wait(.2)
+			Messages:send("PlaySound", "HitSlap2", self.model.TailSegment3.Position)
+			self:damagePlayersNear(self.model.TailSegment3.Position)
+			self.attackGoing = false
+			wait(1)
+
+		end)
+	end)
+end
+
+function Dragon:fireball(character)
+	spawn(function()
+		self.model.Humanoid.WalkSpeed = 1
+
+		local chargeTime = 2
+		local frames = 20
+		for _, p in pairs(self.model.FireballCharge.Attachment:GetChildren()) do
+			if p:IsA("ParticleEmitter") then
+				p.Enabled = true
+			end
+		end
+
+		self.model.FireballCharge.Transparency = 0
+		Messages:send("PlayAnimation", self.model, "DragonMouthOpen")
+
+		for _ = 1, frames do
+			wait(chargeTime/frames)
+			local pos= (character.HumanoidRootPart.CFrame).p
+			self.model.FireballCharge.Mesh.Scale = self.model.FireballCharge.Mesh.Scale + Vector3.new(.1,.1,.1)
+			self:walkTo(pos)
+		end
+
+		local id = HttpService:GenerateGUID()
+		local pos= (character.HumanoidRootPart.CFrame).p
+		local cannonball = game.ReplicatedStorage.Assets.Items["Fireball"]
+		Messages:send("CreateProjectile", id, self.model.FireballCharge.Position, pos, cannonball, self.model)
+		Messages:send("PlaySound", "Cannonfire", self.model.HumanoidRootPart.Position)
+
+		for _, p in pairs(self.model.FireballCharge.Attachment:GetChildren()) do
+			if p:IsA("ParticleEmitter") then
+				p.Enabled = false
+			end
+		end
+
+		Messages:send("StopAnimation", self.model, "DragonMouthOpen")
+
+		self.model.FireballCharge.Mesh.Scale = Vector3.new(.5,.5,.5)
+		self.attackGoing = false
+		self.model.FireballCharge.Transparency = 1
+		self.model.Humanoid.WalkSpeed = DEFAULT_WALKSPEED
+	end)
 end
 
 function Dragon:attack(character)
@@ -142,9 +246,25 @@ function Dragon:attack(character)
 		self.phase = 1
 	end
 	self:walkTo(character.Head.Position)
+	if self.phase < 3 then
+		Messages:send("PlayAnimation", self.model, "DragonTurnaround")
+		--if (character.Head.Position - self.model.HumanoidRootPart.Position).magnitude < TAIL_SLAM_RANGE then
+		self.attackGoing = true
+		self:tailSlam(character)
+		self.phase = self.phase + 1
+		--end
+	else
+		Messages:send("StopAnimation", self.model, "DragonTurnaround")
+		self.attackGoing = true
+		self:fireball(character)
+		self.phase = 1
+	end
 end
 
 function Dragon:step()
+	if self.dead then
+		return
+	end
 	if not self:findFood(FOOD) then
 		if not self.eating then
 			local character = self:findHuman()
@@ -155,13 +275,15 @@ function Dragon:step()
 					Messages:send("PlayAnimation", self.model, "DragonTailRaised")
 				end
 			else
+				Messages:send("StopAnimation", self.model, "DragonTurnaround")
 				if self.attacking then
 					self.attacking = false
 					Messages:send("StopAnimation", self.model, "DragonTailRaised")
 				end
+				self:idle()
 			end
-			self:idle()
 		else
+			Messages:send("StopAnimation", self.model, "DragonTurnaround")
 			if self.attacking then
 				self.attacking = false
 				Messages:send("StopAnimation", self.model, "DragonTailRaised")
@@ -172,6 +294,7 @@ function Dragon:step()
 			self.attacking = false
 			Messages:send("StopAnimation", self.model, "DragonTailRaised")
 		end
+		self:idle()
 	end
 end
 

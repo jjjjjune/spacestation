@@ -116,9 +116,11 @@ local function isInStorage(item)
 			end
 		end
 	end
-	for _, v in pairs(item.Base:GetConnectedParts()) do -- if an item is connected to an animal or player, it will no longer despawn
-		if v.Parent ~= item then
-			return true
+	if item:FindFirstChild("Base") and item.Base.Anchored == false then
+		for _, v in pairs(item.Base:GetConnectedParts()) do -- if an item is connected to an animal or player, it will no longer despawn
+			if v.Parent ~= item then
+				return true
+			end
 		end
 	end
 	return false
