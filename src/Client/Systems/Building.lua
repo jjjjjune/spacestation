@@ -63,6 +63,11 @@ local function manageBuildingPlacement()
 	if not buildingPlacingModel then
 		buildingPlacingModel = import("Assets/Buildings/"..buildingPlacing):Clone()
 		buildingPlacingModel.PrimaryPart = buildingPlacingModel.Base
+		for _, v in pairs(buildingPlacingModel:GetDescendants()) do
+			if v:IsA("ParticleEmitter") or v:IsA("PointLight") then
+				v:Destroy()
+			end
+		end
 	end
 	buildingPlacingModel.Parent = workspace
 	setProperty(buildingPlacingModel, "Anchored", true)

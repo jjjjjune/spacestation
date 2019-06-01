@@ -161,7 +161,7 @@ local function damageCharacter(character, attackerCharacter, weaponData, part)
 		shieldHitCountTable[character] = 0
 		Messages:send("PlayParticle", "Shine", 1, part.Position)
 		local victim = game.Players:GetPlayerFromCharacter(character)
-		PlayerData:set(victim, "lastHit", time())
+		PlayerData:set(victim, "lastHit", tick())
 	else
 		Messages:send("PlayParticle", "Sparks",20,part.Position)
 	end

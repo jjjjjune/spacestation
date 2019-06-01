@@ -34,7 +34,7 @@ end
 function DangerIndicator:didUpdate()
 	local lastHit = _G.Data and  _G.Data.lastHit
 	if lastHit then
-		if time() - lastHit < WorldConstants.COMBAT_LOG_TIME then
+		if tick() - lastHit < WorldConstants.COMBAT_LOG_TIME then
 			self.visible = true
 		else
 			self.visible = false

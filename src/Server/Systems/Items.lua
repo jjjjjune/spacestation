@@ -27,7 +27,7 @@ local function getItemData(player, slot)
 	local inventory = getInventory(player)
 	local item = inventory[slot]
 	if not item then
-		error"no item found"
+		--error"no item found"
 	end
 	return ItemData[item] or ItemData["Default"]
 end
@@ -69,7 +69,7 @@ local function useConsumable(player, consumableData)
 		CollectionService:AddTag(player.Character, "Poisoned")
 		local bubble = import("Assets/Particles/Poison"):Clone()
 		bubble.Parent = player.Character.Head
-		PlayerData:set(player, "lastHit", time())
+		PlayerData:set(player, "lastHit", tick())
 		spawn(function()
 			wait(consumableData.poisonLength)
 			CollectionService:RemoveTag(player.Character, "Poisoned")
@@ -114,6 +114,11 @@ local function isInStorage(item)
 			if part.Parent == item then
 				return true
 			end
+		end
+	end
+	for _, v in pairs(item.Base:GetConnectedParts()) do -- if an item is connected to an animal or player, it will no longer despawn
+		if v.Parent ~= item then
+			return true
 		end
 	end
 	return false

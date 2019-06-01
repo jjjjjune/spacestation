@@ -9,13 +9,13 @@ data["Raft"] = {
 }
 data["Stone Wall"] = {
 	recipe = {
-		["Log"] = 2,
-		["Stone"] = 4,
+		["Log"] = 1,
+		["Stone"] = 2,
 	},
 }
 data["Wood Wall"] = {
 	recipe = {
-		["Log"] = 4,
+		["Log"] = 2,
 	},
 }
 data["Small Storage"] = {
@@ -96,6 +96,8 @@ data["Compost Bin"] = {
 	recipe = {
 		["Apple"] = 2,
 		["Acorn"] = 2,
+		["Hemp Seed"] = 2,
+		["Cactus Fruit"] = 1,
 	},
 }
 data["Cannon"] = {

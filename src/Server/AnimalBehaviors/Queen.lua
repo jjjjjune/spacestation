@@ -131,7 +131,7 @@ function Queen:eat(model)
 			end)
 			local player = game.Players:GetPlayerFromCharacter(model)
 			if player then
-				Data:set(player, "lastHit", time() - 60)
+				Data:set(player, "lastHit", tick() - 60)
 			end
 		end
 		wait(EAT_TIME)

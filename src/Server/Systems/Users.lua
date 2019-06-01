@@ -180,7 +180,7 @@ function Users:start()
 
 	Messages:hook("PlayerIsRemoving",function(player)
 		local lastHit = Data:get(player, "lastHit")
-		if lastHit and time() - lastHit < WorldConstants.COMBAT_LOG_TIME then
+		if lastHit and tick() - lastHit < WorldConstants.COMBAT_LOG_TIME then
 			Messages:send("PlayerDied", player)
 		end
 		Messages:send("DeathCheckDone", player)

@@ -66,7 +66,7 @@ local function makeRagdoll(character)
 		end
 	end
 	if isBeingCarried(character) then
-		Data:set(player, "lastHit", time())
+		Data:set(player, "lastHit", tick())
 	end
 	if (not playingAnims[character]) and (isBeingCarried(character)) then
 		spawn(function() Messages:send("PlayAnimation", character, "KickingLegs") end)
@@ -187,7 +187,7 @@ local function startLoops()
 						end
 					end
 					if CollectionService:HasTag(character, "Poisoned") then
-						Data:set(player, "lastHit", time())
+						Data:set(player, "lastHit", tick())
 						LowerHealth(character.Humanoid, Constants.POISON_DAMAGE, true)
 					end
 				end

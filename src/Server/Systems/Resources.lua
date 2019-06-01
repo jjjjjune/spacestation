@@ -179,15 +179,31 @@ function Plants:start()
 		end
 	end)
 	Messages:hook("GrowPlantsNear", function(position, n)
+		local total = 0
 		for i, plantTable in pairs(plantsCache) do
 			if (plantTable.model.Base.Position - position).magnitude < 12 then
-				plantTable.phase = math.min(3, plantTable.phase + n)
-				local newModel = import("Assets/Plants/"..plantTable.type..("/"..plantTable.phase)):Clone()
+				if total > 5 then
+					return
+				end
+				total = total+ 1
+				local newModel = plantTable.model
+				if plantTable.phase < 3 then
+					plantTable.phase = math.min(3, plantTable.phase + n)
+					newModel = import("Assets/Plants/"..plantTable.type..("/"..plantTable.phase)):Clone()
+				else
+					if not plantTable.age then
+						plantTable.age = 0
+					else
+						plantTable.age = plantTable.age + 1
+					end
+				end
 				newModel.Parent = workspace
 				newModel.PrimaryPart = newModel.Base
 				newModel:SetPrimaryPartCFrame(plantTable.model.Base.CFrame)
-				plantTable.model:Destroy()
-				plantTable.model = newModel
+				if newModel ~= plantTable.model then
+					plantTable.model:Destroy()
+					plantTable.model = newModel
+				end
 				if plantTable.phase >= 3 then
 					CollectionService:AddTag(newModel, "Finished")
 					maturedPlantTick(newModel, plantTable)
@@ -198,6 +214,10 @@ function Plants:start()
 				end
 				Messages:send("PlaySound", "Flowers", newModel.Base.Position)
 				Messages:send("PlayParticle","CookSmoke", 15, newModel.Base.Position)
+				if plantTable.age and plantTable.age > 4 then
+					newModel:Destroy()
+					table.remove(plantsCache,i)
+				end
 			end
 		end
 	end)

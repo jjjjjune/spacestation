@@ -11,6 +11,7 @@ return {
 		["Hemp Seed"]= 1,
 		["Hemp"] = 1,
 		["Skull"] =10,
+		["Cactus Fruit"] = 3,
 	},
 	["Stone God"] = {
 		["Stone"] = 1,

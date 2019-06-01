@@ -21,6 +21,9 @@ local tags = {
 	},
 	["Cactus"] = {
 		"Cactus"
+	},
+	["Dragon"] = {
+		"Dragon"
 	}
 }
 
@@ -94,6 +97,8 @@ function Animals:start()
 				if rp then
 					local yPos = animal:GetModelCFrame().p.Y - animal:GetModelSize().Y/2
 					if yPos < (WorldConstants.WATER_LEVEL) then
+						rp.Parent.Humanoid:TakeDamage(5)
+					elseif yPos > 2000 then
 						rp.Parent.Humanoid:TakeDamage(5)
 					else
 						rp.Parent.Humanoid.Health = rp.Parent.Humanoid.Health + .25
