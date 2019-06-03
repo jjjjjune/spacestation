@@ -1,3 +1,4 @@
 return {
-	["Leather Pack"] = 4,
+	["Leather Pack"] = 3,
+	["Dragonhide Pack"] = 6,
 }

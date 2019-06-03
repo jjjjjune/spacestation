@@ -62,7 +62,9 @@ local Animals = {}
 function Animals:start()
 	for tagName, scripts in pairs(tags) do
 		for i, model in pairs(CollectionService:GetTagged(tagName)) do
-			setupMonster(model, scripts)
+			if model:IsDescendantOf(workspace) then
+				setupMonster(model, scripts)
+			end
 		end
 	end
 
@@ -72,7 +74,7 @@ function Animals:start()
 		local monster = model
 		for _, scriptName in pairs(scripts) do
 			monster.Parent = workspace
-			monster:MoveTo(position)
+			monster.HumanoidRootPart.CFrame = CFrame.new(position)
 			local behavior = import("Server/AnimalBehaviors/"..scriptName).new(monster)
 			behavior:init()
 			behavior:onSpawn()

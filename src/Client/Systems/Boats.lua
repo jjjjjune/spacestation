@@ -17,7 +17,7 @@ local function steerBoat(boat, seat)
 end
 
 function Boats:start()
-	CollectionService:GetInstanceAddedSignal("Building"):connect(function(boat)
+	--[[CollectionService:GetInstanceAddedSignal("Building"):connect(function(boat)
 		wait()
 		if CollectionService:HasTag(boat, "Boat") then
 			boat:WaitForChild("VehicleSeat")
@@ -49,7 +49,7 @@ function Boats:start()
 		if myBoat then
 			steerBoat(myBoat, myBoat.VehicleSeat)
 		end
-	end)
+	end)--]]
 end
 
 return Boats

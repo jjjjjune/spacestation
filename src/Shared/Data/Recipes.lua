@@ -159,10 +159,24 @@ return {
 		}
 	},
 	{
+		name = "Bone Axe",
+		makes = {"Bone Axe"},
+		recipe = {
+			"Handle", "Bone Blade"
+		}
+	},
+	{
 		name = "Rope",
 		makes = {"Rope"},
 		recipe = {
 			"Hemp", "Hemp"
+		}
+	},
+	{
+		name = "Rope Alt",
+		makes = {"Rope"},
+		recipe = {
+			"Reed", "Reed"
 		}
 	},
 	{
@@ -239,6 +253,24 @@ return {
 			"Tanned Leather",
 			"Tanned Leather",
 			"Tanned Leather",
+		}
+	},
+	{
+		name = "Baloon",
+		makes = {"Baloon"},
+		recipe = {
+			"Tanned Dragonhide",
+			"Tanned Dragonhide",
+		}
+	},
+	{
+		name = "Dragonhide Pack",
+		makes = {"Dragonhide Pack"},
+		recipe = {
+			"Tanned Dragonhide",
+			"Tanned Dragonhide",
+			"Tanned Dragonhide",
+			"Tanned Dragonhide",
 		}
 	},
 }

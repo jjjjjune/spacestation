@@ -69,7 +69,7 @@ local function useConsumable(player, consumableData)
 		CollectionService:AddTag(player.Character, "Poisoned")
 		local bubble = import("Assets/Particles/Poison"):Clone()
 		bubble.Parent = player.Character.Head
-		PlayerData:set(player, "lastHit", tick())
+		PlayerData:set(player, "lastHit", os.time())
 		spawn(function()
 			wait(consumableData.poisonLength)
 			CollectionService:RemoveTag(player.Character, "Poisoned")
@@ -160,7 +160,7 @@ local function checkWeld(building)
 				setProperty(building, "Anchored", true)
 				setProperty(building, "CanCollide", false)
 				for _, p in pairs(building:GetChildren()) do
-					if p.Name ~= "Base" and p:IsA("BasePart") then
+					if p.Name ~= "Base" and p:IsA("BasePart") and p.Name ~= "noweld" then
 						local w = Instance.new("WeldConstraint", p)
 						w.Part0 = p
 						w.Part1 = building.Base

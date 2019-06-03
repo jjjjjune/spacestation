@@ -45,6 +45,7 @@ exports.reducer = CreateReducer({}, {
 		})
 	end,
 	SetMaxHealth = function(state, action)
+		
 		return Immutable.join(state, {
 			[action.userId] = Immutable.join(state[action.userId], {
 				maxHealth = action.maxHealth,

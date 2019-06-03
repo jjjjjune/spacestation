@@ -62,11 +62,11 @@ local function makeRagdoll(character)
 				end
 				part.CanCollide = true
 				if character:FindFirstChild("CarrierValue") then
-					part:SetNetworkOwner(game.Players:GetPlayerFromCharacter(character.CarrierValue.Value))
+					pcall(function() part:SetNetworkOwner(game.Players:GetPlayerFromCharacter(character.CarrierValue.Value)) end)
 				end
 			end
 		end
-		Data:set(player, "lastHit", tick())
+		Data:set(player, "lastHit", os.time())
 	else
 		for _, part in pairs(character:GetChildren()) do
 			if part:IsA("BasePart") then
@@ -91,7 +91,7 @@ local function unmakeRagdoll(character)
 			if part.Name ~= "HumanoidRootPart" then
 				part.Massless = false
 			end
-			part:SetNetworkOwner(game.Players:GetPlayerFromCharacter(character))
+			pcall(function() part:SetNetworkOwner(game.Players:GetPlayerFromCharacter(character)) end)
 		end
 	end
 	Messages:send("StopAnimation", character, "KickingLegs")
@@ -143,12 +143,38 @@ local function checkRagdoll(character)
 	end
 end
 
+local function addFlames(character)
+	local head = character:FindFirstChild("Head")
+	if  head and not head:FindFirstChild("Fire") then
+		local bubble = import("Assets/Particles/Fire"):Clone()
+		bubble.Parent = head
+		bubble = import("Assets/Particles/Smoke"):Clone()
+		bubble.Parent = head
+	end
+end
+
+local function removeFlames(character)
+	local head = character:FindFirstChild("Head")
+	if head and head:FindFirstChild("Fire") then
+		head.Fire:Destroy()
+		head.Smoke:Destroy()
+	end
+end
+
 local function startLoops()
 	spawn(function()
 		while wait() do
 			for _, player in pairs(game.Players:GetPlayers()) do
 				if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
 					checkRagdoll(player.Character)
+					local character = player.Character
+					if CollectionService:HasTag(character, "Burning") then
+						if not character:FindFirstChild("Mask Of Fire") then
+							addFlames(character)
+						end
+					else
+						removeFlames(character)
+					end
 				end
 			end
 		end
@@ -191,12 +217,18 @@ local function startLoops()
 						character.Humanoid:TakeDamage(Constants.HUNGER_DAMAGE)
 					else
 						if player.Character then
-							character.Humanoid.Health = character.Humanoid.Health + (myHunger/60)
+							character.Humanoid.Health = character.Humanoid.Health + (myHunger/40)
 						end
 					end
 					if CollectionService:HasTag(character, "Poisoned") then
-						Data:set(player, "lastHit", tick())
+						Data:set(player, "lastHit", os.time())
 						LowerHealth(character.Humanoid, Constants.POISON_DAMAGE, true)
+					end
+					if CollectionService:HasTag(character, "Burning") then
+						if not character:FindFirstChild("Mask Of Fire") then
+							Data:set(player, "lastHit", os.time())
+							LowerHealth(character.Humanoid, Constants.FIRE_DAMAGE, true)
+						end
 					end
 				end
 			end
@@ -293,6 +325,37 @@ function Stats:start()
 	end)
 	Messages:hook("PlayerDied", function(player)
 		releaseCarried(player)
+	end)
+	Messages:hook("CharacterFellDistance", function(player, distance)
+		local character = player.Character
+		local damage = (distance/15)^2.2
+		if distance > 32 then
+			LowerHealth(character.Humanoid,damage)
+			if distance > 60 then
+				LowerHealth(character.Humanoid,damage, true)
+			end
+			if distance > 45 then
+				Messages:send("RagdollCharacter", character, distance/20)
+			end
+			Messages:send("PlaySound", "BoneBreak", character.Head.Position)
+		end
+	end)
+	Messages:hook("CharacterAdded", function(player)
+		spawn(function()
+			local character = player.Character
+			character:WaitForChild("Humanoid").Touched:connect(function(hit)
+				if hit == workspace.Terrain then
+					if CollectionService:HasTag(character, "Burning") then
+						CollectionService:RemoveTag(character, "Burning")
+					end
+				end
+				if CollectionService:HasTag(hit.Parent, "Water") then
+					if CollectionService:HasTag(character, "Burning") then
+						CollectionService:RemoveTag(character, "Burning")
+					end
+				end
+			end)
+		end)
 	end)
 	startLoops()
 end

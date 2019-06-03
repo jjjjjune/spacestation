@@ -84,7 +84,7 @@ end
 function data:start()
     self.cache = {}
     local dataStore = Constants.TEST_STORE
-    if game.PlaceId == 2674580554 and not game:GetService("RunService"):IsStudio() then
+    if game.PlaceId == 3131676270 and not game:GetService("RunService"):IsStudio() then
         dataStore = Constants.PRODUCTION_STORE
     end
 

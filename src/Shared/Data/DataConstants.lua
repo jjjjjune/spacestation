@@ -39,6 +39,6 @@ return {
 		treesCutTotal = 0,
 		playersExecutedTotal = 0,
 	},
-	TEST_STORE = "test9",
+	TEST_STORE = "test11",
 	PRODUCTION_STORE = "test9",
 }

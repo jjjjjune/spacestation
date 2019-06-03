@@ -160,16 +160,19 @@ end
 
 function Users:start()
 	Messages:hook("RespawnPlayer", function(player)
+		if not player.Character then
+			print("no cahracter some how")
+		end
 		local spawns = CollectionService:GetTagged("Spawn")
 		player.Character:MoveTo(spawns[math.random(1, #spawns)].Position)
 	end)
 
 	Players.PlayerAdded:Connect(function(player)
-		Data:set(player, "lastHit", -1000000)
 		local userId = tostring(player.UserId)
 		Store:dispatch(PlayerAdded(userId))
 		Store:dispatch(ReplicateTo(player, PlayerAdded(userId)))
 		Messages:send("PlayerAdded", player)
+		Data:set(player, "lastHit", -1000000)
 		onPlayerAdded(player)
 	end)
 
@@ -180,7 +183,7 @@ function Users:start()
 
 	Messages:hook("PlayerIsRemoving",function(player)
 		local lastHit = Data:get(player, "lastHit")
-		if lastHit and tick() - lastHit < WorldConstants.COMBAT_LOG_TIME then
+		if lastHit and os.time() - lastHit < WorldConstants.COMBAT_LOG_TIME then
 			Messages:send("PlayerDied", player)
 		end
 		Messages:send("DeathCheckDone", player)

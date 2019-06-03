@@ -2,6 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local GetProjectileDamageModifier = import "Shared/Utils/GetProjectileDamageModifier"
 local ApplyExplosionDamage = import "Shared/Utils/ApplyExplosionDamage"
+local CollectionService = game:GetService("CollectionService")
 
 return {
 	Dart = function(hit, owner, pos, projectileName)
@@ -31,6 +32,7 @@ return {
 			end
 			Messages:send("DamageHumanoid", humanoid, 65*mod, projectileName)
 		end
+		Messages:send("MakeItem", projectileName, pos)
 	end,
 	["Bone Spear"] = function(hit, owner, pos, projectileName)
 		if not hit then
@@ -42,8 +44,9 @@ return {
 			if owner then
 				mod = GetProjectileDamageModifier(owner)
 			end
-			Messages:send("DamageHumanoid", humanoid, 55*mod, projectileName)
+			Messages:send("DamageHumanoid", humanoid, 50*mod, projectileName)
 		end
+		Messages:send("MakeItem", projectileName, pos)
 	end,
 	["Stone Spear"] = function(hit, owner, pos, projectileName)
 		if not hit then
@@ -56,9 +59,8 @@ return {
 				mod = GetProjectileDamageModifier(owner)
 			end
 			Messages:send("DamageHumanoid", humanoid, 45*mod, projectileName)
-		else
-			Messages:send("MakeItem", projectileName, pos)
 		end
+		Messages:send("MakeItem", projectileName, pos)
 	end,
 	["Spear"] = function(hit, owner, pos, projectileName)
 		if not hit then
@@ -71,9 +73,8 @@ return {
 				mod = GetProjectileDamageModifier(owner)
 			end
 			Messages:send("DamageHumanoid", humanoid, 35*mod, projectileName)
-		else
-			Messages:send("MakeItem", projectileName, pos)
 		end
+		Messages:send("MakeItem", projectileName, pos)
 	end,
 	["Cactus Spine"] = function(hit, owner, pos, projectileName)
 		if not hit then
@@ -105,6 +106,12 @@ return {
 	["Cactus Egg"] = function(hit, owner, pos, projectileName)
 		if hit then
 			Messages:send("SpawnAnimal", owner, "Cactus", pos)
+			return true
+		end
+	end,
+	["Dragon Egg"] = function(hit, owner, pos, projectileName)
+		if hit then
+			Messages:send("SpawnAnimal", owner, "Dragon", pos)
 			return true
 		end
 	end,
@@ -141,12 +148,13 @@ return {
 			if owner then
 				mod = GetProjectileDamageModifier(owner)
 			end
-			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 100*mod, projectileName)
+			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 50*mod, projectileName)
 			for _, p in pairs(hit.Parent:GetChildren()) do
-				if p:IsA("BasePart") then
+				if p:IsA("BasePart") and p.Material ~= Enum.Material.Neon then
 					p.BrickColor = BrickColor.new("Black")
 				end
 			end
+			CollectionService:AddTag(hit.Parent, "Burning")
 		end
 		Messages:send("PlaySound", "Smoke", pos)
 		return true

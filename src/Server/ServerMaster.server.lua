@@ -18,7 +18,7 @@ local loadOrder = {
 	"../Systems/Resources",
 	"../Systems/ResourceCollection",
 	"../Systems/Crafting",
-	"../Systems/FallDamage",
+	--"../Systems/FallDamage",
 	"../Systems/Sacrifice",
 	"../Systems/Buildings",
 	"../Systems/Boats",
@@ -27,6 +27,7 @@ local loadOrder = {
 	"../Systems/Animals",
 	"../Systems/Lighting",
 	"../Systems/Projectiles",
+	"../Systems/Fire"
 }
 
 for _, path in ipairs(loadOrder) do

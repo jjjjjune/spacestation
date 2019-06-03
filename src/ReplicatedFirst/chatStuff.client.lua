@@ -2,7 +2,7 @@
 local Chat = game:GetService("Chat")
 
 local function setUpChatWindow()
-	return {BubbleChatEnabled = true,ClassicChatEnabled = false}
+	return {BubbleChatEnabled = true,ClassicChatEnabled = true}
 end
 
 while not pcall(function()

@@ -68,7 +68,11 @@ return {
 	end,
 	["Tannery"] = function(player, item, building)
 		if CollectionService("HasTag", item, "Tannable") then
-			Messages:send("MakeItem", "Tanned Leather", item.Base.Position)
+			if item.Name == "Hide" then
+				Messages:send("MakeItem", "Tanned Leather", item.Base.Position)
+			elseif item.Name == "Dragon Hide" then
+				Messages:send("MakeItem", "Tanned Dragonhide", item.Base.Position)
+			end
 			Messages:send("PlayParticle", "CookSmoke", 15, item.Base.Position)
 			item:Destroy()
 		end

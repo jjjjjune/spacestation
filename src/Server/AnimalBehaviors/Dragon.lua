@@ -13,7 +13,7 @@ local FOOD_FIND_DISTANCE =  60
 local EAT_DISTANCE = 7
 local RUN_RADIUS = 120
 local FOOD = "Cactus Fruit"
-local DEFAULT_WALKSPEED = 8
+local DEFAULT_WALKSPEED = 13
 local TAIL_SLAM_RANGE = 30
 
 --[[
@@ -56,20 +56,20 @@ function Dragon:eat(apple)
 	end)
 end
 
+function Dragon:tryEat(food)
+	local dist = (food.Base.Position - self.model.Head.Position).magnitude
+	if dist < EAT_DISTANCE and not self.eating then
+		self.model.Humanoid.WalkSpeed= 0
+		self:walkTo(food.Base.Position)
+		self:eat(food)
+	end
+end
+
 function Dragon:findFood(type)
 	local origin = self.model.Head.Position
 	local apple, dist = GetNearestItemOfNameToPosition(type, origin, FOOD_FIND_DISTANCE)
 	if apple then
-		if dist < EAT_DISTANCE and (not self.eating) then
-			self.model.Humanoid.WalkSpeed= 0
-			self:walkTo(apple.Base.Position)
-			self:eat(apple)
-		else
-			if not self.eating then
-				self:walkTo(apple.Base.Position)
-			end
-		end
-		return true
+		return apple
 	end
 	return false
 end
@@ -163,7 +163,7 @@ function Dragon:damagePlayersNear(pos)
 		if not wasRagdolled then
 			--Messages:send("RagdollCharacter", character, 1.5)
 		end
-		enemy.humanoid:TakeDamage(40)
+		enemy.humanoid:TakeDamage(20)
 		Messages:send("PlayParticle", "Sparks", 5, enemy.part.Position)
 	end
 end
@@ -182,15 +182,17 @@ function Dragon:tailSlam(character)
 			if (character.Head.Position*flatVec - self.model.TailSegment3.Position*flatVec).magnitude < 12 then
 				break
 			end
+			if not self.attackGoing then
+				return
+			end
 		end
 		Messages:send("PlayAnimation", self.model, "DragonTailSlap")
 		spawn(function()
 			wait(.2)
 			Messages:send("PlaySound", "HitSlap2", self.model.TailSegment3.Position)
 			self:damagePlayersNear(self.model.TailSegment3.Position)
-			self.attackGoing = false
 			wait(1)
-
+			self.attackGoing = false
 		end)
 	end)
 end
@@ -215,6 +217,9 @@ function Dragon:fireball(character)
 			local pos= (character.HumanoidRootPart.CFrame).p
 			self.model.FireballCharge.Mesh.Scale = self.model.FireballCharge.Mesh.Scale + Vector3.new(.1,.1,.1)
 			self:walkTo(pos)
+			if not self.attackGoing then
+				return
+			end
 		end
 
 		local id = HttpService:GenerateGUID()
@@ -265,7 +270,11 @@ function Dragon:step()
 	if self.dead then
 		return
 	end
-	if not self:findFood(FOOD) then
+	local foodFound = self:findFood(FOOD)
+	if self.attackGoing then
+		foodFound = false
+	end
+	if not foodFound then
 		if not self.eating then
 			local character = self:findHuman()
 			if character then
@@ -282,19 +291,16 @@ function Dragon:step()
 				end
 				self:idle()
 			end
-		else
-			Messages:send("StopAnimation", self.model, "DragonTurnaround")
-			if self.attacking then
-				self.attacking = false
-				Messages:send("StopAnimation", self.model, "DragonTailRaised")
-			end
 		end
 	else
-		if self.attacking then
+		if self.attacking or self.attackGoing then
+			self.attackGoing = false
 			self.attacking = false
-			Messages:send("StopAnimation", self.model, "DragonTailRaised")
+			Messages:send("StopAnimation", self.model, "DragonTurnaround")
 		end
-		self:idle()
+		print("found food!")
+		self:walkTo(foodFound.Base.Position)
+		self:tryEat(foodFound)
 	end
 end
 
@@ -362,7 +368,7 @@ function Dragon:onDied()
 		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
 		Messages:send("MakeItem", itemName, pos)
 	end
-	if math.random(1, 10) == 1 then
+	if math.random(1, 50) == 1 then
 		local pos = cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10)).p
 		Messages:send("MakeItem", "Dragon Egg", pos)
 	end

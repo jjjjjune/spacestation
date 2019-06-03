@@ -61,5 +61,14 @@ return {
 		model = "Mask Of Survival",
 		verb = "Items Cooked",
 		description = "50% HUNGER AND THIRST DECAY."
-	}
+	},
+	["Mask Of Fire"] = {
+		name = "Mask Of Fire",
+		startItem = "Sulfur",
+		stat = "DragonKilled",
+		needed = 250,
+		model = "Mask Of Fire",
+		verb = "Dragons Slain",
+		description = "YOU ARE IMMUNE TO FIRE (BUT NOT LAVA)."
+	},
 }

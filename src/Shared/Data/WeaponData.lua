@@ -77,6 +77,32 @@ local weapons = {
 		swingSound = "DeepWhip",
 		wieldSpeedModifier = -2
 	},
+	["Bone Shield"] = {
+		damage = 28,
+		comboLength = 1,
+		swingSpeed = .8,
+		guardLength = 4,
+		angle = 80,
+		shieldWalkspeed = 1,
+		range = 6.5,
+		guardDamage = 3,
+		knockback = 3,
+		swingSound = "DeepWhip",
+		wieldSpeedModifier = -2
+	},
+	["Iron Shield"] = {
+		damage = 34,
+		comboLength = 1,
+		swingSpeed = .8,
+		guardLength = 6,
+		angle = 80,
+		shieldWalkspeed = 1,
+		range = 6.5,
+		guardDamage = 3,
+		knockback = 3,
+		swingSound = "DeepWhip",
+		wieldSpeedModifier = -2
+	},
 	["Shell Piece"] = {
 		damage = 20,
 		comboLength = 1,

@@ -34,8 +34,10 @@ return {
 	},
 	["Queen"] = {
 		"Reed",
-		"Stick",
-		"Reed",
+		"Emerald",
+		"Rope",
+		"Red Mushroom",
+		"Red Mushroom",
 	},
 	["Small Tree"] = {
 		"Log",
@@ -95,5 +97,12 @@ return {
 		"Cactus Spine",
 		"Cactus Fruit",
 		"Cactus Fruit",
+	},
+	["Dragon"] = {
+		"Dragon Hide",
+		"Dragon Hide",
+		"Bone",
+		"Gunpowder",
+		"Sulfur",
 	}
 }

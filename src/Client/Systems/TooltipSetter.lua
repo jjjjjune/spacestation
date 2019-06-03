@@ -89,27 +89,29 @@ function TooltipSetter:start()
 		if Mouse.Target and inRange() then
 			for _, tooltipSetting in pairs(tooltipSettings) do
 				local check = Mouse.Target
-				local result = tooltipSetting.validityCheck(check)
-				if result then
-					local pos
-					if result:FindFirstChild("Base") then
-						pos = result.Base.Position
+				if check then
+					local result = tooltipSetting.validityCheck(check)
+					if result then
+						local pos
+						if result:FindFirstChild("Base") then
+							pos = result.Base.Position
+						else
+							pos = result.PrimaryPart.Position
+						end
+						local resultScreenPos = workspace.CurrentCamera:WorldToScreenPoint(pos)
+						if not tooltipSetting.noName then
+							Store:dispatch(SetTooltipName(result.Name))
+						else
+							Store:dispatch(SetTooltipName("Plant"))
+						end
+						Store:dispatch(SetTooltipPosition(UDim2.new(0,resultScreenPos.X,0,resultScreenPos.Y - 10)))
+						Store:dispatch(SetTooltipButton(tooltipSetting.hotkey))
+						Store:dispatch(SetTooltipDescription(tooltipSetting.descriptionGetter(result)))
+						Store:dispatch(SetTooltipVisible(true))
+						break
 					else
-						pos = result.PrimaryPart.Position
+						Store:dispatch(SetTooltipVisible(false))
 					end
-					local resultScreenPos = workspace.CurrentCamera:WorldToScreenPoint(pos)
-					if not tooltipSetting.noName then
-						Store:dispatch(SetTooltipName(result.Name))
-					else
-						Store:dispatch(SetTooltipName("Plant"))
-					end
-					Store:dispatch(SetTooltipPosition(UDim2.new(0,resultScreenPos.X,0,resultScreenPos.Y - 10)))
-					Store:dispatch(SetTooltipButton(tooltipSetting.hotkey))
-					Store:dispatch(SetTooltipDescription(tooltipSetting.descriptionGetter(result)))
-					Store:dispatch(SetTooltipVisible(true))
-					break
-				else
-					Store:dispatch(SetTooltipVisible(false))
 				end
 			end
 		else

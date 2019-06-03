@@ -2,6 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 
 local speed = 4
+local checkRange = 3
 
 local Projectile = {}
 Projectile.__index = Projectile
@@ -40,13 +41,14 @@ function Projectile:tick(dt)
 	else
 		self.t = self.t + dt
 	end
-	if hit or self.t > 10 then
+	if (hit and (hit.Anchored == false or hit.CanCollide == true)) or self.t > 10 then
+		-- so this wont collide with anchored non cancollide things
 		if hit then
 			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
 		end
 		self:destroy()
 	else
-		local hit= self:anyNearbyPeople(pos, speed)
+		local hit= self:anyNearbyPeople(pos, checkRange)
 		if hit then
 			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
 			self:destroy()

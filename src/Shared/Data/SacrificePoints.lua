@@ -18,5 +18,7 @@ return {
 		["Coal"] = 2,
 		["Iron"] = 3,
 		["Skull"] = 10,
+		["Emerald"] = 2,
+		["Sapphire"] = 2,
 	}
 }

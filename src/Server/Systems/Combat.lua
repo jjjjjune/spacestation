@@ -161,7 +161,7 @@ local function damageCharacter(character, attackerCharacter, weaponData, part)
 		shieldHitCountTable[character] = 0
 		Messages:send("PlayParticle", "Shine", 1, part.Position)
 		local victim = game.Players:GetPlayerFromCharacter(character)
-		PlayerData:set(victim, "lastHit", tick())
+		PlayerData:set(victim, "lastHit", os.time())
 	else
 		Messages:send("PlayParticle", "Sparks",20,part.Position)
 	end
@@ -267,12 +267,17 @@ function Combat:start()
 			shieldHitCountTable[character] = (hitAmount and hitAmount + 1) or 1
 			local player = game.Players:GetPlayerFromCharacter(character)
 			local shieldData = getShieldData(player)
+			print(hitAmount, shieldData.guardLength)
 			if hitAmount >= shieldData.guardLength then
 				Messages:sendClient(player, "GuardBroken")
 				Messages:send("PlayAnimation", character, "GuardBreak")
 				shieldUpTable[character] = false
 				Messages:send("PlaySound", "HitStrong", character.HumanoidRootPart.Position)
 				blocked = false
+				if hitAmount == shieldData.guardLength then
+					blocked = true
+				end
+				-- doesn't count as a block so like watch out
 			else
 				Messages:send("PlayAnimation", character, "Hit2")
 				Messages:send("PlaySound", "HitSlap", character.HumanoidRootPart.Position)
