@@ -37,7 +37,6 @@ return {
 		"Emerald",
 		"Rope",
 		"Red Mushroom",
-		"Red Mushroom",
 	},
 	["Small Tree"] = {
 		"Log",
@@ -52,6 +51,8 @@ return {
 		"Log",
 		"Log",
 		"Log",
+		"Stick",
+		"Stick",
 		"Acorn"
 	},
 	["Hemp"] = {
@@ -104,5 +105,13 @@ return {
 		"Bone",
 		"Gunpowder",
 		"Sulfur",
+	},
+	["Bush"] = {
+		"Log",
+		"Stick",
+	},
+	["Ruby Rock"] = {
+		"Ruby",
+		"Ruby",
 	}
 }

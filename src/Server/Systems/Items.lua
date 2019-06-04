@@ -11,7 +11,7 @@ local PlayerData = import "Shared/PlayerData"
 
 local ITEM_TAG = "Item"
 local STORAGE_TAG = "Storage"
-local DESPAWN_TIME = 60
+local DESPAWN_TIME = 180
 
 local CollectionService = game:GetService("CollectionService")
 
@@ -76,7 +76,6 @@ local function useConsumable(player, consumableData)
 			player.Character.Head.Poison:Destroy()
 		end)
 	end
-
 	if didThirst or didHunger or didHealth then
 		return true
 	else
@@ -217,6 +216,11 @@ function Items:start()
 					break
 				end
 			end
+		end
+		if data.class then
+			Messages:send("SetClass", player, data.class)
+			local userId = tostring(player.UserId)
+			Store:dispatch(ReplicateTo(player, SetItemPosition(userId, nil, inventorySlot)))
 		end
 	end)
 	Messages:hook("OnPlayerDroppedItem", function(player, itemModel, targetPos)

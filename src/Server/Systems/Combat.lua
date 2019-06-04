@@ -258,7 +258,6 @@ function Combat:start()
 	end)
 	Messages:hook("DamageHumanoid", function(humanoid, damage, projectileName)
 		if not shieldUpTable[humanoid.Parent] then
-			print("damaging", damage)
 			LowerHealth(humanoid, damage, true)
 		else
 			local character = humanoid.Parent
@@ -267,7 +266,6 @@ function Combat:start()
 			shieldHitCountTable[character] = (hitAmount and hitAmount + 1) or 1
 			local player = game.Players:GetPlayerFromCharacter(character)
 			local shieldData = getShieldData(player)
-			print(hitAmount, shieldData.guardLength)
 			if hitAmount >= shieldData.guardLength then
 				Messages:sendClient(player, "GuardBroken")
 				Messages:send("PlayAnimation", character, "GuardBreak")
@@ -285,12 +283,9 @@ function Combat:start()
 				blocked = true
 			end
 			if not blocked then
-				print("did nbot block")
 				LowerHealth(humanoid, damage, true)
 			else
-				print("did block")
 				if projectileName then
-					print("richochet")
 					-- ricochet!!!
 					local id = HttpService:GenerateGUID()
 					local pos = humanoid.RootPart.Position

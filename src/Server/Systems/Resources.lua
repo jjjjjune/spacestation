@@ -152,7 +152,6 @@ function Plants:start()
 		chopRock(player, plantModel)
 	end)
 	Messages:hook("CreatePlant", function(player, plant, position)
-		print("creating plant")
 		local plantModel = import("Assets/Plants/"..plant.."/1"):Clone()
 		plantModel.Parent = workspace
 		plantModel.PrimaryPart = plantModel.Base

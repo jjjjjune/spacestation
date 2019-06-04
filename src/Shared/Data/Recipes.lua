@@ -238,6 +238,51 @@ return {
 		}
 	},
 	{
+		name = "Brave Idol",
+		makes = {"Brave Idol"},
+		recipe = {
+			"Sapphire",
+			"Sapphire",
+			"Sapphire",
+		}
+	},
+	{
+		name = "Forgotten Idol",
+		makes = {"Forgotten Idol"},
+		recipe = {
+			"Emerald",
+			"Emerald",
+			"Emerald",
+		}
+	},
+	{
+		name = "Meek Idol",
+		makes = {"Meek Idol"},
+		recipe = {
+			"Ruby",
+			"Ruby",
+			"Ruby",
+		}
+	},
+	{
+		name = "Deft Idol",
+		makes = {"Deft Idol"},
+		recipe = {
+			"Gold",
+			"Gold",
+			"Gold",
+		}
+	},
+	{
+		name = "Burned Idol",
+		makes = {"Burned Idol"},
+		recipe = {
+			"Obsidian",
+			"Obsidian",
+			"Obsidian",
+		}
+	},
+	{
 		name = "Gunpowder",
 		makes = {"Gunpowder"},
 		recipe = {

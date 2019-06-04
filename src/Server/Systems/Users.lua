@@ -75,6 +75,10 @@ local function setClass(character, className)
 	humanoidDescription.TorsoColor = torsoColors[rand:NextInteger(1,#torsoColors)].Color
 	character.Humanoid:ApplyDescription(humanoidDescription)
 
+	if character:FindFirstChild("horns") then
+		character.horns:Destroy()
+	end
+
 	local horns = classAsset.horns:Clone()
 	horns.PrimaryPart = horns.Base
 	local weld = Instance.new("WeldConstraint")
@@ -109,7 +113,10 @@ local function setClass(character, className)
         end
 	end
 
-	character:WaitForChild("Health"):Destroy()
+	spawn(function()
+		character:WaitForChild("Health"):Destroy()
+	end)
+
 	character.Humanoid.BreakJointsOnDeath = false
 	local vel = Instance.new("BodyVelocity", character.HumanoidRootPart)
 	vel.MaxForce = Vector3.new(0,0,0)
@@ -122,9 +129,11 @@ end
 
 local function determineRace(player)
 	local races = {
-		"Brave","Meek","Forgotten",
+		"Brave","Meek","Forgotten","Deft","Brave","Meek","Forgotten",
+		"Brave","Meek","Forgotten","Deft","Brave","Meek","Forgotten",
+		"Burned",
 	}
-	local rand = Random.new(player.UserId)
+	local rand = Random.new(player.UserId+1)
 	rand = rand:NextInteger(1, #races)
 	Data:set(player, "race", races[rand])
 end
@@ -144,7 +153,6 @@ local function addCharacter(player, firstTime)
 	end
 	player.Character:WaitForChild("Humanoid").Died:connect(function()
 		spawn(function() Messages:send("PlayerDied", player) end)
-		determineRace(player)
 		wait(5)
 		addCharacter(player)
 	end)
@@ -155,14 +163,17 @@ local function onPlayerAdded(player)
 	if race == "Seed" then
 		determineRace(player)
 	end
+	local hasDoneRecalculation = Data:get(player, "raceRecalculation")
+	if not hasDoneRecalculation then
+		print("recalculating")
+		Data:set(player, "raceRecalculation", true)
+		determineRace(player)
+	end
 	addCharacter(player, true)
 end
 
 function Users:start()
 	Messages:hook("RespawnPlayer", function(player)
-		if not player.Character then
-			print("no cahracter some how")
-		end
 		local spawns = CollectionService:GetTagged("Spawn")
 		player.Character:MoveTo(spawns[math.random(1, #spawns)].Position)
 	end)
@@ -187,6 +198,11 @@ function Users:start()
 			Messages:send("PlayerDied", player)
 		end
 		Messages:send("DeathCheckDone", player)
+	end)
+
+	Messages:hook("SetClass", function(player, className)
+		setClass(player.Character, className)
+		Data:set(player, "race", className)
 	end)
 
 	game:GetService("RunService").Stepped:connect(function()

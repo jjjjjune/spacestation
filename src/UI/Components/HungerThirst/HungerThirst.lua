@@ -6,10 +6,37 @@ local Bar = import "../Bar"
 
 local StyleConstants = import "Shared/Data/StyleConstants"
 local StatConstants = import "Shared/Data/StatConstants"
+local Messages = import "Shared/Utils/Messages"
 
-local function HungerThirst(props)
+local HungerThirst = Roact.PureComponent:extend("HungerThirst")
+
+function HungerThirst:init(props)
+	self.props = props
+	self:setState(function(state)
+		return {
+			lastStaminaChange = time() - 100,
+			stamina = 100
+		}
+	end)
+	Messages:hook("SetLastClimb", function(t)
+		self:setState(function(state)
+			return {
+				lastStaminaChange = t
+			}
+		end)
+	end)
+	Messages:hook("SetStamina", function(s)
+		self:setState(function(state)
+			return {
+				stamina = s
+			}
+		end)
+	end)
+end
+
+function HungerThirst:render()
 	local userId = tostring(game.Players.LocalPlayer.UserId)
-	local stats = props.playerStats[userId]
+	local stats = self.props.playerStats[userId]
 --[[
 	Text = "hunger: "..(stats.hunger or"nil").." thirst: "..(stats.thirst or"nil"),
 			Visible = true,
@@ -20,6 +47,7 @@ local function HungerThirst(props)
 	local maxHealth = stats.maxHealth
 
 	if stats then
+		local visible = ((time() - self.state.lastStaminaChange) < 10) or false
 		return Roact.createElement("Frame", {
 			Size = UDim2.new(.2,0,.1,0),
 			Position = UDim2.new(.5,0,1,0),
@@ -49,6 +77,15 @@ local function HungerThirst(props)
 				text = "THIRST",
 				primaryColor = StyleConstants.THIRST_COLOR,
 				position = UDim2.new(0.65,0,0,0),
+			}),
+			staminaBar = Roact.createElement(Bar, {
+				amount = self.state.stamina,
+				maxAmount = 100,
+				size = UDim2.new(1,0,.1,0),
+				text = "STAMINA",
+				primaryColor = Color3.fromRGB(136,222,113),
+				position = UDim2.new(0,0,-.25,0),
+				visible = visible
 			}),
 			middleBar = Roact.createElement("Frame", {
 				Size = UDim2.new(.15,0,.4,0),

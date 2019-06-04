@@ -73,6 +73,21 @@ local items = {
 	},
 	["Turtle Egg"] = {
 		animal = "Turtle"
+	},
+	["Forgotten Idol"] = {
+		class = "Forgotten",
+	},
+	["Brave Idol"] = {
+		class = "Brave",
+	},
+	["Meek Idol"] = {
+		class = "Meek",
+	},
+	["Deft Idol"] = {
+		class = "Deft",
+	},
+	["Burned Idol"] = {
+		class = "Burned",
 	}
 }
 

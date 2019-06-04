@@ -20,5 +20,6 @@ return {
 		["Skull"] = 10,
 		["Emerald"] = 2,
 		["Sapphire"] = 2,
+		["Ruby"] = 2,
 	}
 }

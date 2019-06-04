@@ -11,6 +11,7 @@ local Inventory = import"UI/Components/Inventory/Inventory"
 local Tooltip = import "UI/Components/Tooltip/Tooltip"
 local DangerIndicator = import "UI/Components/DangerIndicator/DangerIndicator"
 local BuildingList = import "UI/Components/BuildingList/BuildingList"
+local IslandLOD = import "UI/Components/IslandLOD/IslandLOD"
 local Store = import "Shared/State/Store"
 
 local LayoutProvider = import "../LayoutProvider"
@@ -21,15 +22,16 @@ local function App()
 		Roact.createElement("ScreenGui", {ResetOnSpawn = false}, {
 			LayoutProvider = Roact.createElement(LayoutProvider),
 			HungerThirst = Roact.createElement(HungerThirst),
+			Tooltip = Roact.createElement(Tooltip, {
+				tooltipName = Store:getState().tooltipInfo.tooltipName
+			}),
 			Inventory = Roact.createElement(Inventory, {
 				isOpen = true,
 				inventories = Store:getState().inventories
 			}),
-			Tooltip = Roact.createElement(Tooltip, {
-				tooltipName = Store:getState().tooltipInfo.tooltipName
-			}),
 			DangerIndicator = Roact.createElement(DangerIndicator, {}),
-			BuildingList = Roact.createElement(BuildingList, {})
+			BuildingList = Roact.createElement(BuildingList, {}),
+			IslandLOD = Roact.createElement(IslandLOD, {})
 		})
 	})
 end

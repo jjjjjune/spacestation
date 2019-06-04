@@ -11,14 +11,20 @@ function Bar:init(suppliedProps)
 	self.bgColor = suppliedProps.bgColor
 	self.primaryColor = suppliedProps.primaryColor
 	self.position = suppliedProps.position
+	self.visible = suppliedProps.visible
 end
 
 function Bar:render(props)
+	local visible = self.props.visible
+	if visible == nil then
+		visible = true
+	end
 	return Roact.createElement("Frame", {
 		Size = self.size,
 		BackgroundColor3 = StyleConstants.WINDOW_BG,
 		BorderSizePixel = 0,
 		Position = self.position,
+		Visible = visible
 	}, {
 		TextHolder = Roact.createElement("Frame", {
 			BackgroundTransparency = 1,

@@ -328,13 +328,13 @@ function Stats:start()
 	end)
 	Messages:hook("CharacterFellDistance", function(player, distance)
 		local character = player.Character
-		local damage = (distance/15)^2.2
-		if distance > 32 then
+		local damage = (distance/15)^1.8
+		if distance > 44 then
 			LowerHealth(character.Humanoid,damage)
-			if distance > 60 then
+			if distance > 80 then
 				LowerHealth(character.Humanoid,damage, true)
 			end
-			if distance > 45 then
+			if distance > 65 then
 				Messages:send("RagdollCharacter", character, distance/20)
 			end
 			Messages:send("PlaySound", "BoneBreak", character.Head.Position)
