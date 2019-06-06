@@ -233,7 +233,7 @@ local function damageBuilding(building, player, damage)
 		game:GetService("Debris"):AddItem(building, 5)
 		Messages:send("PlaySound", "Chop", building.Base.Position)
 	end
-	Messages:send("PlayParticle", "Sparks",20,player.Character.Head.Position)
+	Messages:send("PlayParticle", "Sparks",20,(player and player.Character.Head.Position) or building.Base.Position)
 	Messages:send("PlaySound", "Construct", building.Base.Position)
 end
 
@@ -346,6 +346,13 @@ function Buildings:start()
 				end
 			end
 		end
+	end)
+	Messages:hook("MakeBuildingInstantly", function(buildingName, pos)
+		local model = game.ReplicatedStorage.Assets.Buildings[buildingName]:Clone()
+		model.Parent = workspace
+		model.PrimaryPart = model.Base
+		model:SetPrimaryPartCFrame(CFrame.new(pos))
+		CollectionService:AddTag(model, "Building")
 	end)
 	Messages:hook("DamageBuilding", function(building, damage)
 		damageBuilding(building, nil, damage)

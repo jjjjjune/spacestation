@@ -10,6 +10,22 @@ local BURN_DAMAGE = 3
 local BURN_BUILDING_DAMAGE = 15
 local GO_OUT_CHANCE = 5 -- out of 1000
 local PLANT_DAMAGE = 1
+local SPREAD_TIME = 2 -- fires can spread after this many seconds
+
+local lastChecksTable = {} -- we only wanna check for nearby burnables like once every 10 seconds or so per burnable
+
+local function getRegion(character)
+	if not character.PrimaryPart then
+		return nil
+	end
+	local xRange = character:GetModelSize().X + 4
+	local yRange = character:GetModelSize().Y + 4
+	local zRange = character:GetModelSize().Z + 4
+	local vec1 = (character.PrimaryPart.Position + Vector3.new(-xRange,-yRange,-zRange))
+	local vec2 = (character.PrimaryPart.Position + Vector3.new(xRange,yRange,zRange))
+	local region = Region3.new(vec1, vec2)
+	return region
+end
 
 local function manageBurningHumanoid(object)
 	if not object:FindFirstChild("Mask Of Fire") then
@@ -29,11 +45,40 @@ local function manageBurningPlant(object)
 	Messages:send("DamagePlant", object, PLANT_DAMAGE)
 end
 
+local function checkNearbyBurnables(object)
+
+	if not lastChecksTable[object] then -- this little bit is just a quick debounce for the fire spreading
+		lastChecksTable[object] = time()
+		return
+	else
+		if time() - lastChecksTable[object] < SPREAD_TIME then
+			return
+		else
+			lastChecksTable[object] = time()
+		end
+	end
+
+	local region = getRegion(object)
+	if region then
+		for _, part in pairs(workspace:FindPartsInRegion3(region)) do
+			local object = part.Parent
+			local isPlant = CollectionService:HasTag(object, "Plant")
+			local isMonster = object:FindFirstChild("Humanoid")
+			local isFlammableBuilding =(CollectionService:HasTag(object, "Building") and CollectionService:HasTag(object, "Flammable"))
+			if isPlant or isMonster or isFlammableBuilding then
+				if not CollectionService:HasTag(object, "Burning") then
+					Messages:send("Burn", object)
+				end
+			end
+		end
+	end
+end
+
 local function manageBurningObject(object)
 	if object:FindFirstChild("Humanoid") then
 		manageBurningHumanoid(object)
 	end
-	if CollectionService:HasTag(object, "Building") then
+	if CollectionService:HasTag(object, "Building") and CollectionService:HasTag(object, "Flammable") then
 		manageBurningBuilding(object)
 	end
 	if CollectionService:HasTag(object, "Plant") then
@@ -42,6 +87,7 @@ local function manageBurningObject(object)
 	if math.random(1, 1000) < GO_OUT_CHANCE then
 		Messages:send("Unburn", object)
 	end
+	checkNearbyBurnables(object)
 end
 
 local function onStoppedBurning(object)
@@ -49,6 +95,9 @@ local function onStoppedBurning(object)
 	local fire = object:FindFirstChild("Fire", true)
 	if fire then
 		fire:Destroy()
+		if primaryPart:FindFirstChild("fireLight") then
+			primaryPart.fireLight:Destroy()
+		end
 	end
 	Messages:send("PlaySound", "Fireputout", primaryPart.Position)
 end
@@ -60,6 +109,10 @@ local function onStartedBurning(object)
 	end
 	local flames = flameParticle:Clone()
 	flames.Parent = primaryPart
+	local fireLight = Instance.new("PointLight", primaryPart)
+	fireLight.Brightness = .5
+	fireLight.Name = "FireLight"
+	fireLight.Color = BrickColor.new("Bright orange").Color
 	Messages:send("PlaySound", "Smoke", primaryPart.Position)
 	Messages:send("PlayParticle", "Sparks", 15, primaryPart.Position)
 end

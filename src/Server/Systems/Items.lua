@@ -248,6 +248,7 @@ function Items:start()
 		model.Parent = workspace
 		model.PrimaryPart = model.Base
 		model:SetPrimaryPartCFrame(CFrame.new(position) * CFrame.new(0,model:GetModelSize().Y/2,0))
+		CollectionService:AddTag(model, "Item")
 		if checkWeld(model) then
 			Messages:send("PlaySound", "Construct", model.Base.Position)
 		end

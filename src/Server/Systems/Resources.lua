@@ -150,8 +150,8 @@ function Plants:start()
 	Messages:hook("ChopRockServer", function(player, plantModel)
 		chopRock(player, plantModel)
 	end)
-	Messages:send("DamagePlant", function(plant, damage)
-		plant.Health.Value = plant.Health.Value - 1
+	Messages:hook("DamagePlant", function(plant, damage)
+		plant.Health.Value = plant.Health.Value - damage
 		if plant.Health.Value <= 0 then
 			chopPlant(nil, plant)
 		end

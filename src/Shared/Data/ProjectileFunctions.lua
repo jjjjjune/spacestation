@@ -22,6 +22,14 @@ local function genericHit(hit, owner, pos, projectileName, damage)
 	end
 end
 
+local function burnPlantsNear(pos)
+	for _, plant in pairs(CollectionService:GetTagged("Plant")) do
+		if ((plant.Base.Position) - pos).magnitude < 10 then
+			Messages:send("Burn", plant)
+		end
+	end
+end
+
 return {
 	Default = function(hit, owner, pos, projectileName)
 		genericHit(hit, owner, pos, projectileName, 10)
@@ -111,9 +119,10 @@ return {
 				end
 			end
 		else
-			if CollectionService("HasTag", object, "Building") then
+			if CollectionService("HasTag", object, "Building") or CollectionService("HasTag", object, "Plant") then
 				Messages:send("Burn", object)
 			end
+			burnPlantsNear(pos)
 		end
 		Messages:send("PlaySound", "Smoke", pos)
 		return true
