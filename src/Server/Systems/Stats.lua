@@ -167,14 +167,6 @@ local function startLoops()
 			for _, player in pairs(game.Players:GetPlayers()) do
 				if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
 					checkRagdoll(player.Character)
-					local character = player.Character
-					if CollectionService:HasTag(character, "Burning") then
-						if not character:FindFirstChild("Mask Of Fire") then
-							addFlames(character)
-						end
-					else
-						removeFlames(character)
-					end
 				end
 			end
 		end
@@ -223,12 +215,6 @@ local function startLoops()
 					if CollectionService:HasTag(character, "Poisoned") then
 						Data:set(player, "lastHit", os.time())
 						LowerHealth(character.Humanoid, Constants.POISON_DAMAGE, true)
-					end
-					if CollectionService:HasTag(character, "Burning") then
-						if not character:FindFirstChild("Mask Of Fire") then
-							Data:set(player, "lastHit", os.time())
-							LowerHealth(character.Humanoid, Constants.FIRE_DAMAGE, true)
-						end
 					end
 				end
 			end
@@ -346,12 +332,12 @@ function Stats:start()
 			character:WaitForChild("Humanoid").Touched:connect(function(hit)
 				if hit == workspace.Terrain then
 					if CollectionService:HasTag(character, "Burning") then
-						CollectionService:RemoveTag(character, "Burning")
+						Messages:send("Unburn", character)
 					end
 				end
 				if CollectionService:HasTag(hit.Parent, "Water") then
 					if CollectionService:HasTag(character, "Burning") then
-						CollectionService:RemoveTag(character, "Burning")
+						Messages:send("Unburn", character)
 					end
 				end
 			end)

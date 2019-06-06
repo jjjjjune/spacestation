@@ -2,7 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 
 local speed = 4
-local checkRange = 3
+local checkRange = 4
 
 local Projectile = {}
 Projectile.__index = Projectile

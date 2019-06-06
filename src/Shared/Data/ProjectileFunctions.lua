@@ -4,92 +4,45 @@ local GetProjectileDamageModifier = import "Shared/Utils/GetProjectileDamageModi
 local ApplyExplosionDamage = import "Shared/Utils/ApplyExplosionDamage"
 local CollectionService = game:GetService("CollectionService")
 
-return {
-	Dart = function(hit, owner, pos, projectileName)
-		if not hit then
-			return
+local function genericHit(hit, owner, pos, projectileName, damage)
+	if not hit then
+		return
+	end
+	local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
+	if humanoid then
+		local mod = 1
+		if owner then
+			mod = GetProjectileDamageModifier(owner)
 		end
-		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		if humanoid then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", humanoid, 45*mod, projectileName)
-		else
+		Messages:send("DamageHumanoid", humanoid, damage*mod, projectileName, function(character)
 			Messages:send("MakeItem", projectileName, pos)
-		end
+		end)
+	else
+		Messages:send("MakeItem", projectileName, pos)
+	end
+end
+
+return {
+	Default = function(hit, owner, pos, projectileName)
+		genericHit(hit, owner, pos, projectileName, 10)
+	end,
+	Dart = function(hit, owner, pos, projectileName)
+		genericHit(hit, owner, pos, projectileName, 20)
 	end,
 	["Iron Spear"] = function(hit, owner, pos, projectileName)
-		if not hit then
-			return
-		end
-		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		if humanoid then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", humanoid, 65*mod, projectileName)
-		end
-		Messages:send("MakeItem", projectileName, pos)
+		genericHit(hit, owner, pos, projectileName, 55)
 	end,
 	["Bone Spear"] = function(hit, owner, pos, projectileName)
-		if not hit then
-			return
-		end
-		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		if humanoid then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", humanoid, 50*mod, projectileName)
-		end
-		Messages:send("MakeItem", projectileName, pos)
+		genericHit(hit, owner, pos, projectileName, 45)
 	end,
 	["Stone Spear"] = function(hit, owner, pos, projectileName)
-		if not hit then
-			return
-		end
-		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		if humanoid then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", humanoid, 45*mod, projectileName)
-		end
-		Messages:send("MakeItem", projectileName, pos)
+		genericHit(hit, owner, pos, projectileName, 40)
 	end,
 	["Spear"] = function(hit, owner, pos, projectileName)
-		if not hit then
-			return
-		end
-		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		if humanoid then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", humanoid, 35*mod, projectileName)
-		end
-		Messages:send("MakeItem", projectileName, pos)
+		genericHit(hit, owner, pos, projectileName, 35)
 	end,
 	["Cactus Spine"] = function(hit, owner, pos, projectileName)
-		if not hit then
-			return
-		end
-		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		if humanoid then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", humanoid, 25*mod, projectileName)
-		else
-			Messages:send("MakeItem", projectileName, pos)
-		end
+		genericHit(hit, owner, pos, projectileName, 25)
 	end,
 	["Droolabou Egg"] = function(hit, owner, pos, projectileName)
 		if hit then
@@ -143,18 +96,24 @@ return {
 	["Fireball"] = function(hit, owner, pos, projectileName)
 		Messages:send("PlayParticle", "CookSmoke", 15, pos)
 		Messages:send("PlayParticle", "Sparks", 15, pos)
-		if hit.Parent:FindFirstChild("Humanoid") then
+		local object = hit.Parent
+		if object:FindFirstChild("Humanoid") then
 			local mod = 1
 			if owner then
 				mod = GetProjectileDamageModifier(owner)
 			end
-			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 50*mod, projectileName)
+			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 50*mod, projectileName, function(character)
+				Messages:send("Burn", character)
+			end)
 			for _, p in pairs(hit.Parent:GetChildren()) do
 				if p:IsA("BasePart") and p.Material ~= Enum.Material.Neon then
 					p.BrickColor = BrickColor.new("Black")
 				end
 			end
-			CollectionService:AddTag(hit.Parent, "Burning")
+		else
+			if CollectionService("HasTag", object, "Building") then
+				Messages:send("Burn", object)
+			end
 		end
 		Messages:send("PlaySound", "Smoke", pos)
 		return true

@@ -233,6 +233,22 @@ return {
 		name = "Running Stone",
 		makes = {"Running Stone"},
 		recipe = {
+			"Ruby",
+			"Ruby",
+		}
+	},
+	{
+		name = "Jumping Stone",
+		makes = {"Jumping Stone"},
+		recipe = {
+			"Emerald",
+			"Emerald",
+		}
+	},
+	{
+		name = "Big Stone",
+		makes = {"Big Stone"},
+		recipe = {
 			"Sapphire",
 			"Sapphire",
 		}
@@ -288,6 +304,14 @@ return {
 		recipe = {
 			"Sulfur",
 			"Coal",
+		}
+	},
+	{
+		name = "Antipoison",
+		makes = {"Antipoison"},
+		recipe = {
+			"Nectar",
+			"Nectar",
 		}
 	},
 	{

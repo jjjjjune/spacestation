@@ -20,7 +20,7 @@ function ServerProjectiles:start()
 		end
 	end)
 	Messages:hook("OnProjectileHit", function(projectileName, hitObject, pos, owner)
-		local func = ProjectileFunctions[projectileName]
+		local func = ProjectileFunctions[projectileName] or ProjectileFunctions["Default"]
 		if func then
 			local result = func(hitObject, owner, pos, projectileName)
 			if not result then

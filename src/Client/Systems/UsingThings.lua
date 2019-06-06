@@ -27,7 +27,7 @@ function ItemGrab:start()
 			if item and isAlive() then
 				Messages:sendServer("GrabItem", item)
 			end
-			local water = ItemsUtil.getNearestTagToPosition("Water", player.Character.Head.Position, "inside")
+			local water = ItemsUtil.getNearestTagToPosition("Water", player.Character.HumanoidRootPart.Position, "inside")
 			if water and isAlive() then
 				Messages:sendServer("DrinkWater", water)
 			end

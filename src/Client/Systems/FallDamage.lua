@@ -15,6 +15,11 @@ function FallDamage:start()
 		local connect
 		connect = game:GetService("RunService").RenderStepped:connect(function(deltaTime)
 
+			if not character:FindFirstChild("HumanoidRootPart") then
+				connect:disconnect()
+				return
+			end
+
 			local currentY =character.HumanoidRootPart.Position.Y
 
 			local changeInDistance = currentY - lastY

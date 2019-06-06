@@ -69,12 +69,18 @@ local function useConsumable(player, consumableData)
 		CollectionService:AddTag(player.Character, "Poisoned")
 		local bubble = import("Assets/Particles/Poison"):Clone()
 		bubble.Parent = player.Character.Head
-		PlayerData:set(player, "lastHit", os.time())
+		PlayerData:set(player, "lastHit", os.time() - consumableData.poisonLength)
 		spawn(function()
-			wait(consumableData.poisonLength)
+			wait(math.max( 0, consumableData.poisonLength))
 			CollectionService:RemoveTag(player.Character, "Poisoned")
 			player.Character.Head.Poison:Destroy()
 		end)
+	end
+	if consumableData.clearPoison then
+		CollectionService:RemoveTag(player.Character, "Poisoned")
+		if player.Character.Head:FindFirstChild("Poison") then
+			player.Character.Head.Poison:Destroy()
+		end
 	end
 	if didThirst or didHunger or didHealth then
 		return true

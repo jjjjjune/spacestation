@@ -39,9 +39,6 @@ local function onPlantChopped(player, type, cframe)
 	local drops = Drops[type]
 	for _, itemName in pairs(drops) do
 		Messages:send("MakeItem", itemName, (cframe * CFrame.new(math.random(-10,10), 5, math.random(-10,10))).p)
-		--[[local item = import("Assets/Items/"..itemName):Clone()
-		item.Parent = workspace
-		item.PrimaryPart = item.Base--]]
 	end
 end
 
@@ -51,7 +48,6 @@ local function chopPlant(player, plantModel)
 		local cf = plantModel.Base.CFrame
 		local type = tab.type
 		onPlantChopped(player,type, cf)
-		PlayerData:add(player, "treesCutTotal", 1)
 		plantModel:Destroy()
 		if tab.isDefault then
 			spawn(function()
@@ -63,6 +59,9 @@ local function chopPlant(player, plantModel)
 				addPlant(plantModel, type, true)
 			end)
 		end
+	end
+	if player then
+		PlayerData:add(player, "treesCutTotal", 1)
 	end
 end
 
@@ -150,6 +149,12 @@ function Plants:start()
 	end)
 	Messages:hook("ChopRockServer", function(player, plantModel)
 		chopRock(player, plantModel)
+	end)
+	Messages:send("DamagePlant", function(plant, damage)
+		plant.Health.Value = plant.Health.Value - 1
+		if plant.Health.Value <= 0 then
+			chopPlant(nil, plant)
+		end
 	end)
 	Messages:hook("CreatePlant", function(player, plant, position)
 		local plantModel = import("Assets/Plants/"..plant.."/1"):Clone()

@@ -26,11 +26,23 @@ local items = {
 		poison = true,
 		poisonLength = 120,
 	},
+	["Antipoison"] = {
+		consumable = true,
+		hunger = 0,
+		thirst = 25,
+		clearPoison = true
+	},
 	["Red Mushroom"] = {
 		consumable = true,
 		hunger = 12,
 		thirst = 0,
 		health = 8,
+	},
+	["Nectar"] = {
+		consumable = true,
+		hunger = 5,
+		thirst = 5,
+		health = 3,
 	},
 	["Droolabou Meat"] = {
 		consumable = true,

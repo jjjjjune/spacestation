@@ -230,8 +230,8 @@ local function damageBuilding(building, player, damage)
 				p:BreakJoints()
 			end
 		end
-		Messages:send("PlaySound", "Chop", player.Character.HumanoidRootPart.Position)
 		game:GetService("Debris"):AddItem(building, 5)
+		Messages:send("PlaySound", "Chop", building.Base.Position)
 	end
 	Messages:send("PlayParticle", "Sparks",20,player.Character.Head.Position)
 	Messages:send("PlaySound", "Construct", building.Base.Position)
@@ -277,6 +277,9 @@ local function attemptSwing(player)
 		elseif player.Character:FindFirstChild("Iron Hammer") then
 			damage= - damage
 			damage = damage * 4
+		elseif player.Character:FindFirstChild("Bone Hammer") then
+			damage= - damage
+			damage = damage * 3
 		end
 		if damage > 0 and CollectionService:HasTag(building, player.Name.."Owned") then
 			return
@@ -299,7 +302,7 @@ local function checkBuildingFunctions(building)
 		CollectionService:AddTag(building, "Hooked")
 		building.Hitbox.Touched:connect(function(hit)
 			local item = hit.Parent
-			if item:FindFirstChild("Base") and item.Parent == workspace then
+			if item and item:FindFirstChild("Base") and item.Parent == workspace then
 				if BuildingItemFunctions[building.Name] then
 					local player = getOwner(building)
 					BuildingItemFunctions[building.Name](player, item, building)
@@ -343,6 +346,9 @@ function Buildings:start()
 				end
 			end
 		end
+	end)
+	Messages:hook("DamageBuilding", function(building, damage)
+		damageBuilding(building, nil, damage)
 	end)
 	Messages:hook("DestroyBuilding", function(player, building)
 		if CollectionService:HasTag(building, player.Name.."Owned") then

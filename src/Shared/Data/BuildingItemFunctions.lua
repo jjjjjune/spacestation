@@ -61,7 +61,7 @@ return {
 	["Cannon"] = function(player, item, building)
 		local id = HttpService:GenerateGUID()
 		local goal = (building.Base.CFrame * CFrame.new(0,20,-300)).p
-		local cannonball = game.ReplicatedStorage.Assets.Items["Cannonball"]
+		local cannonball = game.ReplicatedStorage.Assets.Items[item.Name]
 		Messages:send("CreateProjectile", id, building.Base.Position + Vector3.new(0,3,0), goal, cannonball, building, player)
 		item:Destroy()
 		Messages:send("PlaySound", "Cannonfire", building.Base.Position)

@@ -113,5 +113,13 @@ return {
 	["Ruby Rock"] = {
 		"Ruby",
 		"Ruby",
+	},
+	["Honey Rock"] = {
+		"Nectar",
+		"Nectar",
+	},
+	["Gold Rock"] = {
+		"Gold",
+		"Gold",
 	}
 }

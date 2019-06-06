@@ -18,7 +18,7 @@ local function manageIdols()
 		--idol.Display:SetPrimaryPartCFrame(idol.Display.PrimaryPart.CFrame * CFrame.Angles(0,math.rad(1),0))
 		local info = IdolsList[idol.Name]
 		local stat = info.stat
-		local myAmount = _G.Data[stat]
+		local myAmount = _G.Data[stat] or 0
 		local needed = info.needed
 		local descriptionText = ""
 		if myAmount then

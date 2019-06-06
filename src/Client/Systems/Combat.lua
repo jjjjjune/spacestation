@@ -84,6 +84,9 @@ local function getWalkspeed()
 	if stunLocked() then
 		return CombatConstants.STUN_LOCK_WALKSPEED
 	end
+	if time() - lastHit < CombatConstants.STUN_LOCK_TIME+CombatConstants.STUN_LOCK_JUMP_RECOVERY_TIME then
+		return CombatConstants.STUN_LOCK_WALKSPEED
+	end
 	--[[if shieldUp then
 		return weaponData.shieldWalkspeed
 	end--]]
@@ -109,6 +112,9 @@ end
 local function getJumpPower()
 	local basePower = GetRaceInfo(_G.Data["race"]).jumpPower
 	if stunLocked() then
+		return 0
+	end
+	if time() - lastHit < CombatConstants.STUN_LOCK_TIME+CombatConstants.STUN_LOCK_JUMP_RECOVERY_TIME then
 		return 0
 	end
 	return basePower

@@ -34,19 +34,19 @@ end
 function Turtle:onHumanoidDamaged(humanoid)
 	local character = humanoid.Parent
 	if CollectionService:HasTag(character, "Character") then
-		local knockbackForce = 20
+		local knockbackForce = 60
 		local wasRagdolled = CollectionService:HasTag(character, "Ragdolled")
 		if not wasRagdolled then
 			Messages:send("RagdollCharacter", character, 1.5)
 		end
 
 		local velocity = ((humanoid.RootPart.CFrame.lookVector.unit)*-knockbackForce)
-		velocity = velocity + Vector3.new(0,500,0)
+		velocity = velocity + Vector3.new(0,100,0)
 		humanoid.RootPart.Velocity = velocity
 
 		local bv = humanoid.RootPart.BodyVelocity
 		bv.Velocity = velocity
-		bv.MaxForce = Vector3.new(1,1,1)*800
+		bv.MaxForce = Vector3.new(1,1,1)*8000
 
 		spawn(function()
 			wait(.2)

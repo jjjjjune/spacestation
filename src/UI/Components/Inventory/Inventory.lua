@@ -105,6 +105,32 @@ function Inventory:updateGridItems()
 	local inventory = props.inventories[userId]
 	local inventorySize = GetInventorySize(game.Players.LocalPlayer)
 	local activatedCallback = function(ref,inventoryIndex)
+		if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+			local originalSlot = inventoryIndex
+			local originalItem = self.props.inventories[userId][originalSlot]
+
+			if tonumber(inventoryIndex) < 200 then
+				for i = 200, 203 do
+					local slot = i..""
+					if not self.props.inventories[userId][slot] then
+						local targetSlot = slot
+						Messages:sendServer("SwapItems", originalSlot, targetSlot)
+						Store:dispatch(SetItemPosition(userId,originalItem, targetSlot))
+						return
+					end
+				end
+			else
+				for i = 1, inventorySize do
+					local slot = i..""
+					if not self.props.inventories[userId][slot] then
+						local targetSlot = slot
+						Messages:sendServer("SwapItems", originalSlot, targetSlot)
+						Store:dispatch(SetItemPosition(userId,originalItem, targetSlot))
+						return
+					end
+				end
+			end
+		end
 		local instance = ref.current:Clone()
 		instance.BG.BackgroundTransparency =1
 		instance.BackgroundTransparency = 1
@@ -299,7 +325,7 @@ function Inventory:render()
 			}),
 			tooltipInfo = Roact.createElement("TextLabel", {
 				Size = UDim2.new(1,0,.075,0),
-				Text = "Double click to use, drag tools into the top two slots to equip them. To craft, drag items into the bottom slots. To build, double click a blueprint in your inventory.",
+				Text = "Double click to use, drag tools into the top two slots to equip them. To craft, drag items into the bottom slots. To build, double click a blueprint in your inventory. Hold left control when clicking to transfer item to crafting.",
 				TextScaled = true,
 				AnchorPoint = Vector2.new(0,1),
 				Position = UDim2.new(0,0,0,-6),

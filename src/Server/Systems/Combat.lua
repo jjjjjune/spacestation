@@ -256,9 +256,10 @@ function Combat:start()
 	Messages:hook("DebugStunLock", function(player)
 		stunLock(player.Character)
 	end)
-	Messages:hook("DamageHumanoid", function(humanoid, damage, projectileName)
+	Messages:hook("DamageHumanoid", function(humanoid, damage, projectileName, callbackFunction)
 		if not shieldUpTable[humanoid.Parent] then
 			LowerHealth(humanoid, damage, true)
+			callbackFunction(humanoid.Parent)
 		else
 			local character = humanoid.Parent
 			local blocked = false
@@ -283,6 +284,7 @@ function Combat:start()
 				blocked = true
 			end
 			if not blocked then
+				callbackFunction(humanoid.Parent)
 				LowerHealth(humanoid, damage, true)
 			else
 				if projectileName then
