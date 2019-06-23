@@ -203,7 +203,7 @@ end
 local function attemptSwing(character, isLunge)
 	local player = game.Players:GetPlayerFromCharacter(character)
 	local weaponData = getWeaponData(player)
-	if character.Head.Position.Y > 1000 then
+	if character.Head.Position.Y > 2000 then
 		-- in hell maybe
 		return
 	end

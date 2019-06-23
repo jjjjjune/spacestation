@@ -33,10 +33,11 @@ function DangerIndicator:init()
 	self.billboardRef = Roact.createRef()
 	game:GetService("RunService").RenderStepped:connect(function()
 		if not self.billboardRef.current then
+			print("no bilklboard")
 			return
 		end
 
-		if Settings.SavedQualityLevel.Value < 5 then
+		if Settings.SavedQualityLevel.Value < 7 then
 			self:setState(function(state)
 				return {
 					shouldShow = true,
@@ -48,17 +49,6 @@ function DangerIndicator:init()
 					shouldShow = false,
 				}
 			end)
-		end
-
-		local lastHit = _G.Data and  _G.Data.lastHit
-		if lastHit then
-			if os.time() - lastHit < WorldConstants.COMBAT_LOG_TIME then
-				self.visible = true
-			else
-				self.visible = false
-			end
-		else
-			self.visible = false
 		end
 
 		if not self.part then
@@ -85,32 +75,28 @@ function DangerIndicator:init()
 		if character then
 			if character:FindFirstChild("Head") then
 				for _, isle in pairs(islands) do
-					if isle:IsA("Model") and isWithin(character.Head.Position, isle) then
-						--isle.Parent = nil
-					else
-						--isle.Parent = self.frameRef.current
-						if isle:IsA("BasePart") then
-							isle.Color = workspace.Terrain.WaterColor
-							if isle.Name == "water" then
-								isle.Parent = workspace
-							end
-							isle.CFrame = CFrame.new(Vector3.new(camera.CFrame.p.X, 9, camera.CFrame.p.Z))
+					if isle:IsA("BasePart") then
+						isle.Color = workspace.Terrain.WaterColor
+						if isle.Name == "water" then
+							isle.Parent = workspace
 						end
+						isle.CFrame = CFrame.new(Vector3.new(camera.CFrame.p.X, 9, camera.CFrame.p.Z))
 					end
 				end
 			end
 		end
 
-		if #islands == 0 and self.state.shouldShow then
+		if #islands == 0 and (self.state.shouldShow == true) then
 			if self.frameRef.current then
 				local viewportFrame = self.frameRef.current
 				local islandsFolder = game.ReplicatedStorage.IslandPreviews
 				for _, isle in pairs(islandsFolder:GetChildren()) do
+					isle = isle:Clone()
 					isle.Parent = viewportFrame
 					table.insert(islands, isle)
 				end
 			end
-		elseif #islands > 0 and not self.state.shouldShow then
+		elseif #islands > 0 and (self.state.shouldShow == false) then
 			for i, isle in pairs(islands) do
 				isle:Destroy()
 				islands[i] = nil

@@ -151,8 +151,8 @@ function Inventory:updateGridItems()
 		StyleConstants.THIRST_COLOR,
 		StyleConstants.HUNGER_COLOR,
 	})
-	self.itemSlots = IconsForSlots(1, inventorySize,inventory,activatedCallback,self.refsTable, {StyleConstants.HEALTH_COLOR})
-	self.craftSlots = IconsForSlots(200,203,inventory,activatedCallback,self.refsTable,{StyleConstants.THIRST_COLOR})
+	self.itemSlots = IconsForSlots(1, inventorySize,inventory,activatedCallback,self.refsTable, {})
+	self.craftSlots = IconsForSlots(200,203,inventory,activatedCallback,self.refsTable,{StyleConstants.THIRST_COLOR,StyleConstants.THIRST_COLOR,StyleConstants.THIRST_COLOR,StyleConstants.THIRST_COLOR})
 end
 
 function Inventory:releaseDrag()
@@ -268,34 +268,38 @@ function Inventory:render()
 		Size = UDim2.new(1,0,1,0),
 		[Roact.Ref] = self.dragHolderRef
 	},{
-		frame = Roact.createElement("Frame", {
+		frame = Roact.createElement("ImageLabel", {
 			Visible = self.props.isOpen,
 			Size = UDim2.new(.25,0,.65,0),
 			AnchorPoint = anchorPoint,
 			Position = UDim2.new(1,0,.5,0),
 			BorderSizePixel = 0,
+			Image = "rbxassetid://3273520134",
 			BackgroundColor3 = StyleConstants.WINDOW_BG,
 			[Roact.Ref] = self.frameRef
+			-- 1.383 aspect
 		}, {
 			Padding = Roact.createElement("UIPadding", {
-				PaddingLeft = UDim.new(0,4),
-				PaddingRight = UDim.new(0,4),
-				PaddingTop = UDim.new(0,4),
-				PaddingBottom = UDim.new(0,4),
+				PaddingLeft = UDim.new(0,36),
+				PaddingRight = UDim.new(0,36),
+				PaddingTop = UDim.new(0,44),
+				PaddingBottom = UDim.new(0,44),
 			}),
 			Constraint = Roact.createElement("UIAspectRatioConstraint", {
-				AspectRatio = .675,
+				AspectRatio = .722,
 			}),
 			SwordShieldFrame = Roact.createElement("Frame", {
 				Size = UDim2.new(1,0,.2,0),
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
+				BackgroundTransparency = 1,
 			}, self:getGrid(self.swordShieldSlots, "Horizontal", "Center", UDim2.new(.2,0,.65,0))),
 			ItemsFrame = Roact.createElement("Frame", {
 				Size = UDim2.new(1,0,.6,0),
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
 				Position = UDim2.new(0, 0,.2,0),
+				BackgroundTransparency = 1,
 				[Roact.Ref] = self.itemFrameRef,
 			},self:getGrid(self.itemSlots, "Horizontal", "Center")),
 			CraftButton = Roact.createElement("ImageButton", {
@@ -315,37 +319,30 @@ function Inventory:render()
 				Size = UDim2.new(1,0,.2,0),
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
+				BackgroundTransparency = 1,
 				Position = UDim2.new(0, 0,.8,0),
 			},self:getGrid(self.craftSlots, "Horizontal", "Center", UDim2.new(.2,0,.65,0))),
-			Shadow = Roact.createElement("Frame", {
-				Size = UDim2.new(1,0,0,4),
-				BorderSizePixel = 0,
-				BackgroundColor3 = StyleConstants.STROKE_COLOR,
-				Position = UDim2.new(0,0,1,0),
-			}),
 			tooltipInfo = Roact.createElement("TextLabel", {
 				Size = UDim2.new(1,0,.075,0),
 				Text = "Double click to use, drag tools into the top two slots to equip them. To craft, drag items into the bottom slots. To build, double click a blueprint in your inventory. Hold left control when clicking to transfer item to crafting.",
 				TextScaled = true,
-				AnchorPoint = Vector2.new(0,1),
-				Position = UDim2.new(0,0,0,-6),
+				AnchorPoint = Vector2.new(0,0),
+				Position = UDim2.new(0,0,-.075,-52),
 				ZIndex = 5,
 				BorderSizePixel = 0,
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
 				TextColor3 = StyleConstants.TEXT,
 				Font = StyleConstants.FONT_BOLD,
 			}),
-			ShowHideButton = Roact.createElement("TextButton", {
-				AnchorPoint = Vector2.new(1,.5),
+			ShowHideButton = Roact.createElement("ImageButton", {
+				AnchorPoint = Vector2.new(0,0),
 				BackgroundColor3 = StyleConstants.WINDOW_BG,
 				BorderSizePixel = 0,
+				Image = "rbxassetid://3304517193",
 				Size = UDim2.new(0, 50,0,50),
-				Position = UDim2.new(0,0,.5,0),
+				Position = UDim2.new(0,-85,.5,0),
 				ZIndex = 5,
-				Text = (self.props.isOpen and ">") or "<",
-				TextColor3 = StyleConstants.TEXT,
-				Font = StyleConstants.FONT_BOLD,
-				TextScaled = true,
+				Rotation = (self.props.isOpen and 180),
 				Visible = true,
 				[Roact.Event.Activated] = function()
 					self:setState(function(state)

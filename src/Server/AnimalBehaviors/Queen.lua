@@ -237,6 +237,7 @@ function Queen:onDied()
 	Messages:send("PlayParticle", "Skulls", 20, self.model.Head.Position)
 	self.model.Pupil.BrickColor = BrickColor.new("White")
 	self.model.Hitbox:Destroy()
+	self.rope:Destroy()
 	Messages:send("PlaySound", "BoneBreak", self.model.Head.Position)
 	game:GetService("Debris"):AddItem(self.model, 5)
 	local drops = Drops[self.model.Name]

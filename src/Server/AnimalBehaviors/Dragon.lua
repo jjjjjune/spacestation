@@ -298,7 +298,6 @@ function Dragon:step()
 			self.attacking = false
 			Messages:send("StopAnimation", self.model, "DragonTurnaround")
 		end
-		print("found food!")
 		self:walkTo(foodFound.Base.Position)
 		self:tryEat(foodFound)
 	end

@@ -20,6 +20,15 @@ function FallDamage:start()
 				return
 			end
 
+			local humanoid = character.Humanoid
+			local state =humanoid:GetState()
+			if state ~= Enum.HumanoidStateType.Freefall and state ~= Enum.HumanoidStateType.Jumping and state ~= Enum.HumanoidStateType.Landed then
+				if totalDistance < 1 or lastChangeInDistance > 0 then
+					lastY = character.HumanoidRootPart.Position.Y
+					return
+				end
+			end
+
 			local currentY =character.HumanoidRootPart.Position.Y
 
 			local changeInDistance = currentY - lastY

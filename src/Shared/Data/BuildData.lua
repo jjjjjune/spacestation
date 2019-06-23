@@ -80,8 +80,8 @@ data["Sailboat"] = {
 }
 data["Longship"] = {
 	recipe = {
-		["Log"] = 1,
-		--["Rope"] = 6,
+		["Log"] = 12,
+		["Rope"] = 6,
 	},
 	water = true,
 }

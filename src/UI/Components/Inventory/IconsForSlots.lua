@@ -33,7 +33,8 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 				Size = UDim2.new(1,0,1,0),
 				Image = "",
 				BorderSizePixel = 0,
-				BackgroundColor3 = col,
+				BackgroundColor3 = colors[i] or Color3.fromRGB(44,25,56),
+				--BackgroundTransparency = 1,
 				--Rotation = rotation,
 			}),
 			ItemLabel = Roact.createElement("TextLabel", {
@@ -41,6 +42,7 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 				Text = itemName,
 				TextScaled = true,
 				BackgroundColor3 = col,
+				TextColor3 = Color3.new(1,1,1),
 				BorderSizePixel = 0,
 				BackgroundTransparency = 1,
 				ZIndex = 5,

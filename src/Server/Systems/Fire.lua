@@ -4,13 +4,14 @@ local LowerHealth = import "Shared/Utils/LowerHealth"
 local CollectionService = game:GetService("CollectionService")
 local Data = import "Shared/PlayerData"
 local flameParticle = import "Assets/Particles/Fire"
+local PlayerData = import "Shared/PlayerData"
 
 local BURN_INTERVAL = 1
 local BURN_DAMAGE = 3
 local BURN_BUILDING_DAMAGE = 15
 local GO_OUT_CHANCE = 5 -- out of 1000
 local PLANT_DAMAGE = 1
-local SPREAD_TIME = 2 -- fires can spread after this many seconds
+local SPREAD_TIME = 5 -- fire spread tick everyt his many seconds
 
 local lastChecksTable = {} -- we only wanna check for nearby burnables like once every 10 seconds or so per burnable
 
@@ -30,10 +31,16 @@ end
 local function manageBurningHumanoid(object)
 	if not object:FindFirstChild("Mask Of Fire") then
 		local player = game.Players:GetPlayerFromCharacter(object)
+		local mask = "ff"
 		if player then
-			Data:set(player, "lastHit", os.time())
+			mask = PlayerData:get(player, "idol")
 		end
-		LowerHealth(object.Humanoid, BURN_DAMAGE, true)
+		if mask ~= "Mask Of Fire" then
+			if player then
+				Data:set(player, "lastHit", os.time())
+			end
+			LowerHealth(object.Humanoid, BURN_DAMAGE, true)
+		end
 	end
 end
 
@@ -120,7 +127,7 @@ end
 local function startLoop()
 	while wait(BURN_INTERVAL) do
 		for _, burningObject in pairs(CollectionService:GetTagged("Burning")) do
-			manageBurningObject(burningObject)
+			spawn(function() manageBurningObject(burningObject) end)
 		end
 	end
 end

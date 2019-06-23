@@ -45,9 +45,10 @@ local function canPlace()
 		return false
 	end
 	if data.water then
-		if target ~= workspace.terrain then
+		--[[if target ~= workspace.terrain then
 			return false
-		end
+		end--]]
+		return true
 	else
 		if target == workspace.terrain then
 			return false

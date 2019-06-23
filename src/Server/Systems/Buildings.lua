@@ -129,7 +129,7 @@ local function placeSchematic(player, building, cf)
 	model.Parent = workspace
 	model.PrimaryPart = model.Base
 	model:SetPrimaryPartCFrame(cf)
-	model.Health.MaxValue = math.min(200, model.Health.MaxValue/4)
+	model.Health.MaxValue = math.min(50, model.Health.MaxValue/4)
 	modelOwnerMap[model] = player
 	CollectionService:AddTag(model, player.Name.."Owned")
 	CollectionService:AddTag(model, "Schematic")
@@ -171,7 +171,11 @@ local function refreshProgress(schematicModel, player)
 		realBuilding.Parent = workspace
 		CollectionService:AddTag(realBuilding, "Building")
 		realBuilding.PrimaryPart = realBuilding.Base
-		realBuilding:SetPrimaryPartCFrame(schematicModel.Base.CFrame)
+		if realBuilding.Base.Anchored == true then
+			realBuilding:SetPrimaryPartCFrame(schematicModel.Base.CFrame)
+		else
+			realBuilding.PrimaryPart.CFrame = schematicModel.Base.CFrame
+		end
 		local owner = modelOwnerMap[schematicModel]
 
 		checkWeld(realBuilding)
@@ -351,7 +355,11 @@ function Buildings:start()
 		local model = game.ReplicatedStorage.Assets.Buildings[buildingName]:Clone()
 		model.Parent = workspace
 		model.PrimaryPart = model.Base
-		model:SetPrimaryPartCFrame(CFrame.new(pos))
+		if model.Base.Anchored == true then
+			model:SetPrimaryPartCFrame(CFrame.new(pos))
+		else
+			model.PrimaryPart.CFrame = CFrame.new(pos)
+		end
 		CollectionService:AddTag(model, "Building")
 	end)
 	Messages:hook("DamageBuilding", function(building, damage)

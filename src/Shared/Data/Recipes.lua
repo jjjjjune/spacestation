@@ -284,9 +284,9 @@ return {
 		name = "Deft Idol",
 		makes = {"Deft Idol"},
 		recipe = {
-			"Gold",
-			"Gold",
-			"Gold",
+			"Gold Bar",
+			"Gold Bar",
+			"Gold Bar",
 		}
 	},
 	{

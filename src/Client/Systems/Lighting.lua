@@ -6,7 +6,7 @@ local function doLighting()
 	if character then
 		local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
 		if humanoidRootPart then
-			if humanoidRootPart.Position.Y > 1400 then
+			if humanoidRootPart.Position.Y > 2000 then
 				isInHell = true
 			end
 		end

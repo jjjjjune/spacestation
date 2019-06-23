@@ -60,7 +60,7 @@ local tooltipSettings = {
 	{
 		validityCheck = function(part)
 			local check = part.Parent
-			if CollectionService:HasTag(check, "Plant") then
+			if CollectionService:HasTag(check, "Plant") and tonumber(check.Name) > 2 then
 				return part.Parent
 			end
 			return nil

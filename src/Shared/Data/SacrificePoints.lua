@@ -21,5 +21,7 @@ return {
 		["Emerald"] = 2,
 		["Sapphire"] = 2,
 		["Ruby"] = 2,
+		["Gold"] = 10,
+		["Sulfur"] = 6,
 	}
 }

@@ -188,7 +188,7 @@ local function climbTick()
 			moveAnimPlaying = false
 		end
 	end
-	if climbing then
+	if climbing and climbGyro then
 		climbGyro.MaxTorque = Vector3.new(40000000,4000000000,40000000)
 		climbPos.MaxForce = Vector3.new(40000,40000,40000)
 		doClimbMovement()
@@ -256,8 +256,10 @@ function Climbing:start()
 	player.CharacterAdded:connect(function(character)
 		climbAnimPlaying = false
 		character:WaitForChild("HumanoidRootPart")
-		climbPos = character.HumanoidRootPart:WaitForChild("ClimbPos")
-		climbGyro = character.HumanoidRootPart:WaitForChild("ClimbGyro")
+		character.HumanoidRootPart:WaitForChild("ClimbPos")
+		character.HumanoidRootPart:WaitForChild("ClimbGyro")
+		climbPos = character.HumanoidRootPart.ClimbPos
+		climbGyro =character.HumanoidRootPart.ClimbGyro
 		stamina = 100
 	end)
 	game:GetService("RunService").RenderStepped:connect(function()

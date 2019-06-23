@@ -181,6 +181,7 @@ local function checkWeld(building)
 				setProperty(building, "Massless", true)
 				return true
 			else
+				print("making anchored")
 				spawn(function()
 					wait(4)
 					setProperty(building, "Anchored", true)
