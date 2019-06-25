@@ -10,7 +10,7 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 		local itemName = info or ""
 		local col = colors[(i - slotBegin)+1]
 		if not col then
-			col = colors[1]
+			col = Color3.fromRGB(44,25,56)
 		end
 
 		local rnd = Random.new(i)
@@ -33,7 +33,7 @@ return function(slotBegin, slotEnd, inventory, activatedCallback,refsTable, colo
 				Size = UDim2.new(1,0,1,0),
 				Image = "",
 				BorderSizePixel = 0,
-				BackgroundColor3 = colors[i] or Color3.fromRGB(44,25,56),
+				BackgroundColor3 = col,
 				--BackgroundTransparency = 1,
 				--Rotation = rotation,
 			}),

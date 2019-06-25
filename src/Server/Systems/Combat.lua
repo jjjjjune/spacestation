@@ -256,7 +256,7 @@ function Combat:start()
 	Messages:hook("DebugStunLock", function(player)
 		stunLock(player.Character)
 	end)
-	Messages:hook("DamageHumanoid", function(humanoid, damage, projectileName, callbackFunction)
+	Messages:hook("DamageHumanoid", function(humanoid, damage, projectileName, owner, callbackFunction)
 		if not shieldUpTable[humanoid.Parent] then
 			LowerHealth(humanoid, damage, true)
 			callbackFunction(humanoid.Parent)
@@ -286,6 +286,9 @@ function Combat:start()
 			if not blocked then
 				callbackFunction(humanoid.Parent)
 				LowerHealth(humanoid, damage, true)
+				if humanoid.Health <= 0 then
+					PlayerData:add(owner, character.Name.."Killed", 1)
+				end
 			else
 				if projectileName then
 					-- ricochet!!!

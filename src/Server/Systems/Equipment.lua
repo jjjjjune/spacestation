@@ -9,6 +9,22 @@ local CollectionService = game:GetService("CollectionService")
 
 local lastSlotContained = {}
 
+local lastValue = {}
+
+local function onEquipped(player, itemName)
+	if itemName == "Jumping Stone" then
+		print("YEAEHHHSHASHASAS")
+		player.Character.Humanoid.JumpPower = player.Character.Humanoid.JumpPower + 20
+	end
+end
+
+local function onUnequipped(player, itemName)
+	if itemName == "Jumping Stone" then
+		print("SADFJASDSAJDHAJ")
+		player.Character.Humanoid.JumpPower = player.Character.Humanoid.JumpPower - 20
+	end
+end
+
 local function getInventory(player)
 	local state = Store:getState()
 	local inventory = state.inventories[tostring(player.UserId)]
@@ -27,6 +43,7 @@ local function unEquip(player, itemName)
 	for _, item in pairs(player.Character:GetChildren()) do
 		if item.Name == itemName then
 			item:Destroy()
+			onUnequipped(player, itemName)
 		end
 	end
 end
@@ -51,6 +68,7 @@ local function equip(player, item, data)
 			v.Massless = true
 		end
 	end
+	onEquipped(player, item)
 end
 
 local function refreshEquipment(player)

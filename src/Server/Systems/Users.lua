@@ -49,6 +49,7 @@ local function setClass(character, className)
 	humanoidDescription.LeftLegColor =classAsset.LeftUpperLeg.BrickColor.Color
 	humanoidDescription.RightLegColor =classAsset.RightUpperLeg.BrickColor.Color
 	humanoidDescription.HeadScale = classAsset.Humanoid.HeadScale.Value
+	humanoidDescription.HeightScale = classAsset.Humanoid.BodyHeightScale.Value
 
 	--humanoidDescription.Head = 2510332695
 	humanoidDescription.RunAnimation = 2510238627

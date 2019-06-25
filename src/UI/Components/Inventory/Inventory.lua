@@ -147,12 +147,9 @@ function Inventory:updateGridItems()
 		end
 	end
 
-	self.swordShieldSlots = IconsForSlots(100,101,inventory,activatedCallback,self.refsTable,{
-		StyleConstants.THIRST_COLOR,
-		StyleConstants.HUNGER_COLOR,
-	})
+	self.swordShieldSlots = IconsForSlots(100,101,inventory,activatedCallback,self.refsTable,{})
 	self.itemSlots = IconsForSlots(1, inventorySize,inventory,activatedCallback,self.refsTable, {})
-	self.craftSlots = IconsForSlots(200,203,inventory,activatedCallback,self.refsTable,{StyleConstants.THIRST_COLOR,StyleConstants.THIRST_COLOR,StyleConstants.THIRST_COLOR,StyleConstants.THIRST_COLOR})
+	self.craftSlots = IconsForSlots(200,203,inventory,activatedCallback,self.refsTable,{StyleConstants.HEALTH_COLOR, StyleConstants.HEALTH_COLOR, StyleConstants.HEALTH_COLOR, StyleConstants.HEALTH_COLOR})
 end
 
 function Inventory:releaseDrag()

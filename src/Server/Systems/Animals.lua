@@ -24,6 +24,9 @@ local tags = {
 	},
 	["Dragon"] = {
 		"Dragon"
+	},
+	["TurretPlant"] = {
+		"TurretPlant"
 	}
 }
 

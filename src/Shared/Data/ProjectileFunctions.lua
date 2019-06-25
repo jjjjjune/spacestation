@@ -14,7 +14,7 @@ local function genericHit(hit, owner, pos, projectileName, damage)
 		if owner then
 			mod = GetProjectileDamageModifier(owner)
 		end
-		Messages:send("DamageHumanoid", humanoid, damage*mod, projectileName, function(character)
+		Messages:send("DamageHumanoid", humanoid, damage*mod, projectileName, owner, function(character)
 			Messages:send("MakeItem", projectileName, pos)
 		end)
 	else
@@ -110,7 +110,7 @@ return {
 			if owner then
 				mod = GetProjectileDamageModifier(owner)
 			end
-			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 50*mod, projectileName, function(character)
+			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 50*mod, projectileName, owner, function(character)
 				Messages:send("Burn", character)
 			end)
 			for _, p in pairs(hit.Parent:GetChildren()) do

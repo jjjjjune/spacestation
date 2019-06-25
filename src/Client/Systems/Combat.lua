@@ -117,6 +117,9 @@ local function getJumpPower()
 	if time() - lastHit < CombatConstants.STUN_LOCK_TIME+CombatConstants.STUN_LOCK_JUMP_RECOVERY_TIME then
 		return 0
 	end
+	if player.Character:FindFirstChild("Jumping Stone") then
+		basePower = basePower + 20
+	end
 	return basePower
 end
 

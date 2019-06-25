@@ -5,7 +5,7 @@ local Lighting = game:GetService("Lighting")
 
 local LightingSystem = {}
 
-local modifier = 1
+local modifier = 1.6
 
 function LightingSystem:start()
 	local lightData = LightingData[8].Data
