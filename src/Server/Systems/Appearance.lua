@@ -18,6 +18,7 @@ function Appearance:start()
 			description.WalkAnimation = "rbxassetid://1090131576"
 			wait()
 			humanoid:ApplyDescription(description)
+			character:WaitForChild("Health"):Destroy()
 		end)
 	end)
 end
