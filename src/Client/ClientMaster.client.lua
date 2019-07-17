@@ -4,24 +4,8 @@ local loadOrder = {
 	"../Systems/ClientInitStuff",
 	"../Systems/ClientActionReplicator",
 	"../Systems/ClientAnimations",
-	"../Systems/MatthewCommands",
 	"Shared/Systems/Chat",
-	"../Systems/UI",
-	"../Systems/UsingThings",
-	"../Systems/Combat",
-	"Shared/Systems/Sounds",
-	"../Systems/TooltipSetter",
-	"../Systems/UserStatusEffects",
-	"../Systems/OceanEffects",
-	"../Systems/SacrificeProgress",
-	"../Systems/Building",
-	"../Systems/Boats",
-	"../Systems/Idols",
-	"../Systems/Lighting",
-	"../Systems/Animals",
-	"../Systems/ClientProjectiles",
-	"../Systems/FallDamage",
-	"../Systems/Climbing",
+	"../Systems/UI"
 }
 
 for _, path in ipairs(loadOrder) do
