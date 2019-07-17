@@ -5,7 +5,8 @@ local loadOrder = {
 	"../Systems/ClientActionReplicator",
 	"../Systems/ClientAnimations",
 	"Shared/Systems/Chat",
-	"../Systems/UI"
+	"../Systems/UI",
+	"../Systems/Gravity",
 }
 
 for _, path in ipairs(loadOrder) do
