@@ -6,7 +6,7 @@ local TweenService = game:GetService("TweenService")
 local DEBOUNCE_TIME = .5
 local LOCKED_ICON = "rbxassetid://3484562953"
 local UNLOCKED_ICON = "rbxassetid://3484563464"
-local UNLOCK_TIME = 10 -- doors will automatically unlock after this amount of time
+local UNLOCK_TIME = 60 -- doors will automatically unlock after this amount of time
 
 local debounceTable = {}
 local lockTable = {}
@@ -132,6 +132,9 @@ function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
 	end
+	Messages:hook("UnlockDoor", function(door)
+		unlock(door)
+	end)
 	spawn(function()
 		while wait() do
 			for door, t in pairs(lockTable) do

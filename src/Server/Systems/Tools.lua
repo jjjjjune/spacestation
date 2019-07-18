@@ -1,6 +1,7 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local ToolData = import "Shared/Data/ToolData"
+local TeamData = import "Shared/Data/TeamData"
 
 local function connectEvents(tool)
 	local behavior = import("Server/ToolBehaviors/"..tool.Name).new()
@@ -35,7 +36,9 @@ function Tools:start()
 	end)
 	game.Players.PlayerAdded:connect(function(player)
 		player.CharacterAdded:connect(function(character)
-			Messages:send("GiveTool", player, "Flashlight")
+			for _, toolName in pairs(TeamData[player.Team.Name].starterPack) do
+				Messages:send("GiveTool", player, toolName)
+			end
 		end)
 	end)
 end

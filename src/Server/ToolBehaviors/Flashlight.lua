@@ -2,7 +2,6 @@ local Flashlight = {}
 Flashlight.__index = Flashlight
 
 function Flashlight:instance(tool)
-	print("instance for: ", tool)
 	self.player = tool.Parent.Parent
 	tool.Equipped:connect(function()
 		self:equipped(self.player.Character)
@@ -17,7 +16,7 @@ function Flashlight:equipped(character)
 end
 
 function Flashlight:unequipped(character)
-	character.HumanoidRootPart.PointLight.Brightness = .2
+	character.HumanoidRootPart.PointLight.Brightness = 0
 end
 
 function Flashlight.new()
