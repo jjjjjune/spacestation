@@ -74,7 +74,6 @@ function Oxygen:start()
 						CollectionService:AddTag(player.Character,"Breathing")
 					else
 						CollectionService:RemoveTag(player.Character,"Breathing")
-						player.Character.Humanoid:TakeDamage(1)
 					end
 				end
 			end

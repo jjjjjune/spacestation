@@ -19,6 +19,10 @@ function Appearance:start()
 			wait()
 			humanoid:ApplyDescription(description)
 			character:WaitForChild("Health"):Destroy()
+			local light = Instance.new("PointLight", character.PrimaryPart)
+			light.Brightness = .2
+			light.Range = 12
+			light.Shadows = true
 		end)
 	end)
 end

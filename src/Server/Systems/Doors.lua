@@ -6,8 +6,10 @@ local TweenService = game:GetService("TweenService")
 local DEBOUNCE_TIME = .5
 local LOCKED_ICON = "rbxassetid://3484562953"
 local UNLOCKED_ICON = "rbxassetid://3484563464"
+local UNLOCK_TIME = 10 -- doors will automatically unlock after this amount of time
 
 local debounceTable = {}
+local lockTable = {}
 
 local tweenInfo = TweenInfo.new(
 	.4,
@@ -16,14 +18,38 @@ local tweenInfo = TweenInfo.new(
 	0
 )
 
+local function unlock(door)
+	local lockedValue = door.LockedValue
+	lockedValue.Value = false
+	Messages:send("PlaySound","Unlock", door.Door.Position)
+	door.Lock.Decal.Texture = UNLOCKED_ICON
+	door.Lock.BrickColor = BrickColor.new("Bright blue")
+	door.Lock.PointLight.Color = door.Lock.BrickColor.Color
+	lockTable[door] = nil
+end
+
+local function lock(door)
+	local lockedValue = door.LockedValue
+	lockedValue.Value = true
+	Messages:send("PlaySound","Lock", door.Door.Position)
+	door.Lock.Decal.Texture = LOCKED_ICON
+	door.Lock.BrickColor = BrickColor.new("Dusty Rose")
+	door.Lock.PointLight.Color = door.Lock.BrickColor.Color
+	lockTable[door] = time()
+end
+
 local function beep(door)
 	Messages:send("PlaySound","Error", door.Door.Position)
 	door.Open.BrickColor = BrickColor.new("Dusty Rose")
 	door.OpenOutside.BrickColor = BrickColor.new("Dusty Rose")
+	door.Open.PointLight.Color = door.Open.BrickColor.Color
+	door.OpenOutside.PointLight.Color = door.OpenOutside.BrickColor.Color
 	spawn(function()
 		wait(.2)
 		door.Open.BrickColor = BrickColor.new("Shamrock")
 		door.OpenOutside.BrickColor = BrickColor.new("Shamrock")
+		door.Open.PointLight.Color = door.Open.BrickColor.Color
+		door.OpenOutside.PointLight.Color = door.OpenOutside.BrickColor.Color
 	end)
 end
 
@@ -83,15 +109,9 @@ local function prepareDoor(door)
 	local function lockUnlock(player)
 		local isLocked = lockedValue.Value == true
 		if isLocked then
-			lockedValue.Value = false
-			Messages:send("PlaySound","Unlock", door.Door.Position)
-			door.Lock.Decal.Texture = UNLOCKED_ICON
-			door.Lock.BrickColor = BrickColor.new("Bright blue")
+			unlock(door)
 		else
-			lockedValue.Value = true
-			Messages:send("PlaySound","Lock", door.Door.Position)
-			door.Lock.Decal.Texture = LOCKED_ICON
-			door.Lock.BrickColor = BrickColor.new("Dusty Rose")
+			lock(door)
 		end
 	end
 
@@ -112,6 +132,16 @@ function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
 	end
+	spawn(function()
+		while wait() do
+			for door, t in pairs(lockTable) do
+				if time() - t > UNLOCK_TIME then
+					unlock(door)
+					lockTable[door] = nil
+				end
+			end
+		end
+	end)
 end
 
 return Doors
