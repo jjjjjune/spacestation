@@ -26,7 +26,9 @@ local function getToolObject(toolName)
 		n.Parent = tool
 	end
 	spawn(function()
-		repeat wait() until tool.Parent ~= nil
+		if tool.Parent == nil then
+			repeat wait() until tool.Parent ~= nil
+		end
 		connectEvents(tool)
 	end)
 	return tool
@@ -37,7 +39,6 @@ local Tools = {}
 function Tools:start()
 	workspace.ChildAdded:connect(function(tool)
 		if tool:IsA("Tool") then
-			print("whoa")
 			for _, player in pairs(game.Players:GetChildren()) do
 				local character = player.Character
 				if character then

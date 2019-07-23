@@ -15,14 +15,12 @@ function YesNoDialogue:init()
 		end,
 	})
 	Messages:hook("OpenYesNoDialogue", function(props)
-		print("letsa open")
 		local state = {visible = true}
 		for i, v in pairs(props) do
 			state[i] = v
 		end
 		self:setState(state)
 	end)
-	print("this has been hooked")
 end
 
 function YesNoDialogue:render()

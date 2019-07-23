@@ -17,7 +17,6 @@ local function applyTeamAppearance(player, character)
 	description.HeightScale = 1.2
 	wait()
 	for partName, id in pairs(TeamData[player.Team.Name].bodyParts) do
-		print("seeting", partName, id)
 		description[partName] = id
 	end
 	humanoid:ApplyDescription(description)

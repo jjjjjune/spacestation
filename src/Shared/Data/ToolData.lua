@@ -26,5 +26,19 @@ return {
 		icon = "rbxassetid://3513246499",
 		description = "Can deflect lasers, but nothing can deflect the will of the people.",
 		element =  "PLASTIC"
+	},
+	["Wrench"] = {
+		name = "Wrench",
+		model = "Assets/Tools/Wrench",
+		icon = "rbxassetid://3513824523",
+		description = "Can fix things!",
+		element =  "METAL"
+	},
+	["Grab"] = {
+		name = "Grab",
+		model = "Assets/Tools/Grab",
+		icon = "rbxassetid://3522800963",
+		description = "Used to transport objects. Always grab with care.",
+		element = "NONE",
 	}
 }

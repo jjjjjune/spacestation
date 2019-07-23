@@ -13,12 +13,10 @@ function Cash:init()
 			})
 		end
 	end)
-	spawn(function()
-		while wait() do
-			self:setState({
-				["cash"] = _G.Data["cash"] or 0
-			})
-		end
+	game:GetService("RunService").Stepped:connect(function()
+		self:setState({
+			["cash"] = _G.Data["cash"] or 0
+		})
 	end)
 end
 

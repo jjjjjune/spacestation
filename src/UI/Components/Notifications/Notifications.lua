@@ -6,42 +6,49 @@ local Notifications = Roact.PureComponent:extend("Notifications")
 local Frame = import "UI/Components/Frame"
 local StyleConstants = import "Shared/Data/StyleConstants"
 
-local notifications = {
-}
+local notifications = {}
+
+local notificationRefs = {}
 
 local NOTIFICATION_TIME = 10
 
 function Notifications:init()
-	spawn(function()
-		while wait() do self:setState({}) end
-	end)
+	self.mainFrameRef = Roact.createRef()
 	Messages:hook("Notify", function(text)
+		local timestamp = tick()
 		table.insert(notifications, {
 			text = text,
-			time = time(),
+			time = timestamp,
 		})
+		notificationRefs[timestamp] = Roact.createRef()
+		self:setState({})
+		local ref = self.mainFrameRef.current
+		ref:TweenPosition(ref.Position + UDim2.new(0,0,0,-30), "Out", "Quad", .2, true, function()
+			ref:TweenPosition(ref.Position + UDim2.new(0,0,0,30), "Out", "Quad", .2, true)
+		end)
 	end)
 end
 
 function Notifications:render()
 	local notificationChildren = {}
 	table.insert(notificationChildren, Roact.createElement("UIListLayout", {
-		HorizontalAlignment = "Center",
+		HorizontalAlignment = "Left",
 		VerticalAlignment = "Bottom",
 		Padding = UDim.new(0,10),
 	}))
 	for i, notification in pairs(notifications) do
-		if time() - notification.time < NOTIFICATION_TIME then
+		if tick() - notification.time < NOTIFICATION_TIME then
 			table.insert(notificationChildren, Frame(
 				{
-					size = UDim2.new(1,0,.075,0),
-					--position = UDim2.new(0.5,0,0.5,0),
+					size = UDim2.new(.95,0,.05,0),
+					position = UDim2.new(0.5,0,0,0),
 					visible = true,
-					anchorPoint = Vector2.new(0,0),
+					anchorPoint = Vector2.new(0,0.5),
 					aspectRatio = 4,
 					closeCallback = function()
 						self:setState({visible = false})
 					end,
+					[Roact.Ref] = notificationRefs[notification.time]
 				},
 				{Text = Roact.createElement("TextLabel", {
 					Size = UDim2.new(.9,0,.8,0),
@@ -68,6 +75,7 @@ function Notifications:render()
 		Position = UDim2.new(0,0,0,20),
 		AnchorPoint = Vector2.new(0,0),
 		BackgroundTransparency = 1,
+		[Roact.Ref] = self.mainFrameRef
 	}, notificationChildren)
 end
 

@@ -19,7 +19,14 @@ local loadOrder = {
 	"../Systems/Knockback"
 }
 
+local lastStart = time()
 for _, path in ipairs(loadOrder) do
 	local system = import(path)
+	--print("starting: ", path)
+	lastStart = time()
 	system:start()
+	--print(path, "took: ", time() - lastStart)
+	if time() - lastStart > .1 then
+		warn(path, " IS YIELDING, WTF????")
+	end
 end

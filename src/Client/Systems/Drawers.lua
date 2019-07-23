@@ -58,7 +58,6 @@ local function drawerLoop()
 				if root then
 					local drawer = getClosestDrawer(root.Position)
 					if drawer then
-						print("yeah drawer")
 						open(drawer)
 						Messages:send("SetDrawer", drawer)
 						found = true
@@ -66,7 +65,6 @@ local function drawerLoop()
 						if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
 							close(lastDrawer)
 							lastDrawer = nil
-							print("closing")
 						end
 					end
 				end

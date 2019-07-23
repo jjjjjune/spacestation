@@ -6,7 +6,6 @@ local Pistol = {}
 Pistol.__index = Pistol
 
 function Pistol:instance(tool)
-	print("whoa instanced babey")
 	self.player = game.Players.LocalPlayer
 	tool.Equipped:connect(function()
 		self:equipped(self.player.Character)

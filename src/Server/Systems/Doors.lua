@@ -44,7 +44,7 @@ local function beep(door)
 	door.OpenOutside.BrickColor = BrickColor.new("Dusty Rose")
 	door.Open.PointLight.Color = door.Open.BrickColor.Color
 	door.OpenOutside.PointLight.Color = door.OpenOutside.BrickColor.Color
-	spawn(function()
+	delay(.2, function()
 		wait(.2)
 		door.Open.BrickColor = BrickColor.new("Shamrock")
 		door.OpenOutside.BrickColor = BrickColor.new("Shamrock")
@@ -136,13 +136,11 @@ function Doors:start()
 	Messages:hook("UnlockDoor", function(door)
 		unlock(door)
 	end)
-	spawn(function()
-		while wait() do
-			for door, t in pairs(lockTable) do
-				if time() - t > UNLOCK_TIME then
-					unlock(door)
-					lockTable[door] = nil
-				end
+	game:GetService("RunService").Stepped:connect(function()
+		for door, t in pairs(lockTable) do
+			if time() - t > UNLOCK_TIME then
+				unlock(door)
+				lockTable[door] = nil
 			end
 		end
 	end)

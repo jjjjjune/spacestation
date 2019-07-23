@@ -32,16 +32,14 @@ function ShopDisplay:init()
 		end
 	end)
 	self.frameRef = Roact.createRef()
-	spawn(function()
-		game:GetService("RunService").RenderStepped:connect(function()
-			if self.frameRef.current then
-				self.frameRef.current.Parent = displayBillboard
-				if myShop then
-					displayBillboard.Parent = player.PlayerGui.GameUI
-					displayBillboard.Adornee = myShop.PlatformDisplay
-				end
+	game:GetService("RunService").RenderStepped:connect(function()
+		if self.frameRef.current then
+			self.frameRef.current.Parent = displayBillboard
+			if myShop then
+				displayBillboard.Parent = player.PlayerGui.GameUI
+				displayBillboard.Adornee = myShop.PlatformDisplay
 			end
-		end)
+		end
 	end)
 end
 
@@ -102,7 +100,6 @@ function ShopDisplay:render()
 				Position = UDim2.new(.5,0,.8,0),
 				ZIndex = 4,
 				[Roact.Event.Activated] = function()
-					print("activated")
 					Messages:send("OpenYesNoDialogue", {
 						text = "PURCHASE? ($"..myShop.Price.Value..")",
 						yesCallback = function()

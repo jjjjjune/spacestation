@@ -29,16 +29,11 @@ local function close(shop)
 		shop.Open.Value = false
 		shop.PrimaryPart = shop.Base
 		shop.PlatformDisplay.Material = Enum.Material.Neon
-		--shop:SetPrimaryPartCFrame(shop.PrimaryPart.CFrame * CFrame.new(0,0,shop.Base.Size.Z*.75))
-		spawn(function()
-			local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = BrickColor.new("Bright blue").Color})
-			tween:Play()
-			wait(.2)
-			Messages:sendServer("PlaySoundServer", "Lift", shop.Platform.Position)
-			wait(.2)
-			tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,-1,0)})
-			tween:Play()
-		end)
+		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = BrickColor.new("Bright blue").Color})
+		tween:Play()
+		Messages:sendServer("PlaySoundServer", "Lift", shop.Platform.Position)
+		tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,-1,0)})
+		tween:Play()
 		Messages:sendServer("PlaySoundServer", "Shop2", shop.Platform.Position, "Static")
 	end
 end
@@ -51,22 +46,17 @@ local function open(shop)
 		openValue.Value = false
 	end
 	if shop.Open.Value == false then
-		print("opening")
 		shop.Open.Value = true
 		if lastShop and lastShop ~= shop then
 			close(lastShop)
 		end
 		lastShop = shop
 		shop.PrimaryPart = shop.Base
-		spawn(function()
-			local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = BrickColor.new("Steel blue").Color})
-			tween:Play()
-			wait(.2)
-			Messages:sendServer("PlaySoundServer", "Unlift", shop.Platform.Position)
-			wait(.2)
-			tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,1,0)})
-			tween:Play()
-		end)
+		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = BrickColor.new("Steel blue").Color})
+		tween:Play()
+		Messages:sendServer("PlaySoundServer", "Unlift", shop.Platform.Position)
+		tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,1,0)})
+		tween:Play()
 		Messages:sendServer("PlaySoundServer", "Shop1", shop.Platform.Position, "Static")
 	end
 end

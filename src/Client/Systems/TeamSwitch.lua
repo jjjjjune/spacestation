@@ -16,7 +16,6 @@ local TeamSwitch = {}
 
 function TeamSwitch:start()
 	Messages:hook("OpenTeamSwitchGui", function(teamName)
-		print("opening")
 		local data = TeamData[teamName]
 		local number = countMembersOfTeam(teamName)
 		local max = data.limit

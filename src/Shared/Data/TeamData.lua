@@ -1,7 +1,9 @@
 return {
 	["Workers"] = {
 		starterPack = {
-			"Flashlight"
+			"Grab",
+			"Flashlight",
+			"Wrench",
 		},
 		bodyParts = {
 			Torso = 28269799,
@@ -15,6 +17,7 @@ return {
 	},
 	["Security"] = {
 		starterPack = {
+			"Grab",
 			"Flashlight",
 			"Security Keycard"
 		},
@@ -31,6 +34,7 @@ return {
 	--6818709
 	["Space Police"] = {
 		starterPack = {
+			"Grab",
 			"Flashlight",
 			"Security Keycard",
 			"Pistol",
