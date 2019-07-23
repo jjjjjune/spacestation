@@ -1,8 +1,8 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 
-local speed = 4
-local checkRange = 4
+local speed = 6
+local checkRange = 2
 
 local Projectile = {}
 Projectile.__index = Projectile
@@ -32,6 +32,7 @@ end
 function Projectile:tick(dt)
 	if not self.model:FindFirstChild("Base") then
 		self:destroy()
+		return
 	end
 	local r = Ray.new(self.model.Base.Position, self.model.Base.CFrame.lookVector * speed)
 	local hit, pos = workspace:FindPartOnRayWithIgnoreList(r, self.ignored)
@@ -44,13 +45,13 @@ function Projectile:tick(dt)
 	if (hit and (hit.Anchored == false or hit.CanCollide == true)) or self.t > 10 then
 		-- so this wont collide with anchored non cancollide things
 		if hit then
-			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
+			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner, self.model.Base.CFrame.lookVector)
 		end
 		self:destroy()
 	else
 		local hit= self:anyNearbyPeople(pos, checkRange)
 		if hit then
-			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner)
+			Messages:send("OnProjectileHit", self.model.Name, hit, pos, self.owner, self.model.Base.CFrame.lookVector)
 			self:destroy()
 		else
 			self.model:SetPrimaryPartCFrame(self.model.PrimaryPart.CFrame * CFrame.new(0,-(t^1.2), -speed))

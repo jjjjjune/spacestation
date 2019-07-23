@@ -55,8 +55,9 @@ function Messages:send(action, ...)
 	local actionHooksTable = self.hooks[action]
 
 	if actionHooksTable then
+		local args = {...}
 		for _, hookFunction in pairs(actionHooksTable) do
-			hookFunction.callback(...)
+			hookFunction.callback(unpack(args))
 		end
 		--warn("No defined hook for message: "..action)
 	end

@@ -131,6 +131,7 @@ local Doors = {}
 function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
+		open(door)
 	end
 	Messages:hook("UnlockDoor", function(door)
 		unlock(door)

@@ -105,10 +105,12 @@ function data:start()
 	end)
 
 	Messages:hook("DeathCheckDone", function(player)
-		self:save(player)
-        self:clearFromCache(player)
-		dataReady[player.UserId] = nil
-		Messages:send("PlayerHasRemoved",player)
+		spawn(function()
+			self:save(player)
+			self:clearFromCache(player)
+			dataReady[player.UserId] = nil
+			Messages:send("PlayerHasRemoved",player)
+		end)
 	end)
 
     spawn(function()

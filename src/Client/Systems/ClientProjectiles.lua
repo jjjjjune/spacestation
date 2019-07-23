@@ -20,7 +20,7 @@ function ClientProjectiles:start()
 	Messages:hook("CreateProjectile", function(id, pos, goal, modelName)
 		local testProjectile = Projectile.new(id)
 		testProjectile:ignore(workspace) -- remember not to do this on the server
-		testProjectile:spawn(pos, goal, game.ReplicatedStorage.Assets.Items[modelName]:Clone())
+		testProjectile:spawn(pos, goal, game.ReplicatedStorage.Assets.Projectiles[modelName]:Clone())
 		table.insert(projectilesContainer, testProjectile)
 	end)
 	Messages:hook("RemoveProjectile", function(id, pos)

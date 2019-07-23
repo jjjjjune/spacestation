@@ -16,13 +16,16 @@ local function makeSoundPart(position)
     return part
 end
 
-local function playSound(soundName, position)
+local function playSound(soundName, position, group)
     local sound
     local part
 
     if position then
         part = makeSoundPart(position)
-        sound = SoundsFolder[soundName]:Clone()
+		sound = SoundsFolder[soundName]:Clone()
+		if group then
+			sound.SoundGroup = game:GetService("SoundService")[group]
+		end
     else
         sound = SoundsFolder[soundName]:Clone()
     end
@@ -31,16 +34,16 @@ local function playSound(soundName, position)
 end
 
 function Sounds:start()
-	Messages:hook("PlaySoundServer", function(player, soundName, position)
-        playSound(soundName, position)
+	Messages:hook("PlaySoundServer", function(player, soundName, position, group)
+        playSound(soundName, position, group)
     end)
 
     Messages:hook("PlaySound", function(soundName, position)
         playSound(soundName, position)
     end)
 
-    Messages:hook("PlaySoundClient", function(soundName)
-        playSound(soundName)
+	Messages:hook("PlaySoundClient", function(soundName, position, group)
+		playSound(soundName, position, group)
     end)
 end
 

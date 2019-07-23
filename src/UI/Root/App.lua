@@ -1,27 +1,24 @@
---[[
-	Entry-point to the game UI.
-]]
-
 local import = require(game.ReplicatedStorage.Shared.Import)
 
 local Roact = import "Roact"
 local RoactRodux = import "RoactRodux"
 local Store = import "Shared/State/Store"
 local Stats = import"UI/Components/Stats/Stats"
-
--- local LanguageProvider = import "../LanguageProvider"
-
---[[
-	Inventory = Roact.createElement(Inventory, {
-				isOpen = true,
-				inventories = Store:getState().inventories
-			}),
-]]
+local DrawerButton = import "UI/Components/DrawerButton/DrawerButton"
+local ShopDisplay = import "UI/Components/ShopDisplay/ShopDisplay"
+local Cash = import "UI/Components/Cash/Cash"
+local YesNoDialogue = import "UI/Components/YesNoDialogue/YesNoDialogue"
+local Notifications = import "UI/Components/Notifications/Notifications"
 
 local function App()
 	return Roact.createElement(RoactRodux.StoreProvider, { store = Store }, {
 		Roact.createElement("ScreenGui", {ResetOnSpawn = false}, {
-			Stats = Roact.createElement(Stats, {})
+			Stats = Roact.createElement(Stats, {}),
+			DrawerButton = Roact.createElement(DrawerButton, {}),
+			Cash = Roact.createElement(Cash, {}),
+			YesNoDialogue = Roact.createElement(YesNoDialogue, {}),
+			ShopDisplay = Roact.createElement(ShopDisplay, {}),
+			Notifications = Roact.createElement(Notifications, {}),
 		})
 	})
 end

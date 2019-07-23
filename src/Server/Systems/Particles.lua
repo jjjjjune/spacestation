@@ -16,6 +16,14 @@ function Particles:start()
 		particleInstance:Emit(amount)
 		game:GetService("Debris"):AddItem(attach,1)
 	end)
+	Messages:hook("PlayParticleServer", function(player, particleName, amount, position)
+		local attach = Instance.new("Attachment", workspace.Terrain)
+		attach.Position = position
+		local particleInstance = ParticlesFolder[particleName]:Clone()
+		particleInstance.Parent = attach
+		particleInstance:Emit(amount)
+		game:GetService("Debris"):AddItem(attach,1)
+	end)
 end
 
 return Particles

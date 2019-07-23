@@ -14,6 +14,12 @@ local loadOrder = {
 	"../Systems/Stats",
 	"../Systems/LightSwitches",
 	"../Systems/Tools",
+	"../Systems/Drawers",
+	"../Systems/Teams",
+	"../Systems/Damage",
+	"../Systems/Projectiles",
+	"../Systems/Knockback",
+	"../Systems/Machines",
 }
 
 for _, path in ipairs(loadOrder) do

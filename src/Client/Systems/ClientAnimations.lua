@@ -27,7 +27,8 @@ function Animations:start()
             if not character:FindFirstChild(animationName) then
                 Messages:sendServer("PlayAnimationServer", animationName)
                 return
-            end
+			end
+			print("playing")
             getTrack(character, animationName):Play()
         end
     end)
