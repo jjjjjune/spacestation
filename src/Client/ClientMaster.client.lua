@@ -16,16 +16,15 @@ local loadOrder = {
 	"../Systems/Tools",
 	"../Systems/ClientProjectiles",
 	"../Systems/DamageEffect",
-	"../Systems/Knockback"
+	"../Systems/Knockback",
+	"../Systems/Carrying"
 }
 
 local lastStart = time()
 for _, path in ipairs(loadOrder) do
 	local system = import(path)
-	--print("starting: ", path)
 	lastStart = time()
 	system:start()
-	--print(path, "took: ", time() - lastStart)
 	if time() - lastStart > .1 then
 		warn(path, " IS YIELDING, WTF????")
 	end
