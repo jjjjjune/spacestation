@@ -18,13 +18,18 @@ function Notifications:init()
 		local timestamp = tick()
 		table.insert(notifications, {
 			text = text,
-			time = timestamp,
+			["time"] = timestamp,
 		})
 		notificationRefs[timestamp] = Roact.createRef()
 		self:setState({})
 		local ref = self.mainFrameRef.current
 		ref:TweenPosition(ref.Position + UDim2.new(0,0,0,-30), "Out", "Quad", .2, true, function()
 			ref:TweenPosition(ref.Position + UDim2.new(0,0,0,30), "Out", "Quad", .2, true)
+		end)
+	end)
+	spawn(function()
+		game:GetService("RunService").Stepped:connect(function()
+			self:setState({})
 		end)
 	end)
 end
@@ -37,10 +42,11 @@ function Notifications:render()
 		Padding = UDim.new(0,10),
 	}))
 	for i, notification in pairs(notifications) do
-		if tick() - notification.time < NOTIFICATION_TIME then
+		local timeSince = tick() - notification.time
+		if timeSince < NOTIFICATION_TIME then
 			table.insert(notificationChildren, Frame(
 				{
-					size = UDim2.new(.95,0,.05,0),
+					size = UDim2.new(.95,0,.075,0),
 					position = UDim2.new(0.5,0,0,0),
 					visible = true,
 					anchorPoint = Vector2.new(0,0.5),
@@ -71,9 +77,9 @@ function Notifications:render()
 		end
 	end
 	return Roact.createElement("Frame", {
-		Size = UDim2.new(.14,0,.975,0),
-		Position = UDim2.new(0,0,0,20),
-		AnchorPoint = Vector2.new(0,0),
+		Size = UDim2.new(.15,0,.975,0),
+		Position = UDim2.new(0,0,0.5,0),
+		AnchorPoint = Vector2.new(0,0.5),
 		BackgroundTransparency = 1,
 		[Roact.Ref] = self.mainFrameRef
 	}, notificationChildren)

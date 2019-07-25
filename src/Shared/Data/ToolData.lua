@@ -40,5 +40,12 @@ return {
 		icon = "rbxassetid://3522800963",
 		description = "Used to transport objects. Always grab with care.",
 		element = "NONE",
+	},
+	["Consume"] = {
+		name = "Consume",
+		model = "Assets/Tools/Consume",
+		icon = "rbxassetid://3522800764",
+		description = "Aliens gotta eat, humans gotta swim.",
+		element = "NONE",
 	}
 }

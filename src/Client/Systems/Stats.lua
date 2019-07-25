@@ -59,6 +59,20 @@ local function oxygenLoop()
 	end
 end
 
+local function hungerLoop()
+	while wait(5) do
+		local character = player.Character
+		if character then
+			local stat = playerStats[2]
+			stat.current = math.max(0, stat.current - 1)
+			if character:FindFirstChild("Humanoid") and stat.current <= 0 then
+				Messages:sendServer("DamageMe", stat.damage)
+			end
+		end
+		Messages:send("UpdateStats",playerStats)
+	end
+end
+
 local Stats = {}
 
 function Stats:start()
@@ -66,8 +80,11 @@ function Stats:start()
 		resetStats()
 	end)
 	Messages:send("UpdateStats", playerStats)
-
+	Messages:hook("AddHunger", function(hunger)
+		playerStats[2].current = math.min(playerStats[2].max, playerStats[2].current + hunger)
+	end)
 	spawn(oxygenLoop)
+	spawn(hungerLoop)
 end
 
 return Stats

@@ -2,6 +2,9 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local HttpService = game:GetService("HttpService")
 local CollectionService = game:GetService("CollectionService")
+local LowerHealth = import "Shared/Utils/LowerHealth"
+
+local DAMAGE = 8
 
 local Wrench = {}
 Wrench.__index = Wrench
@@ -26,17 +29,22 @@ function Wrench:activated()
 	else
 		self.lastSwing = time()
 	end
-	local root = self.player.Character.HumanoidRootPart
+	local character = self.player.Character
+	local root = character.HumanoidRootPart
 	local r = Ray.new(root.Position, root.CFrame.lookVector * 5)
-	local hit, pos = workspace:FindPartOnRay(r, self.player.Character)
+	local hit, pos = workspace:FindPartOnRay(r, character)
 	if hit then
 		Messages:send("PlayParticle", "Sparks", 10, pos)
 	end
 	if hit and CollectionService:HasTag(hit.Parent, "Machine") and CollectionService:HasTag(hit.Parent, "Broken") then
-		Messages:send("PlaySound", "GoodCraft" ,self.player.Character.Head.Position)
+		Messages:send("PlaySound", "GoodCraft" ,character.Head.Position)
 		Messages:send("RepairMachine", hit.Parent, self.player)
 	elseif hit then
-		Messages:send("PlaySound", "DamagedLight" ,self.player.Character.Head.Position)
+		if hit.Parent:FindFirstChild("Humanoid") then
+			LowerHealth(self.player, hit.Parent, DAMAGE)
+		end
+		Messages:send("Knockback", hit.Parent, character.HumanoidRootPart.CFrame.lookVector*20,.4)
+		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
 	end
 end
 

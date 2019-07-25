@@ -3,6 +3,8 @@ local Messages = import "Shared/Utils/Messages"
 local GetProjectileDamageModifier = import "Shared/Utils/GetProjectileDamageModifier"
 local CollectionService = game:GetService("CollectionService")
 local HttpService = game:GetService("HttpService")
+local LowerHealth = import "Shared/Utils/LowerHealth"
+
 
 local function genericHit(hit, owner, pos, projectileName, damage, direction)
 	if not hit then
@@ -10,6 +12,9 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 	end
 	local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
 	if humanoid then
+		if humanoid.Health <= 0 then
+			return
+		end
 		if humanoid.Parent:FindFirstChild("Riot Shield") then
 			local start = humanoid.RootPart.Position
 			local id = HttpService:GenerateGUID()
@@ -18,7 +23,7 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 			Messages:send("CreateProjectile",id, start, target, model, humanoid.Parent)
 			Messages:send("Knockback", hit.Parent, direction*40,.4)
 		else
-			humanoid:TakeDamage(damage)
+			LowerHealth(owner, humanoid.Parent, damage)
 			Messages:sendAllClients("DoDamageEffect", humanoid.Parent)
 			Messages:send("PlayAnimation", humanoid.Parent, "Hit2")
 			Messages:send("Knockback", hit.Parent, direction*60,.4)

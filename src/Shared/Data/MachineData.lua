@@ -1,3 +1,5 @@
+local CollectionService = game:GetService("CollectionService")
+
 return {
 	["Air Conditioner"] = {
 		init = function(model)
@@ -23,10 +25,16 @@ return {
 
 		end,
 		on = function(model)
-
+			for _, light in pairs(CollectionService:GetTagged("Light")) do
+				light.BrickColor = BrickColor.new("White")
+				light.SurfaceLight.Enabled = true
+			end
 		end,
 		off = function(model)
-
+			for _, light in pairs(CollectionService:GetTagged("Light")) do
+				light.BrickColor = BrickColor.new("Black")
+				light.SurfaceLight.Enabled = false
+			end
 		end
 	}
 }

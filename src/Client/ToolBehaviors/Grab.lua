@@ -51,7 +51,7 @@ function Grab:activated()
 			if object.Parent == workspace and CollectionService:HasTag(object, "Carryable") then
 				Messages:sendServer("CarryObject", object)
 				self.carryObject = object
-				self.tool.Handle.BrickColor = BrickColor.new("Bright Green")
+				self.tool.Handle.BrickColor = BrickColor.new("Bright green")
 			end
 		end
 	end

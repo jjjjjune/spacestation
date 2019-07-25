@@ -19,6 +19,7 @@ function Carrying:start()
 			carryPos.Name = "CarryPos"
 			carryPos.D = 500
 			carryPos.MaxForce = Vector3.new(200000,200000,200000)
+			carryPos.Position = object.Base.Position
 			local beam = game.ReplicatedStorage.Assets.Particles.Beam:Clone()
 			beam.Parent = object.Base
 			local attach1 = Instance.new("Attachment", object.Base)

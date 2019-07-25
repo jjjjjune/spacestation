@@ -7,6 +7,9 @@ local DEBOUNCE_TIME = .5
 local debounceTable = {}
 
 local function turnOn(player, door)
+	if door:FindFirstChild("FixPercent") then
+		return
+	end
 	Messages:send("PlaySound","Button", door.OnOff.Position)
 	door.OnValue.Value = true
 	door.OnOff.BrickColor = BrickColor.new("Shamrock")
@@ -18,6 +21,9 @@ local function turnOn(player, door)
 end
 
 local function turnOff(player, door)
+	if door:FindFirstChild("FixPercent") then
+		return
+	end
 	Messages:send("PlaySound","Button",  door.OnOff.Position)
 	door.OnValue.Value = false
 	door.OnOff.BrickColor = BrickColor.new("Dusty Rose")
