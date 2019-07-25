@@ -20,6 +20,9 @@ function Alien:start()
 			Messages:sendClient(player, "Notify", "+ $3")
 			Messages:send("PlaySound", "Eating", part.Position)
 			part:Destroy()
+			if not character:FindFirstChild("LeftUpperLeg") and not character:FindFirstChild("RightUpperLeg") then
+				character.Humanoid.HipHeight = .5
+			end
 		end
 	end)
 	Players.PlayerAdded:connect(function(player)

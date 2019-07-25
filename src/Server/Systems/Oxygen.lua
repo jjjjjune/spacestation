@@ -30,9 +30,17 @@ local function canBreathe(player)
 	if not lastPaths[player] then
 		lastPaths[player] = time() - 100
 	end
+	local character = player.Character
+	if not character then
+		return
+	end
+	local root = character.PrimaryPart
+	if not root then
+		return
+	end
 	if time() - lastPaths[player] > .6 then
 		lastPaths[player] = time()
-		local start = player.Character.HumanoidRootPart.Position + Vector3.new(0,1,0)
+		local start = root.Position + Vector3.new(0,1,0)
 		local goal = start + Vector3.new(0,0,400)
 
 		local part = Instance.new("Part", workspace)
@@ -53,7 +61,7 @@ local function canBreathe(player)
 					outParticles[player]:Destroy()
 					outParticles[player] = nil
 				end
-				lastGoodPoints[player] = player.Character.HumanoidRootPart.Position
+				lastGoodPoints[player] = root.Position
 				lastCanBreathe[player] = true
 			end
 			return true

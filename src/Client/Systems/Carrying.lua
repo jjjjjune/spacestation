@@ -30,7 +30,6 @@ function Carrying:start()
 				local pos = player.Character.HumanoidRootPart.Position
 				local carryable = getClosestCarryable(pos)
 				if carryable and carryable.Parent == workspace and player.Character:FindFirstChild("Grab") then
-					print("here we go!")
 					box.Parent = carryable
 					box.Adornee = carryable
 				else
