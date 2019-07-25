@@ -9,6 +9,27 @@ local DAMAGE = 8
 local Wrench = {}
 Wrench.__index = Wrench
 
+function Wrench:anyNearbyPeople(start, range)
+	local vec1 = (start + Vector3.new(-range,-(range),-range))
+	local vec2 = (start + Vector3.new(range,(range),range))
+	local region = Region3.new(vec1, vec2)
+	local parts = workspace:FindPartsInRegion3(region,nil, 10000)
+	for _, part in pairs(parts) do
+		local humanoid = part.Parent:FindFirstChild("Humanoid")
+		if humanoid then
+			local canReturn = true
+			for _, ignore in pairs(self.player.Character:GetChildren()) do
+				if part:IsDescendantOf(ignore) or part == ignore then
+					canReturn = false
+				end
+			end
+			if canReturn then
+				return part
+			end
+		end
+	end
+end
+
 function Wrench:instance(tool)
 	self.player = tool.Parent.Parent
 	self.lastSwing = time()
@@ -22,6 +43,8 @@ function Wrench:instance(tool)
 		self:activated()
 	end)
 end
+
+
 
 function Wrench:activated()
 	if time() - self.lastSwing < .5 then
@@ -45,6 +68,16 @@ function Wrench:activated()
 			Messages:send("Knockback", hit.Parent, character.HumanoidRootPart.CFrame.lookVector*20,.4)
 		end
 		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
+	else
+		local part = self:anyNearbyPeople(character.Head.Position, 4)
+		if part then
+			local person = part.Parent
+			LowerHealth(self.player, person, DAMAGE)
+			Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
+			Messages:sendAllClients("DoDamageEffect", person)
+			Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
+			Messages:send("PlayParticle", "Sparks", 10, part.Position)
+		end
 	end
 end
 

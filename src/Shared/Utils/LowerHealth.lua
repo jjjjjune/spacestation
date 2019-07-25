@@ -5,24 +5,29 @@ local OnPlayerDamagedPlayer = import "Shared/Utils/OnPlayerDamagedPlayer"
 local OnPlayerDamagedMonster = import "Shared/Utils/OnPlayerDamagedMonster"
 
 return function(owner, victim, amount)
-	if victim.Humanoid.Health > 0 then
-		victim.Humanoid.Health = victim.Humanoid.Health - amount
-		if victim.Humanoid.Health <= 0 then
-			local victimPlayer = game.Players:GetPlayerFromCharacter(victim)
-			if victimPlayer then
-				OnPlayerKilledPlayer(owner, victimPlayer)
+	if owner and owner.Parent == game.Players then
+		if victim.Humanoid.Health > 0 then
+			victim.Humanoid.Health = victim.Humanoid.Health - amount
+			if victim.Humanoid.Health <= 0 then
+				local victimPlayer = game.Players:GetPlayerFromCharacter(victim)
+				if victimPlayer then
+					OnPlayerKilledPlayer(owner, victimPlayer)
+				else
+					OnPlayerKilledMonster(owner, victim)
+				end
 			else
-				OnPlayerKilledMonster(owner, victim)
+				local victimPlayer = game.Players:GetPlayerFromCharacter(victim)
+				if victimPlayer then
+					OnPlayerDamagedPlayer(owner, victimPlayer, amount)
+				else
+					OnPlayerDamagedMonster(owner, victim, amount)
+				end
 			end
 		else
-			local victimPlayer = game.Players:GetPlayerFromCharacter(victim)
-			if victimPlayer then
-				OnPlayerDamagedPlayer(owner, victimPlayer, amount)
-			else
-				OnPlayerDamagedMonster(owner, victim, amount)
-			end
+			return
 		end
 	else
-		return
+		-- a monster or statis world thing did this damage
+		victim.Humanoid.Health = victim.Humanoid.Health - amount
 	end
 end

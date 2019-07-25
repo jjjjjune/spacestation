@@ -21,6 +21,9 @@ function Tools:start()
 		player:WaitForChild("Backpack").ChildAdded:connect(function(tool)
 			initTool(tool)
 		end)
+		for _, tool in pairs(player.Backpack:GetChildren()) do
+			initTool(tool)
+		end
 		player.CharacterAdded:connect(function(character) -- we do this because of a wierd bug wehre childadded doesnt fire on Backpack
 			-- when the character first gets added
 			for _, tool in pairs(player.Backpack:GetChildren()) do
