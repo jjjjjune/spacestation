@@ -20,13 +20,11 @@ function Consume:instance(tool)
 end
 
 function Consume:activated()
-	print("activated")
 	local mouse = self.player:GetMouse()
-	local target = mouse.Target
+	local r= Ray.new(mouse.UnitRay.Origin, mouse.UnitRay.Direction * 40)
+	local target, pos = workspace:FindPartOnRay(r)
 	if target and target.Parent:FindFirstChild("Humanoid") then
-		print("yeet")
 		if (mouse.Hit.p - self.player.Character.HumanoidRootPart.Position).magnitude < 10 then
-			print("ok server")
 			Messages:sendServer("ConsumePlayerPart", target)
 		end
 	end

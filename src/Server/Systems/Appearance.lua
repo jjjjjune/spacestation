@@ -34,6 +34,16 @@ function Appearance:start()
 			light.Brightness = 0
 			light.Range = 12
 			light.Shadows = true
+			character.ChildAdded:connect(function(p)
+				if p:IsA("BasePart") then
+					p.Locked = false
+				end
+			end)
+			for _, p in pairs(character:GetChildren()) do
+				if p:IsA("BasePart") then
+					p.Locked = false
+				end
+			end
 		end)
 	end)
 	Messages:hook("ApplyTeamAppearance", function(player, character)

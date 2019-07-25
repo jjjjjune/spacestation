@@ -42,8 +42,8 @@ function Wrench:activated()
 	elseif hit then
 		if hit.Parent:FindFirstChild("Humanoid") then
 			LowerHealth(self.player, hit.Parent, DAMAGE)
+			Messages:send("Knockback", hit.Parent, character.HumanoidRootPart.CFrame.lookVector*20,.4)
 		end
-		Messages:send("Knockback", hit.Parent, character.HumanoidRootPart.CFrame.lookVector*20,.4)
 		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
 	end
 end
