@@ -3,6 +3,9 @@ local Messages = import 'Shared/Utils/Messages'
 local MachineData = import "Shared/Data/MachineData"
 local CollectionService = game:GetService("CollectionService")
 local PlayerData = import "Shared/PlayerData"
+local TweenService = game:GetService("TweenService")
+
+local lastColors = {}
 
 local BREAK_TIME = 120
 
@@ -16,6 +19,12 @@ local function breakMachine(machine)
 		local fixPercent = Instance.new("IntConstrainedValue", machine)
 		fixPercent.Name = "FixPercent"
 		fixPercent.MaxValue = math.random(5,10)
+		for _, part in pairs(machine:GetChildren()) do
+			if part:IsA("BasePart") then
+				lastColors[part] = part.BrickColor
+				part.BrickColor = BrickColor.new("Black")
+			end
+		end
 	end
 end
 
@@ -32,6 +41,19 @@ local function fix(machine)
 	CollectionService:RemoveTag(machine, "Broken")
 	local data = MachineData[machine.Name]
 	data.on(machine)
+	local tweenInfo = TweenInfo.new(
+		.3,
+		Enum.EasingStyle.Quad,
+		Enum.EasingDirection.Out,
+		0
+	)
+	for _, part in pairs(machine:GetChildren()) do
+		if part:IsA("BasePart") then
+			--part.BrickColor = lastColors[part]
+			local tween = TweenService:Create(part,tweenInfo, {Color = lastColors[part].Color})
+			tween:Play()
+		end
+	end
 end
 
 local Machines = {}

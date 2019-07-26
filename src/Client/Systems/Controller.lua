@@ -7,10 +7,12 @@ local UserInputService = game:GetService("UserInputService")
 
 local swimPlaying = false
 local idlePlaying = false
+local zeroGravity = false
+local sprinting = false
 
 local FALL = .4
 
-local Gravity = {}
+local Controller = {}
 
 local function handleFlyingAnimations(moveDir)
 	if moveDir.magnitude == 0 then
@@ -34,7 +36,7 @@ local function handleFlyingAnimations(moveDir)
 	end
 end
 
-function Gravity:start()
+function Controller:start()
 	local player = game.Players.LocalPlayer
 	RunService.RenderStepped:connect(function()
 		if root and root.Parent ~= nil then
@@ -42,7 +44,7 @@ function Gravity:start()
 			local hit, pos = workspace:FindPartOnRay(r, root.Parent)
 			if not hit then
 				flying = true
-				workspace.Gravity = 0
+				workspace.Controller = 0
 				local humanoid = root.Parent:FindFirstChild("Humanoid")
 				if humanoid then
 					humanoid:ChangeState(Enum.HumanoidStateType.Physics)
@@ -50,7 +52,7 @@ function Gravity:start()
 			else
 				root.FlyPosition.Position = root.Position
 				flying = false
-				workspace.Gravity = 40
+				workspace.Controller = 40
 				local humanoid = root.Parent:FindFirstChild("Humanoid")
 				if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Physics then
 					humanoid:ChangeState(Enum.HumanoidStateType.Running)
@@ -103,4 +105,4 @@ function Gravity:start()
 	end)
 end
 
-return Gravity
+return Controller

@@ -9,6 +9,7 @@ local ShopDisplay = import "UI/Components/ShopDisplay/ShopDisplay"
 local Cash = import "UI/Components/Cash/Cash"
 local YesNoDialogue = import "UI/Components/YesNoDialogue/YesNoDialogue"
 local Notifications = import "UI/Components/Notifications/Notifications"
+local Icons = import "UI/Components/Icons/Icons"
 
 local function App()
 	return Roact.createElement(RoactRodux.StoreProvider, { store = Store }, {
@@ -19,6 +20,7 @@ local function App()
 			YesNoDialogue = Roact.createElement(YesNoDialogue, {}),
 			ShopDisplay = Roact.createElement(ShopDisplay, {}),
 			Notifications = Roact.createElement(Notifications, {}),
+			Icons = Roact.createElement(Icons, {}),
 		})
 	})
 end
