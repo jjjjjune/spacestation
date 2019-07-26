@@ -6,6 +6,7 @@ local loadOrder = {
 	"../Systems/Animations",
 	"../Systems/Commands",
 	"Shared/Systems/Chat",
+	"../Systems/ClickDetectors",
 	"../Systems/Particles",
 	"../Systems/Oxygen",
 	"../Systems/Appearance",

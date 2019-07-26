@@ -4,7 +4,7 @@ local CollectionService = game:GetService("CollectionService")
 
 local function setupCrate(crate)
 	crate.Display.SurfaceGui.TextLabel.Text = crate.ItemName.Value
-	crate.Button.ClickDetector.MouseClick:connect(function(player)
+	Messages:send("RegisterDetector", crate.Button.ClickDetector, function(player)
 		if crate.Quantity.Value > 0 then
 			crate.Quantity.Value = crate.Quantity.Value - 1
 			local asset = game.ReplicatedStorage.Assets.Objects[crate.ItemName.Value]:Clone()

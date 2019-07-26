@@ -13,6 +13,7 @@ function Icons:init()
 end
 
 function Icons:render()
+	local scale = 1.25
 	local childFrames = {}
 
 	for _, iconData in pairs(IconList) do
@@ -26,9 +27,13 @@ function Icons:render()
 		Padding = UDim.new(0,8),
 	})
 
+	childFrames[#childFrames+1] = Roact.createElement("UIAspectRatioConstraint", {
+		AspectRatio = 12,
+	})
+
 	return Roact.createElement("Frame", {
-		Size = UDim2.new(.5,0,0,40),
-		Position = UDim2.new(.5,0,0,44),
+		Size = UDim2.new(.5,0,.04*scale,0),
+		Position = UDim2.new(.5,0,0.065*scale,0),
 		AnchorPoint = Vector2.new(.5,0),
 		BackgroundTransparency = 1,
 	}, childFrames)

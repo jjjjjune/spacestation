@@ -18,6 +18,7 @@ local loadOrder = {
 	"../Systems/DamageEffect",
 	"../Systems/Knockback",
 	"../Systems/Carrying",
+	"../Systems/ClickDetectors",
 }
 
 local lastStart = time()

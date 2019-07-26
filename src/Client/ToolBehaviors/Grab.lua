@@ -28,10 +28,10 @@ function Grab:instance(tool)
 			if character then
 				local root = character:FindFirstChild("HumanoidRootPart")
 				if root and self.carryObject.Base:FindFirstChild("CarryPos") then
-					local mouse = self.player:GetMouse()
-					local mag = (mouse.Hit.p - root.Position).magnitude/3
-					local dist = math.min(mag, 6)
-					self.carryObject.Base.CarryPos.Position = (CFrame.new(root.Position, mouse.Hit.p) * CFrame.new(0,0,-dist)).p
+					--local mouse = self.player:GetMouse()
+					--local mag = (mouse.Hit.p - root.Position).magnitude/3
+					local dist = 7
+					self.carryObject.Base.CarryPos.Position = (CFrame.new(root.Position, (workspace.CurrentCamera.CFrame * CFrame.new(0,0,-100)).p) * CFrame.new(0,0,-dist)).p
 				end
 			end
 		end

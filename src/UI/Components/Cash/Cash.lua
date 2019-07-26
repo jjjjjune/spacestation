@@ -21,9 +21,10 @@ function Cash:init()
 end
 
 function Cash:render()
+	local scale =  1.25
 	return Roact.createElement("TextLabel", {
-		Size = UDim2.new(.1,0,0,30),
-		Position = UDim2.new(.5,0,0,90),
+		Size = UDim2.new(.1,0,0.03*scale,0),
+		Position = UDim2.new(.5,0,.115*scale,0),
 		AnchorPoint = Vector2.new(.5,0),
 		BackgroundTransparency = 1,
 		Text = "MONEY: " ..self.state.cash,

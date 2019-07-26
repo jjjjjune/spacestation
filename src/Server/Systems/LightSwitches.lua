@@ -61,7 +61,7 @@ local function prepareDoor(door)
 		end
 	end
 
-	onOffDetector.MouseClick:connect(function(player)
+	Messages:send("RegisterDetector", onOffDetector, function(player)
 		attemptOpen(player)
 	end)
 end

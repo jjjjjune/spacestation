@@ -61,7 +61,7 @@ function Teams:start()
 		hitbox.CFrame = switch:GetModelCFrame()
 		hitbox.Parent = switch
 		local switchDetector = Instance.new("ClickDetector", hitbox)
-		switchDetector.MouseClick:connect(function(player)
+		Messages:send("RegisterDetector", switchDetector, function(player)
 			Messages:send("PlaySound", "Cop2", hitbox.Position)
 			Messages:sendClient(player, "OpenTeamSwitchGui", switch.Team.Value)
 		end)

@@ -39,12 +39,17 @@ end
 function Controller:start()
 	local player = game.Players.LocalPlayer
 	RunService.RenderStepped:connect(function()
-		if root and root.Parent ~= nil then
-			local r = Ray.new(root.Position, Vector3.new(0,-20,0))
+		if root and root.Parent ~= nil and root.Parent:FindFirstChild("Humanoid") then
+			if sprinting then
+				root.Parent.Humanoid.WalkSpeed = 28
+			else
+				root.Parent.Humanoid.WalkSpeed = 16
+			end
+			--[[local r = Ray.new(root.Position, Vector3.new(0,-200,0))
 			local hit, pos = workspace:FindPartOnRay(r, root.Parent)
 			if not hit then
 				flying = true
-				workspace.Controller = 0
+				--workspace.Gravity = 0
 				local humanoid = root.Parent:FindFirstChild("Humanoid")
 				if humanoid then
 					humanoid:ChangeState(Enum.HumanoidStateType.Physics)
@@ -52,11 +57,16 @@ function Controller:start()
 			else
 				root.FlyPosition.Position = root.Position
 				flying = false
-				workspace.Controller = 40
+				--workspace.Gravity = 40
 				local humanoid = root.Parent:FindFirstChild("Humanoid")
 				if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Physics then
 					humanoid:ChangeState(Enum.HumanoidStateType.Running)
 				end
+			end--]]
+			if zeroGravity then
+				workspace.Gravity = 1
+			else
+				workspace.Gravity = 40
 			end
 		else
 			if root and root.Parent == nil then
@@ -102,6 +112,12 @@ function Controller:start()
 		local character = player.Character
 		local flyPos = character.HumanoidRootPart.FlyPosition
 		flyPos.Position = flyPos.Position + Vector3.new(0,4,0)
+	end)
+	Messages:hook("ToggleSprint", function()
+		sprinting = not sprinting
+	end)
+	Messages:hook("ToggleGravity", function()
+		zeroGravity = not zeroGravity
 	end)
 end
 

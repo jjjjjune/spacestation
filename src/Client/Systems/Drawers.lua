@@ -50,7 +50,7 @@ end
 
 local function drawerLoop()
 	spawn(function()
-		while wait(.25) do
+		while wait() do
 			local found = false
 			local character = player.Character
 			if character then

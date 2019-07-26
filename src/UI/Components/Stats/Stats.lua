@@ -40,9 +40,14 @@ function Stats:render()
 			VerticalAlignment = "Center",
 			Padding = UDim.new(0,8),
 		})
+		childFrames[#childFrames+1] = Roact.createElement("UIAspectRatioConstraint", {
+			AspectRatio = 12,
+		})
 
+
+		local scale =  1.25
 		return Roact.createElement("Frame", {
-			Size = UDim2.new(.5,0,0,30),
+			Size = UDim2.new(.5,0,.04*scale,0),
 			Position = UDim2.new(.5,0,0,6),
 			AnchorPoint = Vector2.new(.5,0),
 			BackgroundTransparency = 1,

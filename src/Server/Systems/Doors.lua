@@ -115,13 +115,16 @@ local function prepareDoor(door)
 		end
 	end
 
-	openDetector.MouseClick:connect(function(player)
+	Messages:send("RegisterDetector", openDetector, function(player)
+		print("yeah but this wont work because of scope issues")
 		attemptOpen(player)
 	end)
-	openOutsideDetector.MouseClick:connect(function(player)
+	Messages:send("RegisterDetector", openOutsideDetector, function(player)
+		print("yeah but this wont work because of scope issues")
 		attemptOpen(player)
 	end)
-	lockDetector.MouseClick:connect(function(player)
+	Messages:send("RegisterDetector", lockDetector, function(player)
+		print("yeah but this wont work because of scope issues")
 		lockUnlock(player)
 	end)
 end
