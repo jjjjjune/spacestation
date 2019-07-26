@@ -45,6 +45,7 @@ function Greenling:resetIdle()
 	self.nextIdle = time() + length
 	local walkDistX = math.random(-30,30)
 	local walkDistY =math.random(-30,30)
+	Messages:send("PlaySound","AlienNoise1",self.model.PrimaryPart.Position)
 	self.idlePosition = self.spawnPos + Vector3.new(walkDistX,0,walkDistY)
 end
 
@@ -167,7 +168,19 @@ function Greenling:init()
 end
 
 function Greenling:onDied()
+	self:onStoppedWalking()
 	self.dead = true
+	Messages:send("PlaySound", "AlienNoise2",self.model.PrimaryPart.Position)
+	self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,10000)
+	self.model.HumanoidRootPart.BodyGyro.CFrame = self.model.HumanoidRootPart.CFrame * CFrame.Angles(0,0,-math.pi/2)
+	self.model.HumanoidRootPart.PointLight:Destroy()
+	for _, p in pairs(self.model:GetChildren()) do
+		if p:IsA("BasePart") then
+			p.BrickColor = BrickColor.new("Black")
+		end
+	end
+	Messages:send("PlayParticle", "CookSmoke", 15, self.model.PrimaryPart.Position)
+	Messages:send("PlaySound", "Chop", self.model.PrimaryPart.Position)
 	delay(5, function()
 		self.model:Destroy()
 	end)

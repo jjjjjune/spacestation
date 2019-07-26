@@ -19,6 +19,7 @@ function Alien:start()
 			PlayerData:add(player, "cash", 3)
 			Messages:sendClient(player, "Notify", "+ $3")
 			Messages:send("PlaySound", "Eating", part.Position)
+			Messages:sendClient(player, "AddHunger", 10)
 			part:Destroy()
 			if not character:FindFirstChild("LeftUpperLeg") and not character:FindFirstChild("RightUpperLeg") then
 				character.Humanoid.HipHeight = .5
@@ -28,12 +29,11 @@ function Alien:start()
 	Players.PlayerAdded:connect(function(player)
 		player.CharacterAdded:connect(function(character)
 			if alienNeeded then
-			   -- if math.random(1, 5) == 1 then
-					Messages:sendClient(player, "AddHunger", 10)
+			    if math.random(1, 5) == 1 then
 					CollectionService:AddTag(character, "Alien")
 					Messages:sendClient(player, "Notify", "You are an alien! Try to consume players without being spotted.")
 					Messages:send("GiveTool", player, "Consume")
-				--end
+				end
 				alienNeeded = false
             end
         end)

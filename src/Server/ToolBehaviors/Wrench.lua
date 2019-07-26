@@ -3,6 +3,11 @@ local Messages = import "Shared/Utils/Messages"
 local HttpService = game:GetService("HttpService")
 local CollectionService = game:GetService("CollectionService")
 local LowerHealth = import "Shared/Utils/LowerHealth"
+local GetNearestTagToPosition = import "Shared/Utils/GetNearestTagToPosition"
+
+local nearbyMachine = function(pos)
+	return GetNearestTagToPosition("Machine", pos, 10)
+end
 
 local DAMAGE = 8
 
@@ -44,8 +49,6 @@ function Wrench:instance(tool)
 	end)
 end
 
-
-
 function Wrench:activated()
 	if time() - self.lastSwing < .5 then
 		return
@@ -59,25 +62,19 @@ function Wrench:activated()
 	if hit then
 		Messages:send("PlayParticle", "Sparks", 10, pos)
 	end
-	if hit and CollectionService:HasTag(hit.Parent, "Machine") and CollectionService:HasTag(hit.Parent, "Broken") then
+	local machine = nearbyMachine(pos)
+	if machine and CollectionService:HasTag(machine, "Machine") and CollectionService:HasTag(machine, "Broken") then
 		Messages:send("PlaySound", "GoodCraft" ,character.Head.Position)
-		Messages:send("RepairMachine", hit.Parent, self.player)
-	elseif hit then
-		if hit.Parent:FindFirstChild("Humanoid") then
-			LowerHealth(self.player, hit.Parent, DAMAGE)
-			Messages:send("Knockback", hit.Parent, character.HumanoidRootPart.CFrame.lookVector*20,.4)
-		end
+		Messages:send("RepairMachine", machine, self.player)
+	end
+	local part = self:anyNearbyPeople(character.Head.Position, 5)
+	if part then
+		local person = part.Parent
+		LowerHealth(self.player, person, DAMAGE)
+		Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
+		Messages:sendAllClients("DoDamageEffect", person)
 		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
-	else
-		local part = self:anyNearbyPeople(character.Head.Position, 4)
-		if part then
-			local person = part.Parent
-			LowerHealth(self.player, person, DAMAGE)
-			Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
-			Messages:sendAllClients("DoDamageEffect", person)
-			Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
-			Messages:send("PlayParticle", "Sparks", 10, part.Position)
-		end
+		Messages:send("PlayParticle", "Sparks", 10, part.Position)
 	end
 end
 
