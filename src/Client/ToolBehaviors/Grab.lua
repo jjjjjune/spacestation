@@ -28,10 +28,10 @@ function Grab:instance(tool)
 			if character then
 				local root = character:FindFirstChild("HumanoidRootPart")
 				if root and self.carryObject.Base:FindFirstChild("CarryPos") then
-					--local mouse = self.player:GetMouse()
-					--local mag = (mouse.Hit.p - root.Position).magnitude/3
-					local dist = 7
-					self.carryObject.Base.CarryPos.Position = (CFrame.new(root.Position, (workspace.CurrentCamera.CFrame * CFrame.new(0,0,-100)).p) * CFrame.new(0,0,-dist)).p
+					local mouse = self.player:GetMouse()
+					local mag = (mouse.Hit.p - root.Position).magnitude
+					local dist = math.min(mag, 12)
+					self.carryObject.Base.CarryPos.Position = (root.CFrame * CFrame.new(0,0,-dist)).p
 				end
 			end
 		end
@@ -49,7 +49,6 @@ function Grab:activated()
 		if target then
 			local object = target.Parent
 			if object.Parent == workspace and CollectionService:HasTag(object, "Carryable") then
-				print("yeah carry that")
 				Messages:sendServer("CarryObject", object)
 				self.carryObject = object
 				self.tool.Handle.BrickColor = BrickColor.new("Bright green")

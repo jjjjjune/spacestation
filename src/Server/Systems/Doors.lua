@@ -116,15 +116,12 @@ local function prepareDoor(door)
 	end
 
 	Messages:send("RegisterDetector", openDetector, function(player)
-		print("yeah but this wont work because of scope issues")
 		attemptOpen(player)
 	end)
 	Messages:send("RegisterDetector", openOutsideDetector, function(player)
-		print("yeah but this wont work because of scope issues")
 		attemptOpen(player)
 	end)
 	Messages:send("RegisterDetector", lockDetector, function(player)
-		print("yeah but this wont work because of scope issues")
 		lockUnlock(player)
 	end)
 end

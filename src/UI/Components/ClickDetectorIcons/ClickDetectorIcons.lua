@@ -9,7 +9,7 @@ local Icon = import "../Icon"
 function ClickDetectorIcons:init()
 	Messages:hook("SetNearbyDetectors", function(detectors)
 		self:setState({
-			detectors = detectors
+			["detectors"] = detectors
 		})
 	end)
 	self:setState({
@@ -17,10 +17,20 @@ function ClickDetectorIcons:init()
 	})
 end
 
+function ClickDetectorIcons:willUnmount()
+	self.connect:disconnect()
+end
+
+function ClickDetectorIcons:didMount()
+
+end
+
 function ClickDetectorIcons:render()
 	local children = {}
 	for i, detector in pairs(self.state.detectors) do
-		table.insert(children, Roact.CreateElement(Icon, detector))
+		table.insert(children, Roact.createElement(Icon, {
+			["detector"] = detector,
+		}))
 	end
 
 	return Roact.createElement("Frame", {

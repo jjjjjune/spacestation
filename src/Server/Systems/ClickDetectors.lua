@@ -10,9 +10,7 @@ function ClickDetectors:start()
 		registeredDetectors[detector] = callback
 	end)
 	Messages:hook("PlayerClicked", function(player, detector)
-		print("clicked", player, detector)
 		if registeredDetectors[detector] then
-			print("callin")
 			registeredDetectors[detector](player)
 		end
 	end)

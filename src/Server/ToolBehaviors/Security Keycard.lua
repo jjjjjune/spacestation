@@ -21,7 +21,7 @@ function Flashlight:instance(tool)
 		self:unequipped(self.player.Character)
 	end)
 	tool.Activated:connect(function()
-		print("active")
+
 	end)
 end
 

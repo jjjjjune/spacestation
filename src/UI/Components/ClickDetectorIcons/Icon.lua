@@ -6,47 +6,56 @@ local Roact = import "Roact"
 
 local Icon = Roact.PureComponent:extend("Icons")
 
-function Icon:init(detector)
-	self:setState({
-		detector = detector
-	})
+function Icon:init(props)
+
+	self:setState({})
 
 	self.ref = Roact.createRef()
 end
 
+function Icon:didUpdate(oldProps, props)
+
+end
+
+function Icon:willUnmount()
+	self.connect:disconnect()
+end
+
+function Icon:didMount()
+	self.connect = game:GetService("RunService").RenderStepped:connect(function()
+		self:setState({})
+	end)
+end
+
 local function onPressed(ui)
-	--[[local tweenInfo = TweenInfo.new(
-		.2,
-		Enum.EasingStyle.Back,
-		Enum.EasingDirection.Out,
-		0
-	)
-	local goalRotation = 0
-	if isToggled then
-		goalRotation = 35
-	end
-	local goalSize = UDim2.new(1,0,1,0)
-	if not isToggled then
-		goalSize = UDim2.new(.75,0,.75,0)
-	end
-	local goalColor = Color3.new(.9,1,.95,0)
-	if not isToggled then
-		goalColor = Color3.new(.5,.5,.5)
-	end
-	local tween = TweenService:Create(ui,tweenInfo, {ImageColor3 = goalColor})
-	tween:Play()
-	tween = TweenService:Create(ui,tweenInfo, {Size = goalSize})
-	tween:Play()
-	tween = TweenService:Create(ui,tweenInfo, {Rotation = goalRotation})
-	tween:Play()--]]
+
 end
 
 function Icon:render()
-	return Roact.createElement("Frame", { -- holder baby
-		Size = UDim2.new(1,0,1,0),
-		SizeConstraint = "RelativeYY",
-		AnchorPoint = Vector2.new(.5,.5),
-		BackgroundTransparency = 1,
+	local camera = workspace.CurrentCamera
+	local vector, _ = camera:WorldToScreenPoint(self.props.detector.Parent.Position)
+	local col = self.props.detector.Parent.BrickColor.Color
+	local alwaysOnTop = false
+	local player = game.Players.LocalPlayer
+	if player.Character then
+		local root = player.Character.PrimaryPart
+		if root then
+			if (root.Position - self.props.detector.Parent.Position).magnitude < 4 then
+				alwaysOnTop = true
+			end
+		end
+	end
+	return Roact.createElement("BillboardGui", { -- holder baby
+		Size = UDim2.new(1.5,0,1.5,0),
+		Active = true,
+		StudsOffset = Vector3.new(0,2,1),
+		AlwaysOnTop = alwaysOnTop,
+		--StudsOffsetWorldSpace = Vector3.new(0,0,-1),
+		--SizeConstraint = "RelativeYY",
+		--AnchorPoint = Vector2.new(.5,.5),
+		--BackgroundTransparency = 1,
+		--Position = UDim2.new(0, vector.X, 0, vector.Y),
+		Adornee = self.props.detector.Parent
 	}, {
 		Inside = Roact.createElement("ImageButton", {
 			Size = UDim2.new(1,0,1,0),
@@ -54,13 +63,15 @@ function Icon:render()
 			SizeConstraint = "RelativeYY",
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(.5,.5),
-			ImageColor3 = Color3.new(.5,.5,.5),
+			ImageColor3 = Color3.new(col.r + .2,col.g + .2,col.b + .2),
 			Position = UDim2.new(.5,0,.5,0),
 			[Roact.Ref] = self.ref,
 			[Roact.Event.Activated] = function()
 				Messages:send("PlaySoundClient", "ButtonNew")
 				onPressed(self.ref.current)
+				Messages:sendServer("PlayerClicked", self.props.detector)
 			end,
+			ZIndex = 2,
 		})
 	})
 end

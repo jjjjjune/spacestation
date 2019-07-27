@@ -12,7 +12,6 @@ local Alien = {}
 
 function Alien:start()
 	Messages:hook("ConsumePlayerPart", function(player, part)
-		print("yesss")
 		local character = part.Parent
 		local victimPlayer = game.Players:GetPlayerFromCharacter(character)
 		if victimPlayer then

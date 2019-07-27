@@ -11,6 +11,7 @@ local outParticles = {}
 
 PhysicsService:CreateCollisionGroup("Fake")
 PhysicsService:CollisionGroupSetCollidable("Fake", "Default", false)
+PhysicsService:CollisionGroupSetCollidable("Fake", "Fake", false)
 
 local function nearbyOxygenTank()
 	for i, v in pairs(game.Workspace.Tanks:GetChildren()) do
