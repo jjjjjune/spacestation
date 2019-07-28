@@ -1,5 +1,5 @@
 return {
-	["Oxygen Tank"] = {
+	["Oxygen"] = {
 		HEAT = "EXPLODE"
 	},
 }

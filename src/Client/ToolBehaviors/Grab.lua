@@ -23,12 +23,15 @@ function Grab:instance(tool)
 	end)
 	self.lastFire = time()
 	game:GetService("RunService").RenderStepped:connect(function()
+		local mouse = self.player:GetMouse()
+		if mouse.Target and mouse.Target.Name == "HeatArea" then
+			mouse.TargetFilter = mouse.Target
+		end
 		if self.carryObject then
 			local character = self.player.Character
 			if character then
 				local root = character:FindFirstChild("HumanoidRootPart")
 				if root and self.carryObject.Base:FindFirstChild("CarryPos") then
-					local mouse = self.player:GetMouse()
 					local mag = (mouse.Hit.p - root.Position).magnitude
 					local dist = math.min(mag, 12)
 					self.carryObject.Base.CarryPos.Position = (root.CFrame * CFrame.new(0,0,-dist)).p

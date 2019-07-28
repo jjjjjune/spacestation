@@ -8,10 +8,14 @@ PhysicsService:CreateCollisionGroup("AnimalGroup")
 PhysicsService:CollisionGroupSetCollidable("Default","AnimalGroup", true)
 PhysicsService:CollisionGroupSetCollidable("AnimalGroup","AnimalGroup", false)
 PhysicsService:CollisionGroupSetCollidable("AnimalGroup","Fake", false)
+PhysicsService:CollisionGroupSetCollidable("AnimalGroup","CharacterGroup", false)
 
 local tags = {
 	["Greenling"] = {
 		"Greenling"
+	},
+	["Blueling"] = {
+		"Blueling",
 	}
 }
 

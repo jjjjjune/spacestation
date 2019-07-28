@@ -6,6 +6,7 @@ local loadOrder = {
 	"../Systems/Animations",
 	"../Systems/Commands",
 	"Shared/Systems/Chat",
+	"Shared/Systems/Ragdoll",
 	"../Systems/ClickDetectors",
 	"../Systems/Particles",
 	"../Systems/Oxygen",
@@ -25,7 +26,8 @@ local loadOrder = {
 	"../Systems/Alien",
 	"../Systems/Animals",
 	"../Systems/Crates",
-	"../Systems/HeatAreas"
+	"../Systems/HeatAreas",
+	"../Systems/Explosions",
 }
 
 for _, path in ipairs(loadOrder) do

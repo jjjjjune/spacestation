@@ -7,6 +7,7 @@ local loadOrder = {
 	"../Systems/ClientAnimations",
 	"Shared/Systems/Chat",
 	"Shared/Systems/Sounds",
+	"Shared/Systems/Ragdoll",
 	"../Systems/UI",
 	"../Systems/Controller",
 	"../Systems/Stats",
@@ -19,6 +20,7 @@ local loadOrder = {
 	"../Systems/Knockback",
 	"../Systems/Carrying",
 	"../Systems/ClickDetectors",
+	"../Systems/HeatAreas",
 }
 
 local lastStart = time()

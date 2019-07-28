@@ -2,6 +2,10 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local Players = game:GetService("Players")
 local TeamData = import "Shared/Data/TeamData"
+local PhysicsService = game:GetService("PhysicsService")
+
+PhysicsService:CreateCollisionGroup("CharacterGroup")
+PhysicsService:CollisionGroupSetCollidable("Fake","CharacterGroup", false)
 
 local function applyTeamAppearance(player, character)
 	local humanoid = character:WaitForChild("Humanoid")
@@ -37,10 +41,12 @@ function Appearance:start()
 			character.ChildAdded:connect(function(p)
 				if p:IsA("BasePart") then
 					p.Locked = false
+					PhysicsService:SetPartCollisionGroup(p, "CharacterGroup")
 				end
 			end)
 			for _, p in pairs(character:GetChildren()) do
 				if p:IsA("BasePart") then
+					PhysicsService:SetPartCollisionGroup(p, "CharacterGroup")
 					p.Locked = false
 				end
 			end

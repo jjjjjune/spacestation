@@ -37,7 +37,7 @@ end
 
 local function calculateReaction(item)
 	if CollectionService:HasTag(item, "Food") then
-		if not CollectionService:HasTag(item, "Cooked") then
+		if not CollectionService:HasTag(item, "Cooked") and Food[item.Name] then
 			CollectionService:AddTag(item, "Cooked")
 			Messages:send("PlaySound", "Burn", item.Base.Position)
 			Messages:send("PlayParticle", "Smoke", 15, item.Base.Position)
@@ -49,13 +49,28 @@ local function calculateReaction(item)
 			item:Destroy()
 			return
 		else
-			if Food[item.Name] then
-				burn(item)
-			end
+			burn(item)
 		end
 	end
 	if ObjectReactions[item.Name] then
-
+		if not CollectionService:HasTag(item, "Cooked") then
+			CollectionService:AddTag(item, "Cooked")
+			-- uh oh
+			Messages:send("PlaySound", "Burn", item.Base.Position)
+			Messages:send("PlayParticle", "Smoke", 15, item.Base.Position)
+			for _, v in pairs(item:GetChildren()) do
+				if v:IsA("BasePart") then
+					v.BrickColor = BrickColor.new("Bright orange")
+					v.Material = Enum.Material.Neon
+				end
+			end
+			return
+		end
+		local reaction = ObjectReactions[item.Name]
+		if reaction.HEAT == "EXPLODE" then
+			Messages:send("CreateExplosion", item.Base.Position, 12)
+			item:Destroy()
+		end
 	end
 end
 
@@ -80,9 +95,9 @@ end
 local HeatAreas = {}
 
 function HeatAreas:start()
-	for _, heatArea in pairs(CollectionService:GetTagged("HeatArea")) do
+	--[[for _, heatArea in pairs(CollectionService:GetTagged("HeatArea")) do
 		heatArea.Parent = game.ServerStorage
-	end
+	end--]]
 	spawn(heatLoop)
 
 end
