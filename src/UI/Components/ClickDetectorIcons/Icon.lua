@@ -40,8 +40,15 @@ function Icon:render()
 	if player.Character then
 		local root = player.Character.PrimaryPart
 		if root then
-			if (root.Position - self.props.detector.Parent.Position).magnitude < 4 then
-				alwaysOnTop = true
+			local distance = (root.Position - self.props.detector.Parent.Position).magnitude
+			if distance < 11 then
+				if self.props.detector.Parent.Name ~= "Lock" then
+					alwaysOnTop = true
+				else
+					if distance < 6 then
+						alwaysOnTop = true
+					end
+				end
 			end
 		end
 	end

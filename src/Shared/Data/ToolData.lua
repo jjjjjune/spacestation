@@ -47,5 +47,19 @@ return {
 		icon = "rbxassetid://3522800764",
 		description = "Aliens gotta eat, humans gotta swim.",
 		element = "NONE",
+	},
+	["Flamethrower"] = {
+		name = "Flamethrower",
+		model = "Assets/Tools/Flamethrower",
+		icon = "rbxassetid://3550262026",
+		description = "For scientific use only.",
+		element = "METAL",
+	},
+	["Eat"] = {
+		name = "Eat",
+		model = "Assets/Tools/Consume",
+		icon = "rbxassetid://3488930216", --rbxassetid://3553758865",
+		description = "Tap things to nom them.",
+		element = "NONE",
 	}
 }

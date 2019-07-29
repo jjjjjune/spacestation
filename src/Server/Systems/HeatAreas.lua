@@ -5,6 +5,7 @@ local Food = import "Shared/Data/Food"
 local ObjectReactions = import "Shared/Data/ObjectReactions"
 
 local COOK_TIME = 5
+local lastForceStep = time()
 
 local function isWithin(pos, box)
 	local headPos = pos
@@ -74,12 +75,36 @@ local function calculateReaction(item)
 	end
 end
 
+local function doRadiusStepOnly()
+	for _, heatArea in pairs(CollectionService:GetTagged("HeatArea")) do
+		if heatArea.Temperature.Value > 300 then
+			for _, item in pairs(CollectionService:GetTagged("Carryable")) do
+				if item.Parent == workspace then
+					if heatArea:FindFirstChild("Radius") then
+						if (item.Base.Position - heatArea.Position).magnitude < heatArea.Radius.Value then
+							calculateReaction(item)
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 local function cookStep()
 	for _, heatArea in pairs(CollectionService:GetTagged("HeatArea")) do
-		for _, item in pairs(CollectionService:GetTagged("Carryable")) do
-			if item.Parent == workspace then
-				if isWithin(item.Base.Position, heatArea) then
-					calculateReaction(item)
+		if heatArea.Temperature.Value > 300 then
+			for _, item in pairs(CollectionService:GetTagged("Carryable")) do
+				if item.Parent == workspace then
+					if isWithin(item.Base.Position, heatArea) then
+						calculateReaction(item)
+					else
+						if heatArea:FindFirstChild("Radius") then
+							if (item.Base.Position - heatArea.Position).magnitude < heatArea.Radius.Value then
+								calculateReaction(item)
+							end
+						end
+					end
 				end
 			end
 		end
@@ -99,7 +124,12 @@ function HeatAreas:start()
 		heatArea.Parent = game.ServerStorage
 	end--]]
 	spawn(heatLoop)
-
+	Messages:hook("ForceStep", function()
+		if time() - lastForceStep > 1 then
+			lastForceStep = time()
+			doRadiusStepOnly()
+		end
+	end)
 end
 
 return HeatAreas

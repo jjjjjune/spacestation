@@ -51,6 +51,18 @@ function ShopDisplay:render()
 		local worldPoint = myShop.PlatformDisplay.Position
 		local vector, _= camera:WorldToScreenPoint(worldPoint)
 		local scale = 2
+		local nameText = data.name:upper()
+		local price = myShop.Price.Value
+		local buyText = "BUY"
+		local buyButtonColor = StyleConstants.YES_COLOR
+		if myShop:FindFirstChild("UnlockPrice") then
+			if not _G.Data.unlocks[myShop.Tool.Value] then
+				nameText = nameText.."[LOCKED]"
+				price = myShop.UnlockPrice.Value
+				buyButtonColor = StyleConstants.TAB_COLOR
+				buyText = "UNLOCK"
+			end
+		end
 		return Frame({
 			size = UDim2.new(0.45*scale,0,0.2*scale,0),
 			position = UDim2.new(0.5,0,0.5,0),
@@ -69,7 +81,7 @@ function ShopDisplay:render()
 				BackgroundColor3 = StyleConstants.CLOSE_COLOR,
 				TextScaled = true,
 				BorderSizePixel = 0,
-				Text = data.name:upper(),
+				Text = nameText,
 				Font = "SciFi",
 				TextStrokeTransparency = 1,
 				TextColor3 = Color3.new(0,0,0),
@@ -81,7 +93,7 @@ function ShopDisplay:render()
 				Position = UDim2.new(.5,0,.45,0),
 				BackgroundTransparency = 1,
 				TextScaled = true,
-				Text =  "$"..myShop.Price.Value,
+				Text =  "$"..price,
 				Font = "SciFi",
 				TextStrokeTransparency = .8,
 				TextColor3 = Color3.new(1,1,1),
@@ -91,17 +103,17 @@ function ShopDisplay:render()
 			BuyButton = Roact.createElement("TextButton", {
 				Size = UDim2.new(.5,0,.15,0),
 				AnchorPoint = Vector2.new(.5,.5),
-				BackgroundColor3 = StyleConstants.YES_COLOR,
+				BackgroundColor3 = buyButtonColor,
 				BorderSizePixel = 0,
 				TextScaled = true,
 				Font = "SciFi",
 				TextColor3 = Color3.new(1,1,1),
-				Text = "BUY",
+				Text = buyText,
 				Position = UDim2.new(.5,0,.8,0),
 				ZIndex = 4,
 				[Roact.Event.Activated] = function()
 					Messages:send("OpenYesNoDialogue", {
-						text = "PURCHASE? ($"..myShop.Price.Value..")",
+						text = "PURCHASE? ($"..price..")",
 						yesCallback = function()
 							Messages:sendServer("BuyTool", myShop)
 						end,

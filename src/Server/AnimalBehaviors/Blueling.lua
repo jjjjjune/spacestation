@@ -264,7 +264,7 @@ function Blueling:onDied()
 	end
 	Messages:send("PlayParticle", "CookSmoke", 15, self.model.PrimaryPart.Position)
 	Messages:send("PlaySound", "Chop", self.model.PrimaryPart.Position)
-	delay(5, function()
+	delay(15, function()
 		self.model:Destroy()
 	end)
 end

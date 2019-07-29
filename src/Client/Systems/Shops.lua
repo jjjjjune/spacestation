@@ -93,6 +93,11 @@ local function prepareShop(shop)
 		end
 	end
 	model.PrimaryPart = model.Handle
+	if shop:FindFirstChild("UnlockPrice") then
+		if not _G.Data.unlocks[shop.Tool.Value] then
+			shop.Label.BrickColor = BrickColor.new("Persimmon")
+		end
+	end
 	table.insert(shopProps, model)
 end
 

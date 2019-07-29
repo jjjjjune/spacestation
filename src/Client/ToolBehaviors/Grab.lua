@@ -1,6 +1,7 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
+local UserInputService = game:GetService("UserInputService")
 
 local Grab = {}
 Grab.__index = Grab
@@ -34,7 +35,12 @@ function Grab:instance(tool)
 				if root and self.carryObject.Base:FindFirstChild("CarryPos") then
 					local mag = (mouse.Hit.p - root.Position).magnitude
 					local dist = math.min(mag, 12)
-					self.carryObject.Base.CarryPos.Position = (root.CFrame * CFrame.new(0,0,-dist)).p
+					if UserInputService.TouchEnabled then
+						self.carryObject.Base.CarryPos.Position = (root.CFrame * CFrame.new(0,0,-dist)).p
+					else
+						local startCF = CFrame.new(root.Position, mouse.Hit.p) * CFrame.new(0,0,-3)
+						self.carryObject.Base.CarryPos.Position = (startCF* CFrame.new(0,0,-dist)).p
+					end
 				end
 			end
 		end
@@ -52,9 +58,13 @@ function Grab:activated()
 		if target then
 			local object = target.Parent
 			if object.Parent == workspace and CollectionService:HasTag(object, "Carryable") then
-				Messages:sendServer("CarryObject", object)
-				self.carryObject = object
-				self.tool.Handle.BrickColor = BrickColor.new("Bright green")
+				local player = game.Players.LocalPlayer
+				local dist = (self.player:GetMouse().Hit.p -  player.Character.Head.Position).magnitude
+				if dist < 20 then
+					Messages:sendServer("CarryObject", object)
+					self.carryObject = object
+					self.tool.Handle.BrickColor = BrickColor.new("Bright green")
+				end
 			end
 		end
 	end

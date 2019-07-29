@@ -2,6 +2,7 @@ return {
 	["Workers"] = {
 		starterPack = {
 			"Grab",
+			"Eat",
 			"Flashlight",
 			"Wrench",
 		},
@@ -18,6 +19,7 @@ return {
 	["Security"] = {
 		starterPack = {
 			"Grab",
+			"Eat",
 			"Flashlight",
 			"Security Keycard"
 		},
@@ -35,6 +37,7 @@ return {
 	["Space Police"] = {
 		starterPack = {
 			"Grab",
+			"Eat",
 			"Flashlight",
 			"Security Keycard",
 			"Pistol",
