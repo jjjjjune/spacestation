@@ -1,5 +1,6 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
+local CollectionService = game:GetService("CollectionService")
 
 local Eat = {}
 Eat.__index = Eat
@@ -23,9 +24,9 @@ function Eat:activated()
 	local mouse = self.player:GetMouse()
 	local r= Ray.new(mouse.UnitRay.Origin, mouse.UnitRay.Direction * 40)
 	local target, pos = workspace:FindPartOnRay(r)
-	if target and target.Parent:FindFirstChild("Humanoid") then
+	if target and CollectionService:HasTag(target.Parent, "Food") then
 		if (mouse.Hit.p - self.player.Character.HumanoidRootPart.Position).magnitude < 10 then
-			Messages:sendServer("EatPlayerPart", target)
+			Messages:sendServer("Eat", target.Parent)
 		end
 	end
 end

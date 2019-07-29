@@ -1,7 +1,7 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
-local Food = import "Shared/Data/Food"
+local Recipes = import "Shared/Data/Recipes"
 local ObjectReactions = import "Shared/Data/ObjectReactions"
 
 local COOK_TIME = 5
@@ -38,11 +38,11 @@ end
 
 local function calculateReaction(item)
 	if CollectionService:HasTag(item, "Food") then
-		if not CollectionService:HasTag(item, "Cooked") and Food[item.Name] then
+		if not CollectionService:HasTag(item, "Cooked") and Recipes[item.Name] then
 			CollectionService:AddTag(item, "Cooked")
 			Messages:send("PlaySound", "Burn", item.Base.Position)
 			Messages:send("PlayParticle", "Smoke", 15, item.Base.Position)
-			local transformItem = Food[item.Name]
+			local transformItem = Recipes[item.Name]
 			transformItem = game.ReplicatedStorage.Assets.Objects[transformItem]:Clone()
 			transformItem.PrimaryPart = transformItem.Base
 			transformItem:SetPrimaryPartCFrame(item.Base.CFrame)

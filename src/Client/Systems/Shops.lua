@@ -10,6 +10,7 @@ local shopProps = {}
 local baseCFs = {}
 local lastShop
 local player = game.Players.LocalPlayer
+local originalColors = {}
 local tweenInfo = TweenInfo.new(
 	2,
 	Enum.EasingStyle.Back,
@@ -25,11 +26,15 @@ local tweenInfoFast = TweenInfo.new(
 
 
 local function close(shop)
+	if not originalColors[shop] then
+		originalColors[shop] = shop.PlatformDisplay.Color
+	end
+	local startCol = originalColors[shop]
 	if shop.Open.Value == true then
 		shop.Open.Value = false
 		shop.PrimaryPart = shop.Base
 		shop.PlatformDisplay.Material = Enum.Material.Neon
-		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = BrickColor.new("Bright blue").Color})
+		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = startCol})
 		tween:Play()
 		Messages:sendServer("PlaySoundServer", "Lift", shop.Platform.Position)
 		tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,-1,0)})
@@ -40,6 +45,10 @@ end
 
 
 local function open(shop)
+	if not originalColors[shop] then
+		originalColors[shop] = shop.PlatformDisplay.Color
+	end
+	local startCol = originalColors[shop]
 	if not shop:FindFirstChild("Open") then
 		local openValue = Instance.new("BoolValue",shop)
 		openValue.Name = "Open"
@@ -52,7 +61,7 @@ local function open(shop)
 		end
 		lastShop = shop
 		shop.PrimaryPart = shop.Base
-		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = BrickColor.new("Steel blue").Color})
+		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = Color3.new(startCol.r + .2, startCol.g + .2, startCol.b + .2)})
 		tween:Play()
 		Messages:sendServer("PlaySoundServer", "Unlift", shop.Platform.Position)
 		tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,1,0)})
@@ -93,11 +102,6 @@ local function prepareShop(shop)
 		end
 	end
 	model.PrimaryPart = model.Handle
-	if shop:FindFirstChild("UnlockPrice") then
-		if not _G.Data.unlocks[shop.Tool.Value] then
-			shop.Label.BrickColor = BrickColor.new("Persimmon")
-		end
-	end
 	table.insert(shopProps, model)
 end
 
@@ -135,12 +139,45 @@ local function manageShopUi()
 	end)
 end
 
+local function refreshShopUnlocks(stat)
+	stat = stat or _G.Data.unlocks
+	for _, shop in pairs(CollectionService:GetTagged("Shop")) do
+		if shop:FindFirstChild("UnlockPrice") then
+			if not stat[shop.Tool.Value] then
+				shop.Label.BrickColor = BrickColor.new("Terra Cotta")
+				shop.PlatformDisplay.BrickColor = BrickColor.new("Persimmon")
+				shop.Label.SurfaceGui.TextLabel.Text = "$"..shop.UnlockPrice.Value
+				originalColors[shop] = shop.Label.Color
+			else
+				shop.Label.BrickColor = BrickColor.new("Bright blue")
+				shop.PlatformDisplay.BrickColor = BrickColor.new("Medium blue")
+				shop.Label.SurfaceGui.TextLabel.Text = "$"..shop.Price.Value
+				originalColors[shop] = shop.Label.Color
+			end
+		else
+			shop.Label.BrickColor = BrickColor.new("Bright blue")
+			shop.PlatformDisplay.BrickColor = BrickColor.new("Medium blue")
+			shop.Label.SurfaceGui.TextLabel.Text = "$"..shop.Price.Value
+			originalColors[shop] = shop.Label.Color
+		end
+	end
+end
+
 local Shops = {}
 
 function Shops:start()
+	Messages:hook("SuccesfulBuy", function(shop)
+		shop.Label.BrickColor = BrickColor.new("Bright blue")
+	end)
+	Messages:hook("PlayerDataSet", function(stat, value)
+		if stat == "unlocks" then
+			refreshShopUnlocks()
+		end
+	end)
 	for _, shop in pairs(CollectionService:GetTagged("Shop")) do
 		prepareShop(shop)
 	end
+	refreshShopUnlocks()
 	game:GetService("RunService").RenderStepped:connect(function()
 		animateShopProps()
 		manageShopUi()

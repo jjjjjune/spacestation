@@ -24,6 +24,7 @@ function Flamethrower:instance(tool)
 end
 
 function Flamethrower:activated(character)
+	self.tool.Barrel.Attachment.Fire:Emit(30)
 	self.tool.Barrel.Attachment.Fire.Rate = 30
 	self.tool.HeatArea.Temperature.Value = 1000
 	self.tool.HeatArea.HeaterSound:Play()

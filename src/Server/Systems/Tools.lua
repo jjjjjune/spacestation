@@ -71,12 +71,21 @@ function Tools:start()
 		player.Backpack[toolName]:Destroy()
 	end)
 	Messages:hook("BuyTool", function(player, shop)
+		local unlocks = PlayerData:get(player, "unlocks")
 		local cash = PlayerData:get(player, "cash")
 		local price = shop.Price.Value
+		if shop:FindFirstChild("UnlockPrice") then
+			if not unlocks[shop.Tool.Value] then
+				price = shop.UnlockPrice.Value
+			end
+		end
 		if cash >= price then
+			unlocks[shop.Tool.Value] = true
+			PlayerData:set(player, "unlocks", unlocks)
 			PlayerData:add(player, "cash", -price)
 			Messages:send("GiveTool", player, shop.Tool.Value)
 			Messages:send("PlaySound", "Chime", shop.Base.Position)
+			Messages:sendClient(player, "SuccesfulBuy", shop)
 		else
 			Messages:send("PlaySound", "Error", shop.Base.Position)
 		end

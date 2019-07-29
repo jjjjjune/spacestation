@@ -4,8 +4,8 @@ return {
 		unlocks = {},
 	},
 	TEST_DATA = {
-		cash = 100,
+		cash = 100000,
 		unlocks = {}
 	},
-	TEST_STORE = "2",
+	TEST_STORE = "7",
 }

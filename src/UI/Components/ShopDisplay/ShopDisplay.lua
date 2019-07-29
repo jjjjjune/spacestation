@@ -55,12 +55,14 @@ function ShopDisplay:render()
 		local price = myShop.Price.Value
 		local buyText = "BUY"
 		local buyButtonColor = StyleConstants.YES_COLOR
+		local dialogueText = "PURCHASE? ($"..price..")"
 		if myShop:FindFirstChild("UnlockPrice") then
 			if not _G.Data.unlocks[myShop.Tool.Value] then
 				nameText = nameText.."[LOCKED]"
 				price = myShop.UnlockPrice.Value
 				buyButtonColor = StyleConstants.TAB_COLOR
 				buyText = "UNLOCK"
+				dialogueText = "UNLOCK? (THIS WILL ALLOW YOU TO BUY/EQUIP THE WEAPON) ($"..price..")"
 			end
 		end
 		return Frame({
@@ -113,7 +115,7 @@ function ShopDisplay:render()
 				ZIndex = 4,
 				[Roact.Event.Activated] = function()
 					Messages:send("OpenYesNoDialogue", {
-						text = "PURCHASE? ($"..price..")",
+						text = dialogueText,
 						yesCallback = function()
 							Messages:sendServer("BuyTool", myShop)
 						end,
