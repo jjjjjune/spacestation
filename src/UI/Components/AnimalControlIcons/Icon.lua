@@ -11,7 +11,7 @@ function Icon:init(props)
 end
 
 function Icon:didUpdate(oldProps, props)
-	print("did update props tho")
+
 end
 
 function Icon:willUnmount()

@@ -55,7 +55,8 @@ function Icon:render()
 	return Roact.createElement("BillboardGui", { -- holder baby
 		Size = UDim2.new(1.5,0,1.5,0),
 		Active = true,
-		StudsOffset = Vector3.new(0,2,1),
+		--StudsOffset = Vector3.new(0,2,1),
+		StudsOffset = Vector3.new(0,0,0),
 		AlwaysOnTop = alwaysOnTop,
 		--StudsOffsetWorldSpace = Vector3.new(0,0,-1),
 		--SizeConstraint = "RelativeYY",

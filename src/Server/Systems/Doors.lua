@@ -23,7 +23,7 @@ local function unlock(door)
 	lockedValue.Value = false
 	Messages:send("PlaySound","Unlock", door.Door.Position)
 	door.Lock.Decal.Texture = UNLOCKED_ICON
-	door.Lock.BrickColor = BrickColor.new("Bright blue")
+	door.Lock.BrickColor = BrickColor.new("Medium blue")
 	door.Lock.PointLight.Color = door.Lock.BrickColor.Color
 	lockTable[door] = nil
 end
@@ -46,8 +46,8 @@ local function beep(door)
 	door.OpenOutside.PointLight.Color = door.OpenOutside.BrickColor.Color
 	delay(.2, function()
 		wait(.2)
-		door.Open.BrickColor = BrickColor.new("Shamrock")
-		door.OpenOutside.BrickColor = BrickColor.new("Shamrock")
+		door.Open.BrickColor = BrickColor.new("Olivine")
+		door.OpenOutside.BrickColor = BrickColor.new("Olivine")
 		door.Open.PointLight.Color = door.Open.BrickColor.Color
 		door.OpenOutside.PointLight.Color = door.OpenOutside.BrickColor.Color
 	end)
@@ -62,16 +62,50 @@ local function debounced(door)
 	end
 end
 
+local function countDoors(door)
+	local n = 0
+	for i, v in pairs(door:GetChildren()) do
+		if v.Name == "Door" then
+			n = n + 1
+		end
+	end
+	return n
+end
+
 local function close(door)
-	local tween = TweenService:Create(door.Door,tweenInfo, {CFrame = door.Door.CFrame * CFrame.new(0,-14.5,0)})
-	tween:Play()
+	if countDoors(door) == 1 then
+		local tween = TweenService:Create(door.Door,tweenInfo, {CFrame = door.Door.CFrame * CFrame.new(0,-14.5,0)})
+		tween:Play()
+	else
+		for _, d in pairs(door:GetChildren()) do
+			if d.Name == "Door" then
+				local tween = TweenService:Create(d,tweenInfo, {CFrame = d.CFrame * CFrame.new(-d.Size.X/2,0,0)})
+				tween:Play()
+			end
+		end
+	end
+	if door:FindFirstChild("Forcefield") then
+		door.Forcefield.CanCollide = true
+	end
 	Messages:send("PlaySound","Door", door.Door.Position)
 	door.OpenValue.Value = false
 end
 
 local function open(door)
-	local tween = TweenService:Create(door.Door,tweenInfo, {CFrame = door.Door.CFrame * CFrame.new(0,14.5,0)})
-	tween:Play()
+	if countDoors(door) == 1  then
+		local tween = TweenService:Create(door.Door,tweenInfo, {CFrame = door.Door.CFrame * CFrame.new(0,14.5,0)})
+		tween:Play()
+	else
+		for _, d in pairs(door:GetChildren()) do
+			if d.Name == "Door" then
+				local tween = TweenService:Create(d,tweenInfo, {CFrame = d.CFrame * CFrame.new(d.Size.X/2,0,0)})
+				tween:Play()
+			end
+		end
+	end
+	if door:FindFirstChild("Forcefield") then
+		door.Forcefield.CanCollide = false
+	end
 	Messages:send("PlaySound","Door", door.Door.Position)
 	door.OpenValue.Value = true
 end
@@ -131,7 +165,7 @@ local Doors = {}
 function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
-		open(door)
+		--open(door)
 	end
 	Messages:hook("UnlockDoor", function(door)
 		unlock(door)
