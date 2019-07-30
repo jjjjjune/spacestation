@@ -84,15 +84,29 @@ function Animals:start()
 
 	Messages:hook("OnSucessfulTame",function(player, animal)
 		local pos = animal.PrimaryPart.Position
-		Messages:send("PlayParticle", "Hearts", 15, pos)
+		Messages:send("PlayParticle", "Hearts", 8, pos)
 		Messages:send("PlaySound", "Chime", pos)
 		CollectionService:AddTag(animal, "Friendly")
+		CollectionService:AddTag(animal, "Following")
+		for _, v in pairs(animal:GetChildren()) do
+			if v.Name == "Star" then
+				v.BrickColor = BrickColor.new("Shamrock")
+			end
+		end
+	end)
+
+	Messages:hook("ToggleFollowing", function(player, animal)
+		if CollectionService:HasTag(animal, "Following") then
+			CollectionService:RemoveTag(animal, "Following")
+		else
+			CollectionService:AddTag(animal, "Following")
+		end
 	end)
 
 	Messages:hook("OnFailedTame",function(player, animal)
 		local pos = animal.PrimaryPart.Position
-		Messages:send("PlayParticle", "Angry", 15, pos)
-		Messages:send("PlaySound", "Chime", pos)
+		Messages:send("PlayParticle", "Angry", 8, pos)
+		Messages:send("PlaySound", "Error", pos)
 	end)
 
 	Messages:hook("SpawnAnimal", function(player, tagName, position)

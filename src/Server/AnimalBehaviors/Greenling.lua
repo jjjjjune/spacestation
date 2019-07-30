@@ -127,7 +127,6 @@ function Greenling:attack(character)
 		Messages:send("CreateProjectile", id, origin, character.PrimaryPart.Position, cannonball, self.model)
 
 		wait(1)
-		self.model.Humanoid.WalkSpeed = 12
 		self.attacking = false
 	end)
 end
@@ -136,8 +135,17 @@ function Greenling:friendlyStep()
 	if CollectionService:HasTag(self.model, "Following") then
 		local human = self:closeHuman()
 		if human then
-			self.model:MoveTo(human.PrimaryPart.Position)
-			self.spawnPos = self.model.PrimaryPart.Position
+			if not self.offset then
+				self.offset = Vector3.new(math.random(-2,2), 0, math.random(-2,2))
+			end
+			local goal =human.PrimaryPart.Position + self.offset
+			local dist = (self.model.PrimaryPart.Position - goal).magnitude
+			if dist > 8 then
+				self.model.Humanoid:MoveTo(goal)
+				self.spawnPos = self.model.PrimaryPart.Position
+			else
+				self.model.Humanoid:MoveTo(self.model.PrimaryPart.Position)
+			end
 		else
 			self:idle()
 		end

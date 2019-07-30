@@ -41,9 +41,11 @@ return {
 	end,
 	["Friend Bullet"] = function(hit, owner, pos, projectileName, direction)
 		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
-		local character = humanoid.Parent
-		if CollectionService:HasTag(character, "Animal") then
-			Tame(owner, character)
+		if humanoid then
+			local character = humanoid.Parent
+			if CollectionService:HasTag(character, "Animal") then
+				Tame(owner, character)
+			end
 		end
 	end,
 }
