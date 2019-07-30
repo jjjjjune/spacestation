@@ -1,5 +1,6 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
+local UserInputService = game:GetService("UserInputService")
 
 local Roact = import "Roact"
 local Cash = Roact.PureComponent:extend("Cash")
@@ -22,9 +23,12 @@ end
 
 function Cash:render()
 	local scale =  1.25
+	if UserInputService.TouchEnabled then
+		scale = 1
+	end
 	return Roact.createElement("TextLabel", {
 		Size = UDim2.new(.1,0,0.03*scale,0),
-		Position = UDim2.new(.5,0,.115*scale,0),
+		Position = UDim2.new(.5,0,.085*scale,0),
 		AnchorPoint = Vector2.new(.5,0),
 		BackgroundTransparency = 1,
 		Text = "MONEY: " ..self.state.cash,

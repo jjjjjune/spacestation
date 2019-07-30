@@ -23,8 +23,8 @@ function Notifications:init()
 		notificationRefs[timestamp] = Roact.createRef()
 		self:setState({})
 		local ref = self.mainFrameRef.current
-		ref:TweenPosition(ref.Position + UDim2.new(0,0,0,-30), "Out", "Quad", .2, true, function()
-			ref:TweenPosition(ref.Position + UDim2.new(0,0,0,30), "Out", "Quad", .2, true)
+		ref:TweenPosition(UDim2.new(0,0,.5,0) + UDim2.new(0,0,0,-30), "Out", "Quad", .2, true, function()
+			ref:TweenPosition(UDim2.new(0,0,.5,0) + UDim2.new(0,0,0,30), "Out", "Quad", .2, true)
 		end)
 	end)
 	spawn(function()
@@ -77,7 +77,7 @@ function Notifications:render()
 		end
 	end
 	return Roact.createElement("Frame", {
-		Size = UDim2.new(.15,0,.975,0),
+		Size = UDim2.new(.15,0,.95,0),
 		Position = UDim2.new(0,0,0.5,0),
 		AnchorPoint = Vector2.new(0,0.5),
 		BackgroundTransparency = 1,

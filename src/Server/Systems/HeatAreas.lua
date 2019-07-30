@@ -3,6 +3,7 @@ local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 local Recipes = import "Shared/Data/Recipes"
 local ObjectReactions = import "Shared/Data/ObjectReactions"
+local AddCash = import "Shared/Utils/AddCash"
 
 local COOK_TIME = 5
 local lastForceStep = time()
@@ -36,6 +37,14 @@ local function burn(item)
 	CollectionService:AddTag(item, "Burned")
 end
 
+local function onCookedItem(transformItem)
+	for _, p in pairs(game.Players:GetChildren()) do
+		if p.Team.Name == "Cooks" then
+			AddCash(p, 1)
+		end
+	end
+end
+
 local function calculateReaction(item)
 	if CollectionService:HasTag(item, "Food") then
 		if not CollectionService:HasTag(item, "Cooked") and Recipes[item.Name] then
@@ -47,11 +56,16 @@ local function calculateReaction(item)
 			transformItem.PrimaryPart = transformItem.Base
 			transformItem:SetPrimaryPartCFrame(item.Base.CFrame)
 			transformItem.Parent = workspace
+			onCookedItem(transformItem)
 			item:Destroy()
 			return
 		else
 			burn(item)
 		end
+	end
+	if CollectionService:HasTag(item, "Burned") then
+		item:Destroy()
+		return
 	end
 	if ObjectReactions[item.Name] then
 		if not CollectionService:HasTag(item, "Cooked") then

@@ -150,13 +150,17 @@ local function refreshShopUnlocks(stat)
 				originalColors[shop] = shop.Label.Color
 			else
 				shop.Label.BrickColor = BrickColor.new("Bright blue")
-				shop.PlatformDisplay.BrickColor = BrickColor.new("Medium blue")
+				if shop.PlatformDisplay.BrickColor == BrickColor.new("Persimmon") then
+					shop.PlatformDisplay.BrickColor = BrickColor.new("Medium blue")
+				end
 				shop.Label.SurfaceGui.TextLabel.Text = "$"..shop.Price.Value
 				originalColors[shop] = shop.Label.Color
 			end
 		else
 			shop.Label.BrickColor = BrickColor.new("Bright blue")
-			shop.PlatformDisplay.BrickColor = BrickColor.new("Medium blue")
+			if shop.PlatformDisplay.BrickColor == BrickColor.new("Persimmon") then
+				shop.PlatformDisplay.BrickColor = BrickColor.new("Medium blue")
+			end
 			shop.Label.SurfaceGui.TextLabel.Text = "$"..shop.Price.Value
 			originalColors[shop] = shop.Label.Color
 		end
@@ -169,11 +173,11 @@ function Shops:start()
 	Messages:hook("SuccesfulBuy", function(shop)
 		shop.Label.BrickColor = BrickColor.new("Bright blue")
 	end)
-	Messages:hook("PlayerDataSet", function(stat, value)
+	--[[Messages:hook("PlayerDataSet", function(stat, value)
 		if stat == "unlocks" then
 			refreshShopUnlocks()
 		end
-	end)
+	end)--]]
 	for _, shop in pairs(CollectionService:GetTagged("Shop")) do
 		prepareShop(shop)
 	end
@@ -181,6 +185,7 @@ function Shops:start()
 	game:GetService("RunService").RenderStepped:connect(function()
 		animateShopProps()
 		manageShopUi()
+		refreshShopUnlocks()
 	end)
 end
 

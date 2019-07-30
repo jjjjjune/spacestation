@@ -18,4 +18,12 @@ return {
 			Messages:send("ToggleGravity")
 		end,
 	},
+	{
+		icon = "rbxassetid://3559802858",
+		hotkey = "X",
+		name = "Helmet",
+		pressed = function()
+			Messages:sendServer("ToggleHelmet")
+		end,
+	},
 }

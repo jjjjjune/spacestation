@@ -6,7 +6,12 @@ local LowerHealth = import "Shared/Utils/LowerHealth"
 local HttpService = game:GetService("HttpService")
 
 local DAMAGE = 10
-local SPREAD = 4
+local SPREAD = 1
+local MAX_RANGE = 60
+local TONGUE_RANGE = 40
+
+local tweenInfo = TweenInfo.new(.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local tweenInfoRope = TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 local function ragdoll(character)
 	if CollectionService:HasTag(character, "Ragdolled") then
@@ -47,12 +52,6 @@ local function unragdoll(character)
 		end
 	end
 end
-
-local tweenInfo = TweenInfo.new(.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-local tweenInfoRope = TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
-local MAX_RANGE = 90
-local TONGUE_RANGE = 60
 
 local Blueling = {}
 Blueling.__index = Blueling
@@ -117,7 +116,7 @@ function Blueling:attack(character)
 	if player then
 		self.model.HumanoidRootPart:SetNetworkOwner(player)
 	end
-	self.model.PrimaryPart.Anchored = true
+	--self.model.PrimaryPart.Anchored = true
 
 	self.attacking = true
 
@@ -125,7 +124,7 @@ function Blueling:attack(character)
 	local origin = self.model.Head.Position
 	tongue.Beam.Enabled = true
 
-	local start = character.Head.Position + Vector3.new(math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD))
+	local start = character.HumanoidRootPart.Position + Vector3.new(math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD))
 	local r = Ray.new(tongue.Position, (start - tongue.Position).unit * TONGUE_RANGE)
 	local hit, pos = workspace:FindPartOnRay(r, self.model)
 
@@ -139,7 +138,7 @@ function Blueling:attack(character)
 	if hit then
 		tongue.BodyPosition.Position = hit.Position
 	else
-		tongue.BodyPosition.Position = (self.model.PrimaryPart.CFrame * CFrame.new(0,0,-100)).p
+		tongue.BodyPosition.Position = (self.model.PrimaryPart.CFrame * CFrame.new(math.random(-10,10),0,-100)).p
 	end
 
 	wait(.05)
@@ -150,7 +149,7 @@ function Blueling:attack(character)
 		tongue.BodyPosition.MaxForce = Vector3.new()
 	end
 
-	if hit and hit.Parent:FindFirstChild("Humanoid")  then
+	if hit and hit.Parent:FindFirstChild("Humanoid") and not hit.Parent:FindFirstChild("Riot Shield") then
 		w.Part0 = hit
 		w.Part1 =tongue
 		ragdoll(hit.Parent)
@@ -158,32 +157,42 @@ function Blueling:attack(character)
 		Messages:send("PlaySound", "BoneBreak", tongue.Position)
 		Messages:send("PlayParticle", "Sparks", 15, hit.Position)
 		LowerHealth(self.model, hit.Parent, DAMAGE)
+		self.runaway= true
 	end
 
 	wait(.2)
 
 	local tween = TweenService:Create(self.model.MouthBottom.TongueRope,  tweenInfoRope, {Length = 0})
 	tween:Play()
-	wait(.25) -- how long it holds on to you with the tongue
-	tongue.BodyPosition.MaxForce = Vector3.new(0,00,0)
+	wait(.4) -- how long it holds on to you with the tongue
+	tongue.BodyPosition.MaxForce = Vector3.new(0,0,0)
 	w:Destroy()
 	self:stopAttackAnimation()
-	self.model.PrimaryPart.Anchored = false
+	--self.model.PrimaryPart.Anchored = false
 
 	wait(1)
 	tongue.Beam.Enabled = false
-	unragdoll(character)
+	spawn(function() unragdoll(character) end)
 
-	wait(1)
+	if self.runaway == true then
+		wait(8) -- it wont attack again for 8 seconds
+	else
+		self.runaway = true
+		wait(2)
+	end
 	self.model.Humanoid.WalkSpeed = 12
 	self.attacking = false
+	self.runaway = false
 end
 
 function Blueling:playAttackAnimation()
 	if not self.attackAnimPlaying then
 		self.attackAnimPlaying = true
 		Messages:send("PlayAnimation", self.model, "BluelingAttack")
-		Messages:send("PlaySound", "AlienHiss", self.model.PrimaryPart.Position)
+		if time() - self.lastSound > 10 then
+			Messages:send("PlaySound", "AlienHiss", self.model.PrimaryPart.Position)
+			self.lastSound = time()
+		end
 	end
 end
 
@@ -195,6 +204,11 @@ function Blueling:stopAttackAnimation()
 end
 
 function Blueling:step()
+	if self.runaway then
+		self:idle()
+		self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,0)
+		return
+	end
 	local human, dist = self:closeHumanNonAlien()
 	if human then
 		if self.attacking then
@@ -204,7 +218,7 @@ function Blueling:step()
 				local character = human
 				self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
 				self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,character.PrimaryPart.Position)
-				self:attack(human)
+				spawn(function() self:attack(human) end)
 			else
 				self.model.Humanoid:MoveTo(self.model.HumanoidRootPart.Position)
 				local character = human
@@ -226,6 +240,7 @@ function Blueling:onSpawn()
 end
 
 function Blueling:init()
+	self.lastSound = time()
 	spawn(function()
 		while wait() do
 			if self.dead then
@@ -233,6 +248,12 @@ function Blueling:init()
 			else
 				self:step()
 			end
+		end
+	end)
+	self.model.Humanoid.HealthChanged:connect(function() -- if it takes damage baby, then its go time
+		if self.runaway == true then
+			wait(1)
+			self.runaway = false
 		end
 	end)
 	self.model.Humanoid.Running:connect(function(speed)

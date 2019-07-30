@@ -1,5 +1,6 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
+local UserInputService = game:GetService("UserInputService")
 
 local Roact = import "Roact"
 local Icon = import "../Icon"
@@ -13,7 +14,10 @@ function Icons:init()
 end
 
 function Icons:render()
-	local scale = 1.25
+	local scale =  1.25
+	if UserInputService.TouchEnabled then
+		scale = 1
+	end
 	local childFrames = {}
 
 	for _, iconData in pairs(IconList) do
@@ -33,7 +37,7 @@ function Icons:render()
 
 	return Roact.createElement("Frame", {
 		Size = UDim2.new(.5,0,.04*scale,0),
-		Position = UDim2.new(.5,0,0.065*scale,0),
+		Position = UDim2.new(.5,0,0.04*scale,0),
 		AnchorPoint = Vector2.new(.5,0),
 		BackgroundTransparency = 1,
 	}, childFrames)

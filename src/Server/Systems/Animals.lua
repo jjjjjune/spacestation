@@ -47,6 +47,30 @@ local function setupMonster(monster, scripts)
 	end
 end
 
+local function spawnAnimal(player, tagName, position)
+	local model = game.ReplicatedStorage.Assets.Animals[tagName]:Clone()
+	local scripts = tags[tagName]
+	local monster = model
+	for _, scriptName in pairs(scripts) do
+		monster.Parent = workspace
+		monster.HumanoidRootPart.CFrame = CFrame.new(position)
+		local behavior = import("Server/AnimalBehaviors/"..scriptName).new(monster)
+		behavior:init()
+		behavior:onSpawn()
+		monster.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
+		CollectionService:AddTag(monster, "Animal")
+		for _, p in pairs(monster:GetChildren()) do
+			if p:IsA("BasePart") then
+				PhysicsService:SetPartCollisionGroup(p, "AnimalGroup")
+			end
+		end
+		monster.Humanoid.Died:connect(function()
+			behavior:onDied()
+		end)
+		Messages:sendAllClients("SetupAnimalClient", monster)
+	end
+end
+
 local Animals = {}
 
 function Animals:start()
@@ -58,28 +82,21 @@ function Animals:start()
 		end
 	end
 
+	Messages:hook("OnSucessfulTame",function(player, animal)
+		local pos = animal.PrimaryPart.Position
+		Messages:send("PlayParticle", "Hearts", 15, pos)
+		Messages:send("PlaySound", "Chime", pos)
+		CollectionService:AddTag(animal, "Friendly")
+	end)
+
+	Messages:hook("OnFailedTame",function(player, animal)
+		local pos = animal.PrimaryPart.Position
+		Messages:send("PlayParticle", "Angry", 15, pos)
+		Messages:send("PlaySound", "Chime", pos)
+	end)
+
 	Messages:hook("SpawnAnimal", function(player, tagName, position)
-		local model = game.ReplicatedStorage.Assets.Animals[tagName]:Clone()
-		local scripts = tags[tagName]
-		local monster = model
-		for _, scriptName in pairs(scripts) do
-			monster.Parent = workspace
-			monster.HumanoidRootPart.CFrame = CFrame.new(position)
-			local behavior = import("Server/AnimalBehaviors/"..scriptName).new(monster)
-			behavior:init()
-			behavior:onSpawn()
-			monster.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
-			CollectionService:AddTag(monster, "Animal")
-			for _, p in pairs(monster:GetChildren()) do
-				if p:IsA("BasePart") then
-					PhysicsService:SetPartCollisionGroup(p, "AnimalGroup")
-				end
-			end
-			monster.Humanoid.Died:connect(function()
-				behavior:onDied()
-			end)
-			Messages:sendAllClients("SetupAnimalClient", monster)
-		end
+		spawnAnimal(player, tagName, position)
 	end)
 end
 

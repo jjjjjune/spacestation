@@ -1,5 +1,6 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
+local UserInputService = game:GetService("UserInputService")
 
 local Roact = import "Roact"
 local Bar = import "../Bar"
@@ -41,13 +42,17 @@ function Stats:render()
 			Padding = UDim.new(0,8),
 		})
 		childFrames[#childFrames+1] = Roact.createElement("UIAspectRatioConstraint", {
-			AspectRatio = 12,
+			AspectRatio = 14,
 		})
 
 
 		local scale =  1.25
+		if UserInputService.TouchEnabled then
+			scale = 1
+		end
+
 		return Roact.createElement("Frame", {
-			Size = UDim2.new(.5,0,.04*scale,0),
+			Size = UDim2.new(.5,0,.03*scale,0),
 			Position = UDim2.new(.5,0,0,6),
 			AnchorPoint = Vector2.new(.5,0),
 			BackgroundTransparency = 1,

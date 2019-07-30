@@ -17,7 +17,7 @@ local playerStats = {
 	},
 	[2] = {
 		name = "Hunger",
-		color = BrickColor.new("Nougat").Color,
+		color = BrickColor.new("Mint").Color,
 		max = 100,
 		current = 100,
 		damageTime = 5,

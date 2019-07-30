@@ -32,6 +32,7 @@ function Alien:start()
 					CollectionService:AddTag(character, "Alien")
 					Messages:sendClient(player, "Notify", "You are an alien! Try to consume players without being spotted.")
 					Messages:send("GiveTool", player, "Consume")
+					player.Backpack["Eat"]:Destroy()
 				end
 				alienNeeded = false
             end

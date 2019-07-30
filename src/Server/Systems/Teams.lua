@@ -65,6 +65,15 @@ function Teams:start()
 			Messages:send("PlaySound", "Cop2", hitbox.Position)
 			Messages:sendClient(player, "OpenTeamSwitchGui", switch.Team.Value)
 		end)
+		for n = 1, 18 do
+			if n ~= 16 then
+				pcall(function () switch.Humanoid:SetStateEnabled(n, false) end)
+			end
+		end
+		local anim = Instance.new("Animation", switch)
+		anim.AnimationId = "http://www.roblox.com/asset/?id=616111295"
+		local idleTrack = switch.Humanoid:LoadAnimation(anim)
+		idleTrack:Play()
 	end
 	MarketplaceService.PromptGamePassPurchaseFinished:connect(function(player, gamepass, wasPurchased)
 		if wasPurchased then

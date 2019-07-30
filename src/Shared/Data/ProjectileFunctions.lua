@@ -4,6 +4,7 @@ local GetProjectileDamageModifier = import "Shared/Utils/GetProjectileDamageModi
 local CollectionService = game:GetService("CollectionService")
 local HttpService = game:GetService("HttpService")
 local LowerHealth = import "Shared/Utils/LowerHealth"
+local Tame = import "Shared/Utils/Tame"
 
 
 local function genericHit(hit, owner, pos, projectileName, damage, direction)
@@ -31,14 +32,6 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 	end
 end
 
-local function burnPlantsNear(pos)
-	for _, plant in pairs(CollectionService:GetTagged("Plant")) do
-		if ((plant.Base.Position) - pos).magnitude < 10 then
-			Messages:send("Burn", plant)
-		end
-	end
-end
-
 return {
 	Default = function(hit, owner, pos, projectileName, direction)
 		genericHit(hit, owner, pos, projectileName, 10, direction)
@@ -46,54 +39,11 @@ return {
 	Bullet = function(hit, owner, pos, projectileName, direction)
 		genericHit(hit, owner, pos, projectileName, 10, direction)
 	end,
-	Dart = function(hit, owner, pos, projectileName, direction)
-		genericHit(hit, owner, pos, projectileName, 20, direction)
-	end,
-	["Iron Spear"] = function(hit, owner, pos, projectileName, direction)
-		genericHit(hit, owner, pos, projectileName, 55, direction)
-	end,
-	["Bone Spear"] = function(hit, owner, pos, projectileName, direction)
-		genericHit(hit, owner, pos, projectileName, 45, direction)
-	end,
-	["Stone Spear"] = function(hit, owner, pos, projectileName, direction)
-		genericHit(hit, owner, pos, projectileName, 40, direction)
-	end,
-	["Spear"] = function(hit, owner, pos, projectileName, direction)
-		genericHit(hit, owner, pos, projectileName, 35, direction)
-	end,
-	["Cactus Spine"] = function(hit, owner, pos, projectileName, direction)
-		genericHit(hit, owner, pos, projectileName, 25, direction)
-	end,
-	["Droolabou Egg"] = function(hit, owner, pos, projectileName, direction)
-		if hit then
-			Messages:send("SpawnAnimal", owner, "Droolabou", pos)
-			return true
+	["Friend Bullet"] = function(hit, owner, pos, projectileName, direction)
+		local humanoid = hit.Parent:FindFirstChild("Humanoid") or hit.Parent.Parent:FindFirstChild("Humanoid")
+		local character = humanoid.Parent
+		if CollectionService:HasTag(character, "Animal") then
+			Tame(owner, character)
 		end
-	end,
-	["Fireball"] = function(hit, owner, pos, projectileName)
-		Messages:send("PlayParticle", "CookSmoke", 15, pos)
-		Messages:send("PlayParticle", "Sparks", 15, pos)
-		local object = hit.Parent
-		if object:FindFirstChild("Humanoid") then
-			local mod = 1
-			if owner then
-				mod = GetProjectileDamageModifier(owner)
-			end
-			Messages:send("DamageHumanoid", hit.Parent.Humanoid, 50*mod, projectileName, owner, function(character)
-				Messages:send("Burn", character)
-			end)
-			for _, p in pairs(hit.Parent:GetChildren()) do
-				if p:IsA("BasePart") and p.Material ~= Enum.Material.Neon then
-					p.BrickColor = BrickColor.new("Black")
-				end
-			end
-		else
-			if CollectionService("HasTag", object, "Building") or CollectionService("HasTag", object, "Plant") then
-				Messages:send("Burn", object)
-			end
-			burnPlantsNear(pos)
-		end
-		Messages:send("PlaySound", "Smoke", pos)
-		return true
 	end,
 }

@@ -9,7 +9,9 @@ function Stats:start()
 		player.Character.Humanoid:TakeDamage(damage)
 	end)
 	Messages:hook("Eat", function(player, food)
-
+		Messages:send("PlaySound", "Eating", food.PrimaryPart.Position)
+		FoodData[food.Name](player.Character, food)
+		food:Destroy()
 	end)
 end
 

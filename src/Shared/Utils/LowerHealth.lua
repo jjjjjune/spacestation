@@ -3,8 +3,39 @@ local OnPlayerKilledPlayer = import "Shared/Utils/OnPlayerKilledPlayer"
 local OnPlayerKilledMonster = import "Shared/Utils/OnPlayerKilledMonster"
 local OnPlayerDamagedPlayer = import "Shared/Utils/OnPlayerDamagedPlayer"
 local OnPlayerDamagedMonster = import "Shared/Utils/OnPlayerDamagedMonster"
+local CollectionService = game:GetService("CollectionService")
+
+local badRoles  = {
+	"Criminal",
+	"Alien",
+	"CausedExplosion",
+}
+
+local canHarmRoles = {
+	"Alien"
+}
 
 return function(owner, victim, amount)
+	local victimPlayer = game.Players:GetPlayerFromCharacter(victim)
+	if owner and owner.Parent == game.Players then
+		if victimPlayer then
+			local badRole = false
+			for _, role in pairs(badRoles) do
+				if CollectionService:HasTag(victim, role) then
+					badRole = true
+				end
+			end
+			for _, role in pairs(canHarmRoles) do
+				if CollectionService:HasTag(owner.Character, role) then
+					badRole = true
+				end
+			end
+			if badRole == false then
+				-- you can't harm this player
+				return
+			end
+		end
+	end
 	if owner and owner.Parent == game.Players then
 		if victim.Humanoid.Health > 0 then
 			victim.Humanoid.Health = victim.Humanoid.Health - amount

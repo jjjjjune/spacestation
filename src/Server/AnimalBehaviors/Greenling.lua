@@ -5,18 +5,6 @@ local CollectionService = game:GetService("CollectionService")
 local LowerHealth = import "Shared/Utils/LowerHealth"
 local  HttpService = game:GetService("HttpService")
 
---[[
-function TurretPlant:onFire()
-	local tweenInfo = TweenInfo.new(
-		.3, -- Time
-		Enum.EasingStyle.Quad, -- EasingStyle
-		Enum.EasingDirection.Out
-	)
-	local tween = TweenService:Create(self.model.Barrel, tweenInfo, {CFrame = self.model.Barrel.CFrame * CFrame.Angles(0,math.rad(45), 0)})
-	tween:Play()
-end
-]]
-
 local tweenInfo = TweenInfo.new(
 		.8, -- Time
 		Enum.EasingStyle.Quad, -- EasingStyle
@@ -81,6 +69,25 @@ function Greenling:closeHumanNonAlien()
 	return closeHuman
 end
 
+function Greenling:closeHuman()
+	local closeHuman = nil
+	local closestDistance = MAX_RANGE
+	for _, p in pairs(game.Players:GetPlayers()) do
+		local character = p.Character
+		if character then
+			local root = character.PrimaryPart
+			if root then
+				local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
+				if distance < closestDistance then
+					closeHuman = character
+					closestDistance = distance
+				end
+			end
+		end
+	end
+	return closeHuman
+end
+
 function Greenling:attack(character)
 	self.attacking = true
 	local t = time()
@@ -125,7 +132,21 @@ function Greenling:attack(character)
 	end)
 end
 
-function Greenling:step()
+function Greenling:friendlyStep()
+	if CollectionService:HasTag(self.model, "Following") then
+		local human = self:closeHuman()
+		if human then
+			self.model:MoveTo(human.PrimaryPart.Position)
+			self.spawnPos = self.model.PrimaryPart.Position
+		else
+			self:idle()
+		end
+	else
+		self:idle()
+	end
+end
+
+function Greenling:hostileStep()
 	local human = self:closeHumanNonAlien()
 	if human then
 		if self.attacking then
@@ -135,6 +156,14 @@ function Greenling:step()
 		end
 	else
 		self:idle()
+	end
+end
+
+function Greenling:step()
+	if CollectionService:HasTag(self.model, "Friendly") then
+		self:friendlyStep()
+	else
+		self:hostileStep()
 	end
 end
 

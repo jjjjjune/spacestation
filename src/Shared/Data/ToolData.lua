@@ -51,8 +51,15 @@ return {
 	["Flamethrower"] = {
 		name = "Flamethrower",
 		model = "Assets/Tools/Flamethrower",
-		icon = "rbxassetid://3550262026",
+		icon = "rbxassetid://3559802656",
 		description = "For scientific use only.",
+		element = "METAL",
+	},
+	["Friendship Gun"] = {
+		name = "Friendship Gun",
+		model = "Assets/Tools/Friendship Gun",
+		icon = "rbxassetid://3560964951",
+		description = "Used to turn creatures into friends!",
 		element = "METAL",
 	},
 	["Eat"] = {

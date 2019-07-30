@@ -26,6 +26,35 @@ local function applyTeamAppearance(player, character)
 	humanoid:ApplyDescription(description)
 end
 
+local storedHats = {}
+
+local function toggleHelmet(character)
+	if character:FindFirstChild("SpacemanHelm") then
+		character["SpacemanHelm"]:Destroy()
+		if storedHats[character] then
+			for _, hat in pairs(storedHats[character]) do
+				hat.Parent = character
+				character.Humanoid:AddAccessory(hat)
+			end
+		end
+		character.Humanoid.NameDisplayDistance = 30
+	else
+		if not storedHats[character] then
+			storedHats[character] = {}
+		end
+		for _, accessory in pairs(character:GetChildren()) do
+			if(accessory:FindFirstChild("HairAttachment", true) or accessory:FindFirstChild("HatAttachment", true)) and accessory:IsA("Accessory") then
+				table.insert(storedHats[character], accessory)
+				accessory.Parent = game.ServerStorage
+			end
+		end
+		local hat = game.ReplicatedStorage.Assets.Hats["SpacemanHelm"]:Clone()
+		hat.Parent = character
+		character.Humanoid:AddAccessory(hat)
+		character.Humanoid.NameDisplayDistance = 0
+	end
+end
+
 local Appearance = {}
 
 function Appearance:start()
@@ -54,6 +83,9 @@ function Appearance:start()
 	end)
 	Messages:hook("ApplyTeamAppearance", function(player, character)
 		applyTeamAppearance(player, character)
+	end)
+	Messages:hook("ToggleHelmet", function(player)
+		toggleHelmet(player.Character)
 	end)
 end
 
