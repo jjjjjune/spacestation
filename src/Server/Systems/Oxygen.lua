@@ -72,20 +72,29 @@ local function canBreathe(player)
 	end
 end
 
+local function checkOxygen()
+	for _, player in pairs(game.Players:GetPlayers()) do
+		if player.Character then
+			if canBreathe(player) then
+				CollectionService:AddTag(player.Character,"Breathing")
+			else
+				CollectionService:RemoveTag(player.Character,"Breathing")
+			end
+		end
+	end
+end
+
+local lastOxygenCheck = time()
+
 local Oxygen = {}
 
 function Oxygen:start()
-	spawn(function()
-		while wait(.25) do
-			for _, player in pairs(game.Players:GetPlayers()) do
-				if player.Character then
-					if canBreathe(player) then
-						CollectionService:AddTag(player.Character,"Breathing")
-					else
-						CollectionService:RemoveTag(player.Character,"Breathing")
-					end
-				end
-			end
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastOxygenCheck > .25 then
+			lastOxygenCheck = time()
+			checkOxygen()
+		else
+			return
 		end
 	end)
 	game.Players.PlayerRemoving:connect(function(player)

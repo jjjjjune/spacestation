@@ -3,6 +3,8 @@ local Messages = import "Shared/Utils/Messages"
 local Constants = import "Shared/Data/DataConstants"
 local dataStoreService = game:GetService("DataStoreService")
 
+local SAVE_TIME = 30
+
 local data = {}
 local dataReady = {}
 
@@ -81,6 +83,8 @@ function data:clearFromCache(player)
     self.cache[player.UserId] = nil
 end
 
+local lastSave = time()
+
 function data:start()
     self.cache = {}
     local dataStore = Constants.TEST_STORE
@@ -113,11 +117,14 @@ function data:start()
 		end)
 	end)
 
-    spawn(function()
-        while wait(30) do
-            spawn(function() self:saveCache() end) -- savecache is asynchronous
-        end
-    end)
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastSave > SAVE_TIME then
+			lastSave = time()
+			spawn(function() self:saveCache() end) -- savecache is asynchronous
+		else
+			return
+		end
+	end)
 
     Messages:hook("DataReadySignal", function(player)
         dataReady[player.UserId] = true

@@ -100,6 +100,8 @@ local function pay()
 	end
 end
 
+local lastPay = time()
+
 local Paychecks = {}
 
 function Paychecks:start()
@@ -115,9 +117,10 @@ function Paychecks:start()
 		end
 		thisCycle[player]["No deaths"] = nil
 	end)
-	spawn(function()
-		while wait(CYCLE_TIME) do
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastPay > CYCLE_TIME then
 			pay()
+			lastPay = time()
 		end
 	end)
 end

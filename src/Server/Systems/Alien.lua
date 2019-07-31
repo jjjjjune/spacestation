@@ -8,6 +8,8 @@ local alienNeeded = true
 
 local ALIEN_TIME = 180 + math.random(-20,100)
 
+local lastAlienNeededSwitch = time()
+
 local Alien = {}
 
 function Alien:start()
@@ -38,9 +40,10 @@ function Alien:start()
             end
         end)
 	end)
-	spawn(function()
-		while wait(ALIEN_TIME) do
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastAlienNeededSwitch > ALIEN_TIME then
 			alienNeeded = true
+			lastAlienNeededSwitch = time()
 		end
 	end)
 end
