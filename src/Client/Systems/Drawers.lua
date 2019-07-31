@@ -49,29 +49,27 @@ local function open(drawer)
 end
 
 local function drawerLoop()
-	spawn(function()
-		while wait() do
-			local found = false
-			local character = player.Character
-			if character then
-				local root = character.PrimaryPart
-				if root then
-					local drawer = getClosestDrawer(root.Position)
-					if drawer then
-						open(drawer)
-						Messages:send("SetDrawer", drawer)
-						found = true
-					else
-						if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
-							close(lastDrawer)
-							lastDrawer = nil
-						end
+	game:GetService("RunService").Stepped:connect(function()
+		local found = false
+		local character = player.Character
+		if character then
+			local root = character.PrimaryPart
+			if root then
+				local drawer = getClosestDrawer(root.Position)
+				if drawer then
+					open(drawer)
+					Messages:send("SetDrawer", drawer)
+					found = true
+				else
+					if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
+						close(lastDrawer)
+						lastDrawer = nil
 					end
 				end
 			end
-			if not found then
-				Messages:send("SetDrawer", nil)
-			end
+		end
+		if not found then
+			Messages:send("SetDrawer", nil)
 		end
 	end)
 end

@@ -12,6 +12,7 @@ local Notifications = import "UI/Components/Notifications/Notifications"
 local Icons = import "UI/Components/Icons/Icons"
 local ClickDetectorIcons = import "UI/Components/ClickDetectorIcons/ClickDetectorIcons"
 local AnimalControlIcons = import "UI/Components/AnimalControlIcons/AnimalControlIcons"
+local Paycheck = import "UI/Components/Paycheck/Paycheck"
 
 local function App()
 	return Roact.createElement(RoactRodux.StoreProvider, { store = Store }, {
@@ -24,7 +25,8 @@ local function App()
 			Notifications = Roact.createElement(Notifications, {}),
 			Icons = Roact.createElement(Icons, {}),
 			ClickDetectorIcons = Roact.createElement(ClickDetectorIcons, {}),
-			AnimalControlIcons = Roact.createElement(AnimalControlIcons, {})
+			AnimalControlIcons = Roact.createElement(AnimalControlIcons, {}),
+			Paycheck = Roact.createElement(Paycheck, {}),
 		})
 	})
 end

@@ -91,15 +91,6 @@ function Teams:start()
 			end
 		end)
 	end)
-	spawn(function()
-		while wait(PAY_CYCLE_TIME) do
-			for _, player in pairs(game.Players:GetPlayers()) do
-				local teamData = TeamData[player.Team.Name]
-				PlayerData:add(player, "cash", teamData.pay)
-				Messages:sendClient(player, "Notify", "You have been paid $"..teamData.pay.."!")
-			end
-		end
-	end)
 end
 
 return Teams

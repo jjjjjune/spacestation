@@ -35,7 +35,7 @@ return function(props, children)
 		Position = props.position,
 		Visible = props.visible,
 		BorderSizePixel = 0,
-		BackgroundTransparency = .5,
+		BackgroundTransparency = .2,
 		BackgroundColor3 = StyleConstants.WINDOW_BG,
 		AnchorPoint = props.anchorPoint,
 		[Roact.Ref] = props.ref or Roact.createRef(),

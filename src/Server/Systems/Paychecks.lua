@@ -2,8 +2,10 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 local PlayerData = import "Shared/PlayerData"
+local AddCash = import "Shared/Utils/AddCash"
+local TeamData = import "Shared/Data/TeamData"
 
-local CYCLE_TIME = 10
+local CYCLE_TIME = 20
 
 local thisCycle = {}
 
@@ -61,7 +63,21 @@ local function awardLowAverageHunger()
 	local totalHunger = 0
 	local numPlayers = #game.Players:GetPlayers()
 	for _, p in pairs(game.Players:GetPlayers()) do
-		
+		local hunger = PlayerData:get(p, "hunger")
+		if hunger then
+			totalHunger = totalHunger + hunger
+		end
+	end
+	local average = totalHunger/numPlayers
+	if average > 70 then
+		awardAll("Well-fed crew", 25)
+	end
+end
+
+local function awardNoCriminals()
+	local numCriminals = #CollectionService:GetTagged("Criminal")
+	if numCriminals == 0 then
+		awardAll("No criminals", 25)
 	end
 end
 
@@ -69,10 +85,18 @@ local function pay()
 	awardNobrokenMachines()
 	awardNoUntamedAliens()
 	awardLowAverageHunger()
+	awardNoCriminals()
 	for player, payData in pairs(thisCycle) do
-		print("PLAYER", player)
-		for i, v in pairs(payData) do print(i,v) end
-		thisCycle[player] = defaultPaycheckInfo()
+		if player.Team then
+			local total = 0
+			payData["Base pay"] = TeamData[player.Team.Name].pay
+			for stat, val in pairs(payData) do
+				total = total + val
+			end
+			AddCash(player, total)
+			Messages:sendClient(player, "DisplayPaycheck", payData)
+			thisCycle[player] = defaultPaycheckInfo()
+		end
 	end
 end
 
@@ -86,7 +110,9 @@ function Paychecks:start()
 		addPaycheckStat(player,stat, value)
 	end)
 	Messages:hook("PlayerDied", function(player)
-		awardAll("No station deaths", nil)
+		for _, player in pairs(game.Players:GetPlayers()) do
+			thisCycle[player]["No station deaths"] = nil
+		end
 		thisCycle[player]["No deaths"] = nil
 	end)
 	spawn(function()

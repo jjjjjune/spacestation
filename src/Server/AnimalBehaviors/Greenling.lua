@@ -180,13 +180,12 @@ function Greenling:onSpawn()
 end
 
 function Greenling:init()
-	spawn(function()
-		while wait() do
-			if self.dead then
-				break
-			else
-				self:step()
-			end
+	local connect
+	connect = game:GetService("RunService").Stepped:connect(function()
+		if self.dead then
+			connect:disconnect()
+		else
+			self:step()
 		end
 	end)
 	self.model.Humanoid.Running:connect(function(speed)

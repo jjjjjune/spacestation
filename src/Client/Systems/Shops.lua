@@ -114,28 +114,33 @@ local function animateShopProps()
 	end
 end
 
+local lastShopUiTick = time()
+
 local function manageShopUi()
-	spawn(function()
-		while wait(.25) do
-			local character = player.Character
-			if character then
-				local root = character.PrimaryPart
-				if root then
-					local shop = getClosestShop(root.Position)
-					if shop then
-						open(shop)
-						Messages:send("SetShop", shop)
-						return
-					else
-						if lastShop and lastShop ~= shop and math.ceil((lastShop.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
-							close(lastShop)
-							lastShop = nil
-						end
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastShopUiTick < .25 then
+			return
+		else
+			lastShopUiTick = time()
+		end
+		local character = player.Character
+		if character then
+			local root = character.PrimaryPart
+			if root then
+				local shop = getClosestShop(root.Position)
+				if shop then
+					open(shop)
+					Messages:send("SetShop", shop)
+					return
+				else
+					if lastShop and lastShop ~= shop and math.ceil((lastShop.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
+						close(lastShop)
+						lastShop = nil
 					end
 				end
 			end
-			Messages:send("SetShop", nil)
 		end
+		Messages:send("SetShop", nil)
 	end)
 end
 

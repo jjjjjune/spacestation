@@ -241,13 +241,12 @@ end
 
 function Blueling:init()
 	self.lastSound = time()
-	spawn(function()
-		while wait() do
-			if self.dead then
-				break
-			else
-				self:step()
-			end
+	local connect
+	connect = game:GetService("RunService").Stepped:connect(function()
+		if self.dead then
+			connect:disconnect()
+		else
+			self:step()
 		end
 	end)
 	self.model.Humanoid.HealthChanged:connect(function() -- if it takes damage baby, then its go time

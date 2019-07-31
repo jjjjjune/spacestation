@@ -27,10 +27,8 @@ function Notifications:init()
 			ref:TweenPosition(UDim2.new(0,0,.5,0) + UDim2.new(0,0,0,30), "Out", "Quad", .2, true)
 		end)
 	end)
-	spawn(function()
-		game:GetService("RunService").Stepped:connect(function()
-			self:setState({})
-		end)
+	game:GetService("RunService").Stepped:connect(function()
+		self:setState({})
 	end)
 end
 
