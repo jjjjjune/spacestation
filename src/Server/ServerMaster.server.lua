@@ -1,8 +1,8 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 
 local loadOrder = {
-	"Shared/Systems/Sounds",
 	"Shared/PlayerData",
+	"Shared/Systems/Sounds",
 	"../Systems/Animations",
 	"../Systems/Commands",
 	"Shared/Systems/Chat",
@@ -30,7 +30,8 @@ local loadOrder = {
 	"../Systems/Explosions",
 	"../Systems/CargoOrdering",
 	"../Systems/Ships",
-	"../Systems/Paychecks"
+	"../Systems/Paychecks",
+	"../Systems/Clocks",
 }
 
 for _, path in ipairs(loadOrder) do

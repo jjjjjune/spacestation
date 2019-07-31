@@ -5,7 +5,7 @@ local PlayerData = import "Shared/PlayerData"
 local AddCash = import "Shared/Utils/AddCash"
 local TeamData = import "Shared/Data/TeamData"
 
-local CYCLE_TIME = 20
+local CYCLE_TIME =5
 
 local thisCycle = {}
 
@@ -117,11 +117,12 @@ function Paychecks:start()
 		end
 		thisCycle[player]["No deaths"] = nil
 	end)
-	game:GetService("RunService").Stepped:connect(function()
-		if time() - lastPay > CYCLE_TIME then
-			pay()
-			lastPay = time()
+	Messages:hook("PayAll", function(arg)
+		if arg and arg.Parent == game.Players then
+			arg:Kick("none of that here")
+			return
 		end
+		pay()
 	end)
 end
 

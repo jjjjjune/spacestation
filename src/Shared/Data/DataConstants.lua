@@ -7,5 +7,5 @@ return {
 		cash = 100000,
 		unlocks = {}
 	},
-	TEST_STORE = "7",
+	TEST_STORE = "8",
 }
