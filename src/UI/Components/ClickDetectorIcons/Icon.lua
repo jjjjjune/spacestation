@@ -41,19 +41,21 @@ function Icon:render()
 		local root = player.Character.PrimaryPart
 		if root then
 			local distance = (root.Position - self.props.detector.Parent.Position).magnitude
-			if distance < 11 then
-				if self.props.detector.Parent.Name ~= "Lock" then
+			if distance < 14 then
+				alwaysOnTop = true
+				--[[if self.props.detector.Parent.Name ~= "Lock" then
 					alwaysOnTop = true
 				else
 					if distance < 6 then
 						alwaysOnTop = true
 					end
-				end
+				end--]]
 			end
 		end
 	end
+	local size = self.props.detector.Parent.Size.magnitude*.75
 	return Roact.createElement("BillboardGui", { -- holder baby
-		Size = UDim2.new(1.5,0,1.5,0),
+		Size = UDim2.new(size,0,size,0),
 		Active = true,
 		--StudsOffset = Vector3.new(0,2,1),
 		StudsOffset = Vector3.new(0,0,0),

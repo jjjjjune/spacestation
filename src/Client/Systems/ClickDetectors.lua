@@ -9,15 +9,16 @@ local detectors = {}
 local ClickDetectors = {}
 
 function ClickDetectors:start()
-
 	for _, dec in pairs(workspace:GetDescendants()) do
 		if dec:IsA("ClickDetector") then
 			detectors[dec] = dec.Parent.Position
+			dec.MaxActivationDistance = 0
 		end
 	end
 	workspace.DescendantAdded:connect(function(dec)
 		if dec:IsA("ClickDetector") then
 			detectors[dec] = dec.Parent.Position
+			dec.MaxActivationDistance = 0
 		end
 	end)
 	game:GetService("RunService").RenderStepped:connect(function()
@@ -28,9 +29,9 @@ function ClickDetectors:start()
 			if root then
 				local closestDist = 14
 				for dec, pos in pairs(detectors) do
-					detectors[dec] = dec.Parent.Position
-					pos =dec.Parent.Position
 					if dec.Parent ~= nil then
+						detectors[dec] = dec.Parent.Position
+						pos =dec.Parent.Position
 						local dist = (pos - root.Position).magnitude
 						if dist < closestDist then
 							table.insert(nearbyDetectorsTable, dec)

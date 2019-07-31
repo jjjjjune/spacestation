@@ -22,6 +22,7 @@ end
 local function order(button)
 	Messages:send("PlaySound","ButtonNew", button.Position)
 	lastOrderedTable[button] = time()
+	Messages:send("MakeShip", button.Item.Value)
 end
 
 local function hook(button)

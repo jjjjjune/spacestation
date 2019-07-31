@@ -30,6 +30,7 @@ local loadOrder = {
 	"../Systems/Explosions",
 	"../Systems/CargoOrdering",
 	"../Systems/Ships",
+	"../Systems/Paychecks"
 }
 
 for _, path in ipairs(loadOrder) do
