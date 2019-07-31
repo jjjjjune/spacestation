@@ -79,6 +79,10 @@ function Appearance:start()
 					p.Locked = false
 				end
 			end
+			character:WaitForChild("Humanoid").Died:connect(function()
+				Messages:send("PlayerDied", player)
+				Messages:send("CharacterDied", character)
+			end)
 		end)
 	end)
 	Messages:hook("ApplyTeamAppearance", function(player, character)

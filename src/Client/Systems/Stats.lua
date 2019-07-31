@@ -29,6 +29,7 @@ local playerStats = {
 
 local function updateStats()
 	Messages:send("UpdateStats", playerStats)
+	Messages:sendServer("SetHunger", playerStats[2].current)
 end
 
 local function resetStats()
@@ -55,7 +56,7 @@ local function oxygenLoop()
 				stat.current = math.min(stat.max, stat.current + 10)
 			end
 		end
-		Messages:send("UpdateStats",playerStats)
+		updateStats()
 	end
 end
 
@@ -69,7 +70,7 @@ local function hungerLoop()
 				Messages:sendServer("DamageMe", stat.damage)
 			end
 		end
-		Messages:send("UpdateStats",playerStats)
+		updateStats()
 	end
 end
 
@@ -79,7 +80,7 @@ function Stats:start()
 	player.CharacterAdded:connect(function(character)
 		resetStats()
 	end)
-	Messages:send("UpdateStats", playerStats)
+	updateStats()
 	Messages:hook("AddHunger", function(hunger)
 		playerStats[2].current = math.min(playerStats[2].max, playerStats[2].current + hunger)
 	end)
