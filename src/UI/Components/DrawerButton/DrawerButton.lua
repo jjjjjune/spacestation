@@ -16,7 +16,9 @@ function DrawerButton:init()
 		myDrawer = drawer
 	end)
 	game:GetService("RunService").RenderStepped:connect(function()
+		debug.profilebegin("drawerbutton")
 		self:setState({})
+		debug.profileend()
 	end)
 end
 

@@ -67,21 +67,44 @@ local function showTimeRemaining(button, timeRemaining)
 	button.SurfaceGui.TextLabel.Text = str
 end
 
+local hiddenDetectors = {}
+
+local function showDetector(button)
+	if hiddenDetectors[button] then
+		local detector = hiddenDetectors[button]
+		if detector.Parent ~= button then
+			hiddenDetectors[button].Parent = button
+		end
+	end
+end
+
+local function hideDetector(button)
+	if not hiddenDetectors[button] then
+		hiddenDetectors[button] = button.ClickDetector
+	end
+	if hiddenDetectors[button].Parent ~= nil then
+		hiddenDetectors[button].Parent = nil
+	end
+end
+
 local function update(button)
 	if not lastOrderedTable[button] then
 		button.SurfaceGui.ImageLabel.Visible = true
 		button.SurfaceGui.TextLabel.Visible = false
+		showDetector(button)
 	else
 		local timeSoFar = time() - lastOrderedTable[button]
 		if timeSoFar < button.Debounce.Value then
 			button.SurfaceGui.ImageLabel.Visible = false
 			button.SurfaceGui.TextLabel.Visible = true
 			showTimeRemaining(button, button.Debounce.Value - timeSoFar)
+			hideDetector(button)
 			--button.Material = Enum.Material.SmoothPlastic
 		else
 			button.SurfaceGui.ImageLabel.Visible = true
 			button.SurfaceGui.TextLabel.Visible = false
 			--button.Material = Enum.Material.Neon
+			showDetector(button)
 		end
 	end
 end
@@ -111,7 +134,9 @@ local CargoOrdering = {}
 function CargoOrdering:start()
 	hookConsoles()
 	game:GetService("RunService").Stepped:connect(function()
+		debug.profilebegin("orderconsoles")
 		updateOrderConsoles()
+		debug.profileend()
 	end)
 end
 

@@ -117,31 +117,29 @@ end
 local lastShopUiTick = time()
 
 local function manageShopUi()
-	game:GetService("RunService").Stepped:connect(function()
-		if time() - lastShopUiTick < .25 then
-			return
-		else
-			lastShopUiTick = time()
-		end
-		local character = player.Character
-		if character then
-			local root = character.PrimaryPart
-			if root then
-				local shop = getClosestShop(root.Position)
-				if shop then
-					open(shop)
-					Messages:send("SetShop", shop)
-					return
-				else
-					if lastShop and lastShop ~= shop and math.ceil((lastShop.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
-						close(lastShop)
-						lastShop = nil
-					end
+	if time() - lastShopUiTick < .25 then
+		return
+	else
+		lastShopUiTick = time()
+	end
+	local character = player.Character
+	if character then
+		local root = character.PrimaryPart
+		if root then
+			local shop = getClosestShop(root.Position)
+			if shop then
+				open(shop)
+				Messages:send("SetShop", shop)
+				return
+			else
+				if lastShop and lastShop ~= shop and math.ceil((lastShop.Base.Position - player.Character.PrimaryPart.Position).magnitude) > MAX_DISTANCE + 1 then
+					close(lastShop)
+					lastShop = nil
 				end
 			end
 		end
-		Messages:send("SetShop", nil)
-	end)
+	end
+	Messages:send("SetShop", nil)
 end
 
 local function refreshShopUnlocks(stat)
@@ -178,11 +176,6 @@ function Shops:start()
 	Messages:hook("SuccesfulBuy", function(shop)
 		shop.Label.BrickColor = BrickColor.new("Bright blue")
 	end)
-	--[[Messages:hook("PlayerDataSet", function(stat, value)
-		if stat == "unlocks" then
-			refreshShopUnlocks()
-		end
-	end)--]]
 	for _, shop in pairs(CollectionService:GetTagged("Shop")) do
 		prepareShop(shop)
 	end

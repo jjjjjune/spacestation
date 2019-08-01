@@ -13,9 +13,11 @@ local ClientProjectiles = {}
 
 function ClientProjectiles:start()
 	RunService.Stepped:connect(function(_, dt)
+		debug.profilebegin("projectilestep")
 		for _, projectile in pairs(projectilesContainer) do
 			projectile:tick(dt)
 		end
+		debug.profileend()
 	end)
 	Messages:hook("CreateProjectile", function(id, pos, goal, modelName)
 		local testProjectile = Projectile.new(id)

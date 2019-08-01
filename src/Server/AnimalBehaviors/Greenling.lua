@@ -185,7 +185,9 @@ function Greenling:init()
 		if self.dead then
 			connect:disconnect()
 		else
+			debug.profilebegin("greenlingstep")
 			self:step()
+			debug.profileend()
 		end
 	end)
 	self.model.Humanoid.Running:connect(function(speed)

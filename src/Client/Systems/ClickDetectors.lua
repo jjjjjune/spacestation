@@ -22,6 +22,7 @@ function ClickDetectors:start()
 		end
 	end)
 	game:GetService("RunService").RenderStepped:connect(function()
+		debug.profilebegin("detectors")
 		local character = player.Character
 		local nearbyDetectorsTable = {}
 		if character and not character:FindFirstChild("Grab") then
@@ -43,6 +44,7 @@ function ClickDetectors:start()
 			end
 		end
 		Messages:send("SetNearbyDetectors", nearbyDetectorsTable)
+		debug.profileend()
 	end)
 end
 

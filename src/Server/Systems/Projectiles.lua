@@ -15,9 +15,11 @@ local ServerProjectiles = {}
 
 function ServerProjectiles:start()
 	RunService.Stepped:connect(function(_, dt)
+		debug.profilebegin("projectileserver")
 		for _, projectile in pairs(projectilesContainer) do
 			projectile:tick(dt)
 		end
+		debug.profileend()
 	end)
 	Messages:hook("OnProjectileHit", function(projectileName, hitObject, pos, owner, direction)
 		local func = ProjectileFunctions[projectileName] or ProjectileFunctions["Default"]

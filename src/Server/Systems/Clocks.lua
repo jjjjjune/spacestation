@@ -43,7 +43,7 @@ local Clocks = {}
 
 function Clocks:start()
 	game:GetService("RunService").Heartbeat:connect(function()
-		seconds = seconds + 5
+		seconds = seconds + 2.5
 		if seconds > day then
 			seconds= 0
 			onNewDay()

@@ -25,6 +25,7 @@ local Carrying = {}
 
 function Carrying:start()
 	game:GetService("RunService").Stepped:connect(function()
+		debug.profilebegin("carry")
 		if player.Character then
 			if player.Character:FindFirstChild("HumanoidRootPart") then
 				local pos = player.Character.HumanoidRootPart.Position
@@ -38,6 +39,7 @@ function Carrying:start()
 				end
 			end
 		end
+		debug.profileend()
 	end)
 end
 

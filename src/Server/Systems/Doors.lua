@@ -2,6 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
+local PhysicsService = game:GetService("PhysicsService")
 
 local DEBOUNCE_TIME = .5
 local LOCKED_ICON = "rbxassetid://3484562953"
@@ -84,9 +85,6 @@ local function close(door)
 			end
 		end
 	end
-	if door:FindFirstChild("Forcefield") then
-		door.Forcefield.CanCollide = true
-	end
 	Messages:send("PlaySound","Door", door.Door.Position)
 	door.OpenValue.Value = false
 end
@@ -102,9 +100,6 @@ local function open(door)
 				tween:Play()
 			end
 		end
-	end
-	if door:FindFirstChild("Forcefield") then
-		door.Forcefield.CanCollide = false
 	end
 	Messages:send("PlaySound","Door", door.Door.Position)
 	door.OpenValue.Value = true
@@ -158,6 +153,10 @@ local function prepareDoor(door)
 	Messages:send("RegisterDetector", lockDetector, function(player)
 		lockUnlock(player)
 	end)
+
+	if door:FindFirstChild("Forcefield") then
+		PhysicsService:SetPartCollisionGroup(door.Forcefield, "Fake")
+	end
 end
 
 local Doors = {}

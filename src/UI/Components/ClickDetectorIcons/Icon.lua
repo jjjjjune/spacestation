@@ -23,7 +23,9 @@ end
 
 function Icon:didMount()
 	self.connect = game:GetService("RunService").RenderStepped:connect(function()
+		debug.profilebegin("icon")
 		self:setState({})
+		debug.profileend()
 	end)
 end
 
@@ -32,8 +34,9 @@ local function onPressed(ui)
 end
 
 function Icon:render()
-	local camera = workspace.CurrentCamera
-	local vector, _ = camera:WorldToScreenPoint(self.props.detector.Parent.Position)
+	if not self.props.detector.Parent then
+		return
+	end
 	local col = self.props.detector.Parent.BrickColor.Color
 	local alwaysOnTop = false
 	local player = game.Players.LocalPlayer
@@ -43,28 +46,15 @@ function Icon:render()
 			local distance = (root.Position - self.props.detector.Parent.Position).magnitude
 			if distance < 14 then
 				alwaysOnTop = true
-				--[[if self.props.detector.Parent.Name ~= "Lock" then
-					alwaysOnTop = true
-				else
-					if distance < 6 then
-						alwaysOnTop = true
-					end
-				end--]]
 			end
 		end
 	end
-	local size = self.props.detector.Parent.Size.magnitude*.75
+	local size = math.min(2,self.props.detector.Parent.Size.magnitude*.75)
 	return Roact.createElement("BillboardGui", { -- holder baby
 		Size = UDim2.new(size,0,size,0),
 		Active = true,
-		--StudsOffset = Vector3.new(0,2,1),
 		StudsOffset = Vector3.new(0,0,0),
 		AlwaysOnTop = alwaysOnTop,
-		--StudsOffsetWorldSpace = Vector3.new(0,0,-1),
-		--SizeConstraint = "RelativeYY",
-		--AnchorPoint = Vector2.new(.5,.5),
-		--BackgroundTransparency = 1,
-		--Position = UDim2.new(0, vector.X, 0, vector.Y),
 		Adornee = self.props.detector.Parent
 	}, {
 		Inside = Roact.createElement("ImageButton", {

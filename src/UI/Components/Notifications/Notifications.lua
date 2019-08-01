@@ -28,7 +28,9 @@ function Notifications:init()
 		end)
 	end)
 	game:GetService("RunService").Stepped:connect(function()
+		debug.profilebegin("notify")
 		self:setState({})
+		debug.profileend()
 	end)
 end
 

@@ -3,12 +3,15 @@ local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 
 local STORAGE_TAG = "Storage"
-local DESPAWN_TIME = 10
+local DESPAWN_TIME = 600
 local ITEM_TAG = "Carryable"
 
 local WorldItems = {}
 
 local function isInStorage(item)
+	if item.Parent ~= workspace then
+		return true
+	end
 	for _, storageInstance in pairs(CollectionService:GetTagged(STORAGE_TAG)) do
 		local origin = storageInstance.Base.Position
 		local base = storageInstance.Base
@@ -33,6 +36,13 @@ local function isInStorage(item)
 	return false
 end
 
+local function anchor(model)
+	for _, p in pairs(model:GetChildren()) do
+		if p:IsA("BasePart") then
+			p.Anchored = true
+		end
+	end
+end
 
 local Storage = {}
 
@@ -53,6 +63,9 @@ function Storage:start()
 				local model = itemTable.item
 				if isInStorage(model) then
 					itemTable.time = tick()
+					if model.Parent == workspace then
+						anchor(model)
+					end
 				end
 				if tick() - itemTable.time > DESPAWN_TIME then
 					itemTable.item:Destroy()

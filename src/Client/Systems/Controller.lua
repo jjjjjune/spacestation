@@ -45,24 +45,6 @@ function Controller:start()
 			else
 				root.Parent.Humanoid.WalkSpeed = 16
 			end
-			--[[local r = Ray.new(root.Position, Vector3.new(0,-200,0))
-			local hit, pos = workspace:FindPartOnRay(r, root.Parent)
-			if not hit then
-				flying = true
-				--workspace.Gravity = 0
-				local humanoid = root.Parent:FindFirstChild("Humanoid")
-				if humanoid then
-					humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-				end
-			else
-				root.FlyPosition.Position = root.Position
-				flying = false
-				--workspace.Gravity = 40
-				local humanoid = root.Parent:FindFirstChild("Humanoid")
-				if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Physics then
-					humanoid:ChangeState(Enum.HumanoidStateType.Running)
-				end
-			end--]]
 			if zeroGravity then
 				workspace.Gravity = 1
 			else
@@ -71,7 +53,6 @@ function Controller:start()
 		else
 			if root and root.Parent == nil then
 				root = nil
-				-- garbage collect baby
 			end
 		end
 	end)
@@ -81,6 +62,7 @@ function Controller:start()
 		local flyGyro = root:WaitForChild("FlyGyro")
 		local connect
 		connect = RunService.RenderStepped:connect(function()
+			debug.profilebegin("controller")
 			if flying then
 				flyPos.MaxForce = Vector3.new(0,20000,0)
 				--flyPos.Position = Vector3.new(0, flyPos.Position.Y-FALL, 0)
@@ -106,6 +88,7 @@ function Controller:start()
 			if character.Parent==nil then
 				connect:disconnect()
 			end
+			debug.profileend()
 		end)
 	end)
 	UserInputService.JumpRequest:connect(function()

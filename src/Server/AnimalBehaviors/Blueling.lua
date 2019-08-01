@@ -246,7 +246,9 @@ function Blueling:init()
 		if self.dead then
 			connect:disconnect()
 		else
+			debug.profilebegin("bluelingstep")
 			self:step()
+			debug.profileend()
 		end
 	end)
 	self.model.Humanoid.HealthChanged:connect(function() -- if it takes damage baby, then its go time

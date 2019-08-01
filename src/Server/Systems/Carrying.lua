@@ -3,11 +3,20 @@ local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 local PhysicsService = game:GetService("PhysicsService")
 
+local function unanchor(model)
+	for _, p in pairs(model:GetChildren()) do
+		if p:IsA("BasePart") then
+			p.Anchored = false
+		end
+	end
+end
+
 local Carrying = {}
 
 function Carrying:start()
 	Messages:hook("CarryObject", function(player, object)
 		if object.Parent == workspace then
+			unanchor(object)
 			object.Parent = player.Character
 			object.Base:SetNetworkOwner(player)
 			for _, p in pairs(object:GetChildren()) do

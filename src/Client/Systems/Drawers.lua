@@ -50,6 +50,7 @@ end
 
 local function drawerLoop()
 	game:GetService("RunService").Stepped:connect(function()
+		debug.profilebegin("drawers")
 		local found = false
 		local character = player.Character
 		if character then
@@ -71,6 +72,7 @@ local function drawerLoop()
 		if not found then
 			Messages:send("SetDrawer", nil)
 		end
+		debug.profileend()
 	end)
 end
 

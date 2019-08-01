@@ -37,16 +37,18 @@ local function makeShip(item)
 		for i = 1, frames do
 			shipInstance.Base.BodyPosition.Position = cf.p
 			cf = cf * CFrame.new(0,0,-amountPer)
-			--[[shipInstance:SetPrimaryPartCFrame(shipInstance.PrimaryPart.CFrame )
-			itemInstance:SetPrimaryPartCFrame(shipInstance.Base.CFrame * CFrame.new(0,-10,0))--]]
 			wait()
 		end
-		wait(4)
+		wait(2)
 		shipInstance.Base.BodyPosition.Position = shipInstance.Base.Position - Vector3.new(0,20,0)
+		cf = cf * CFrame.new(0,-20,0)
 		wait(1)
 		Messages:send("PlaySound","DoorLight", shipInstance.Base.Position)
 		rope:Destroy()
-		wait(2)
+		wait(1)
+		cf = cf * CFrame.new(0,0,100)
+		shipInstance.Base.BodyPosition.Position = cf.p
+		wait(3)
 		shipInstance.Base.BodyPosition.Position = shipInstance.Base.Position + Vector3.new(0,5000,0)
 		wait(6)
 		shipInstance:Destroy()
