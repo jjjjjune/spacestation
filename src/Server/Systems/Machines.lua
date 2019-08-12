@@ -8,6 +8,7 @@ local TweenService = game:GetService("TweenService")
 local lastColors = {}
 
 local BREAK_TIME = 120
+local lastBreak = time()
 
 local function breakMachine(machine)
 	if not CollectionService:HasTag(machine, "Broken") then
@@ -30,8 +31,10 @@ end
 
 local function initializeMachines()
 	for _, machine in pairs(CollectionService:GetTagged("Machine")) do
+		machine.PrimaryPart = machine.Base
 		local data = MachineData[machine.Name]
 		data.init(machine)
+		data.on(machine)
 	end
 end
 
@@ -56,19 +59,16 @@ local function fix(machine)
 	end
 end
 
-local Machines = {}
-
-function Machines:start()
-	initializeMachines()
-	spawn(function()
-		local machines = CollectionService:GetTagged("Machine")
-		for i, machine in pairs(machines) do
-			if machine.Name == "MainPower" then
-				table.remove(machines, i)
-			end
+local function establishMachineBreakLoop()
+	local machines = CollectionService:GetTagged("Machine")
+	for i, machine in pairs(machines) do
+		if machine.Name == "MainPower" then
+			table.remove(machines, i)
 		end
-		breakMachine(machines[math.random(1, #machines)])
-		while wait(BREAK_TIME) do
+	end
+	breakMachine(machines[math.random(1, #machines)])
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastBreak > BREAK_TIME then
 			local machines = CollectionService:GetTagged("Machine")
 			for i, machine in pairs(machines) do
 				if machine.Name == "MainPower" then
@@ -76,7 +76,36 @@ function Machines:start()
 				end
 			end
 			breakMachine(machines[math.random(1, #machines)])
+			lastBreak = time()
 		end
+	end)
+end
+
+local Machines = {}
+
+function Machines:start()
+	initializeMachines()
+	establishMachineBreakLoop()
+	Messages:hook("ToggleMachine", function(machine)
+		if CollectionService:HasTag(machine, "Broken") then
+			return
+		end
+		local data = MachineData[machine.Name]
+		if not machine:FindFirstChild("On") then
+			local onValue = Instance.new("BoolValue", machine)
+			onValue.Name = "On"
+			onValue.Value = false
+		else
+			machine.On.Value = not machine.On.Value
+		end
+		if machine.On.Value == true then
+			data.on(machine)
+		else
+			data.off(machine)
+		end
+	end)
+	Messages:hook("BreakMachine", function(machine)
+		breakMachine(machine)
 	end)
 	Messages:hook("RepairMachine", function(machine, player)
 		if player.Team.Name == "Workers" then

@@ -25,10 +25,14 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 			Messages:send("Knockback", hit.Parent, direction*40,.4)
 		else
 			LowerHealth(owner, humanoid.Parent, damage)
-			Messages:sendAllClients("DoDamageEffect", humanoid.Parent)
 			Messages:send("PlayAnimation", humanoid.Parent, "Hit2")
 			Messages:send("Knockback", hit.Parent, direction*60,.4)
 		end
+	end
+	if (not owner) and CollectionService:HasTag(hit.Parent, "Plant") then
+		hit.Parent.Water.Value = hit.Parent.Water.Value - 1
+		Messages:send("PlaySound", "Leaves", hit.Position)
+		Messages:send("PlayParticle", "Leaf", 15, hit.Position)
 	end
 end
 

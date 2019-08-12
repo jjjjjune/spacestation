@@ -9,6 +9,9 @@ local DAMAGE = 10
 local SPREAD = 1
 local MAX_RANGE = 60
 local TONGUE_RANGE = 40
+local MAX_MACHINE_RANGE = 50
+local COUGH_UP_ITEM = "Water"
+local COUGH_TIME = 300
 
 local tweenInfo = TweenInfo.new(.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local tweenInfoRope = TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -77,6 +80,45 @@ function Blueling:resetIdle()
 	self.idlePosition = self.spawnPos + Vector3.new(walkDistX,0,walkDistY)
 end
 
+function Blueling:coughItem()
+	local p = (self.model.PrimaryPart.CFrame * CFrame.new(0,0,-3)).p
+	local model = game.ReplicatedStorage.Assets.Objects[COUGH_UP_ITEM]:Clone()
+	model.Parent = workspace
+	model.PrimaryPart = model.Base
+	model:SetPrimaryPartCFrame(CFrame.new(p))
+	Messages:send("PlaySound","AlienCough", p)
+end
+
+function Blueling:friendlyStep()
+	if not self.lastCough then
+		self.lastCough = time()
+	end
+	if time() - self.lastCough > COUGH_TIME then
+		self:coughItem()
+		self.lastCough = time()
+	end
+	if CollectionService:HasTag(self.model, "Following") then
+		local human = self:closeHuman()
+		if human then
+			if not self.offset then
+				self.offset = Vector3.new(math.random(-2,2), 0, math.random(-2,2))
+			end
+			local goal =human.PrimaryPart.Position + self.offset
+			local dist = (self.model.PrimaryPart.Position - goal).magnitude
+			if dist > 8 then
+				self.model.Humanoid:MoveTo(goal)
+				self.spawnPos = self.model.PrimaryPart.Position
+			else
+				self.model.Humanoid:MoveTo(self.model.PrimaryPart.Position)
+			end
+		else
+			self:idle()
+		end
+	else
+		self:idle()
+	end
+end
+
 function Blueling:idle()
 	if not self.nextIdle then
 		self:resetIdle()
@@ -109,6 +151,25 @@ function Blueling:closeHumanNonAlien()
 	return closeHuman, closestDistance
 end
 
+function Blueling:closeHuman()
+	local closeHuman = nil
+	local closestDistance = MAX_RANGE
+	for _, p in pairs(game.Players:GetPlayers()) do
+		local character = p.Character
+		if character then
+			local root = character.PrimaryPart
+			if root then
+				local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
+				if distance < closestDistance then
+					closeHuman = character
+					closestDistance = distance
+				end
+			end
+		end
+	end
+	return closeHuman
+end
+
 function Blueling:attack(character)
 	local tongue = self.model.TonguePart
 	self:playAttackAnimation()
@@ -124,7 +185,7 @@ function Blueling:attack(character)
 	local origin = self.model.Head.Position
 	tongue.Beam.Enabled = true
 
-	local start = character.HumanoidRootPart.Position + Vector3.new(math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD))
+	local start = character.PrimaryPart.Position + Vector3.new(math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD), math.random(-SPREAD,SPREAD))
 	local r = Ray.new(tongue.Position, (start - tongue.Position).unit * TONGUE_RANGE)
 	local hit, pos = workspace:FindPartOnRay(r, self.model)
 
@@ -158,6 +219,8 @@ function Blueling:attack(character)
 		Messages:send("PlayParticle", "Sparks", 15, hit.Position)
 		LowerHealth(self.model, hit.Parent, DAMAGE)
 		self.runaway= true
+	elseif hit and CollectionService:HasTag(hit.Parent, "Machine") then
+		Messages:send("BreakMachine", hit.Parent)
 	end
 
 	wait(.2)
@@ -203,7 +266,52 @@ function Blueling:stopAttackAnimation()
 	end
 end
 
-function Blueling:step()
+function Blueling:attackHuman(human, dist)
+	if self.attacking then
+		return
+	else
+		if dist < TONGUE_RANGE then
+			local character = human
+			self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
+			self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,character.PrimaryPart.Position)
+			spawn(function() self:attack(human) end)
+		else
+			self.model.Humanoid:MoveTo(self.model.HumanoidRootPart.Position)
+			local character = human
+			self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
+			self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,character.PrimaryPart.Position)
+
+			self:playAttackAnimation()
+		end
+	end
+end
+
+function Blueling:attackMachine(machine)
+	if self.attacking then
+		return
+	end
+	self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
+	self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,machine.PrimaryPart.Position)
+	self:attack(machine)
+end
+
+function Blueling:closeMachine()
+	local closeHuman = nil
+	local closestDistance = MAX_MACHINE_RANGE
+	for _, character in pairs(CollectionService:GetTagged("Machine")) do
+		local root = character.PrimaryPart
+		if root and not CollectionService:HasTag(character, "Broken") then
+			local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
+			if distance < closestDistance then
+				closeHuman = character
+				closestDistance = distance
+			end
+		end
+	end
+	return closeHuman
+end
+
+function Blueling:hostileStep()
 	if self.runaway then
 		self:idle()
 		self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,0)
@@ -211,27 +319,24 @@ function Blueling:step()
 	end
 	local human, dist = self:closeHumanNonAlien()
 	if human then
-		if self.attacking then
-			return
-		else
-			if dist < TONGUE_RANGE then
-				local character = human
-				self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
-				self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,character.PrimaryPart.Position)
-				spawn(function() self:attack(human) end)
-			else
-				self.model.Humanoid:MoveTo(self.model.HumanoidRootPart.Position)
-				local character = human
-				self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
-				self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,character.PrimaryPart.Position)
-
-				self:playAttackAnimation()
-			end
-		end
+		self:attackHuman(human, dist)
 	else
-		self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,0)
-		self:stopAttackAnimation()
-		self:idle()
+		local machine = self:closeMachine()
+		if machine then
+			self:attackMachine(machine)
+		else
+			self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,0)
+			self:stopAttackAnimation()
+			self:idle()
+		end
+	end
+end
+
+function Blueling:step()
+	if CollectionService:HasTag(self.model, "Friendly") then
+		self:friendlyStep()
+	else
+		self:hostileStep()
 	end
 end
 
@@ -246,9 +351,7 @@ function Blueling:init()
 		if self.dead then
 			connect:disconnect()
 		else
-			debug.profilebegin("bluelingstep")
 			self:step()
-			debug.profileend()
 		end
 	end)
 	self.model.Humanoid.HealthChanged:connect(function() -- if it takes damage baby, then its go time

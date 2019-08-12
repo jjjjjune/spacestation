@@ -12,6 +12,9 @@ local tweenInfo = TweenInfo.new(
 	)
 
 local MAX_RANGE = 30
+local MAX_PLANT_RANGE = 20
+local COUGH_UP_ITEM = "Space Rose Seed"
+local COUGH_TIME = 300
 
 local Greenling = {}
 Greenling.__index = Greenling
@@ -88,6 +91,22 @@ function Greenling:closeHuman()
 	return closeHuman
 end
 
+function Greenling:closePlant()
+	local closeHuman = nil
+	local closestDistance = MAX_PLANT_RANGE
+	for _, character in pairs(CollectionService:GetTagged("Plant")) do
+		local root = character.PrimaryPart
+		if root then
+			local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
+			if distance < closestDistance then
+				closeHuman = character
+				closestDistance = distance
+			end
+		end
+	end
+	return closeHuman
+end
+
 function Greenling:attack(character)
 	self.attacking = true
 	local t = time()
@@ -131,7 +150,23 @@ function Greenling:attack(character)
 	end)
 end
 
+function Greenling:coughItem()
+	local p = (self.model.PrimaryPart.CFrame * CFrame.new(0,0,-3)).p
+	local model = game.ReplicatedStorage.Assets.Objects[COUGH_UP_ITEM]:Clone()
+	model.Parent = workspace
+	model.PrimaryPart = model.Base
+	model:SetPrimaryPartCFrame(CFrame.new(p))
+	Messages:send("PlaySound","AlienCough", p)
+end
+
 function Greenling:friendlyStep()
+	if not self.lastCough then
+		self.lastCough = time()
+	end
+	if time() - self.lastCough > COUGH_TIME then
+		self:coughItem()
+		self.lastCough = time()
+	end
 	if CollectionService:HasTag(self.model, "Following") then
 		local human = self:closeHuman()
 		if human then
@@ -156,11 +191,18 @@ end
 
 function Greenling:hostileStep()
 	local human = self:closeHumanNonAlien()
+	local plant = self:closePlant()
 	if human then
 		if self.attacking then
 			return
 		else
 			self:attack(human)
+		end
+	elseif plant then
+		if self.attacking then
+			return
+		else
+			self:attack(plant)
 		end
 	else
 		self:idle()

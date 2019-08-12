@@ -12,4 +12,6 @@ end
 return {
 	["Dough"] = genericEat,
 	["Bread"] = genericEat,
+	["Space Fruit"] = genericEat,
+	["Cooked Space Fruit"] = genericEat,
 }

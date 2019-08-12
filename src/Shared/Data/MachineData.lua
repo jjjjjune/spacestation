@@ -1,3 +1,5 @@
+local import = require(game.ReplicatedStorage.Shared.Import)
+local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 
 return {
@@ -25,14 +27,52 @@ return {
 		on = function(model)
 			for _, light in pairs(CollectionService:GetTagged("Light")) do
 				light.BrickColor = BrickColor.new("White")
-				light.SurfaceLight.Enabled = true
+				light.CastShadow = false
+				if light:FindFirstChild("SurfaceLight") then
+					light.SurfaceLight.Enabled = true
+				end
 			end
+			game.Lighting.Ambient = Color3.fromRGB(105,109,139)
+			game.Lighting.Brightness = 2
+			game.Lighting.OutdoorAmbient = Color3.fromRGB(96,73,136)
 		end,
 		off = function(model)
 			for _, light in pairs(CollectionService:GetTagged("Light")) do
 				light.BrickColor = BrickColor.new("Black")
-				light.SurfaceLight.Enabled = false
+				light.CastShadow = true
+				if light:FindFirstChild("SurfaceLight") then
+					light.SurfaceLight.Enabled = false
+				end
 			end
+			game.Lighting.Ambient = Color3.fromRGB(10,10,15)
+			game.Lighting.Brightness = 0
+			game.Lighting.OutdoorAmbient = Color3.fromRGB(10,10,15)
 		end
-	}
+	},
+	["Oven"] = {
+		init = function(model)
+			local detector = Instance.new("ClickDetector", model.dial.Base)
+			Messages:send("RegisterDetector", detector, function(player)
+				Messages:send("ToggleMachine", model)
+			end)
+		end,
+		on = function(model)
+			if not model.HeatArea.HeaterSound.IsPlaying then
+				model.HeatArea.HeaterSound:Play()
+				model.HeatDisplay.BrickColor = BrickColor.new("Bright orange")
+				model.dial.Base.BrickColor = BrickColor.new("Bright blue")
+			end
+			model.HeatDisplay.Fire.Rate = 40
+			model.HeatArea.Temperature.Value = 1000
+		end,
+		off = function(model)
+			if model.HeatArea.HeaterSound.IsPlaying then
+				model.HeatArea.HeaterSound:Stop()
+				model.HeatDisplay.BrickColor = BrickColor.new("Sand blue")
+				model.dial.Base.BrickColor = BrickColor.new("Bright orange")
+			end
+			model.HeatDisplay.Fire.Rate = 0
+			model.HeatArea.Temperature.Value = 0
+		end
+	},
 }

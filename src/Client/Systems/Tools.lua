@@ -19,13 +19,18 @@ local  Tools = {}
 
 function Tools:start()
 	spawn(function()
-		player:WaitForChild("Backpack").ChildAdded:connect(function(tool)
-			initTool(tool)
-			if not alreadyAdded[tool.Name] then
-				Messages:send("Notify", "+ 1 "..tool.Name)
-				alreadyAdded[tool.Name] = true
+		player.ChildAdded:connect(function(ch)
+			if ch.Name == "Backpack" then
+				player:WaitForChild("Backpack").ChildAdded:connect(function(tool)
+					initTool(tool)
+					if not alreadyAdded[tool.Name] then
+						Messages:send("Notify", "+ 1 "..tool.Name)
+						alreadyAdded[tool.Name] = true
+					end
+				end)
 			end
 		end)
+		repeat wait() until player:FindFirstChild("Backpack")
 		for _, tool in pairs(player.Backpack:GetChildren()) do
 			initTool(tool)
 			if not alreadyAdded[tool.Name] then

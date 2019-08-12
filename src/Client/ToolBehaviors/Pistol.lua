@@ -20,7 +20,13 @@ function Pistol:instance(tool)
 end
 
 function Pistol:activated()
-	--Messages:send("PlayAnimationClient", "Shoot")
+
+	if time() - self.lastFire < .5 then
+		return
+	else
+		self.lastFire = time()
+	end
+	Messages:send("PlayAnimationClient", "Shoot")
 	local mouse = game.Players.LocalPlayer:GetMouse()
 	local target = mouse.Hit.p
 	local start = self.player.Character:FindFirstChildOfClass("Tool").Handle.Position

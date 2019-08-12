@@ -12,6 +12,8 @@ local function connectEvents(tool)
 		instanced[tool] = true
 		local behavior = import("Server/ToolBehaviors/"..tool.Name).new()
 		behavior:instance(tool)
+	else
+		print('already instanced', tool)
 	end
 end
 
@@ -37,7 +39,7 @@ end
 local Tools = {}
 
 function Tools:start()
-	workspace.ChildAdded:connect(function(tool)
+	--[[workspace.ChildAdded:connect(function(tool)
 		if tool:IsA("Tool") then
 			for _, player in pairs(game.Players:GetChildren()) do
 				local character = player.Character
@@ -62,7 +64,7 @@ function Tools:start()
 				end
 			end
 		end
-	end)
+	end)--]]
 	Messages:hook("GiveTool", function(player, toolName)
 		local tool = getToolObject(toolName)
 		tool.Parent = player.Backpack

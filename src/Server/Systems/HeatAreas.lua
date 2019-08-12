@@ -38,9 +38,11 @@ local function burn(item)
 end
 
 local function onCookedItem(transformItem)
-	for _, p in pairs(game.Players:GetChildren()) do
-		if p.Team.Name == "Cooks" then
-			AddCash(p, 1)
+	if transformItem:FindFirstChild("Hunger") then
+		for _, p in pairs(game.Players:GetChildren()) do
+			if p.Team.Name == "Cooks" then
+				AddCash(p, transformItem.Hunger.Value)
+			end
 		end
 	end
 end
@@ -101,6 +103,15 @@ local function doRadiusStepOnly()
 					end
 				end
 			end
+			for _, animal in pairs(CollectionService:GetTagged("Animal")) do
+				if animal.Parent == workspace then
+					if heatArea:FindFirstChild("Radius") then
+						if (animal.PrimaryPart.Position - heatArea.Position).magnitude < heatArea.Radius.Value then
+							Messages:send("Burn", animal)
+						end
+					end
+				end
+			end
 		end
 	end
 end
@@ -121,6 +132,25 @@ local function cookStep()
 					end
 				end
 			end
+			for _, animal in pairs(CollectionService:GetTagged("Animal")) do
+				if animal.Parent == workspace then
+					if isWithin(animal.PrimaryPart.Position, heatArea) then
+						Messages:send("Burn", animal)
+					end
+				end
+			end
+			if heatArea.Anchored == true then
+				for _, player in pairs(game.Players:GetPlayers()) do
+					if player.Character then
+						local animal = player.Character
+						if animal.Parent == workspace then
+							if isWithin(animal.PrimaryPart.Position, heatArea) then
+								Messages:send("Burn", animal)
+							end
+						end
+					end
+				end
+			end
 		end
 	end
 end
@@ -134,9 +164,6 @@ end
 local HeatAreas = {}
 
 function HeatAreas:start()
-	--[[for _, heatArea in pairs(CollectionService:GetTagged("HeatArea")) do
-		heatArea.Parent = game.ServerStorage
-	end--]]
 	spawn(heatLoop)
 	Messages:hook("ForceStep", function()
 		if time() - lastForceStep > 1 then

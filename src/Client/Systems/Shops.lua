@@ -24,6 +24,7 @@ local tweenInfoFast = TweenInfo.new(
 	0
 )
 
+local lastSound = time()
 
 local function close(shop)
 	if not originalColors[shop] then
@@ -36,10 +37,15 @@ local function close(shop)
 		shop.PlatformDisplay.Material = Enum.Material.Neon
 		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = startCol})
 		tween:Play()
-		Messages:sendServer("PlaySoundServer", "Lift", shop.Platform.Position)
+		if time() - lastSound > 2 then
+			Messages:sendServer("PlaySoundServer", "Lift", shop.Platform.Position)
+		end
 		tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,-1,0)})
 		tween:Play()
-		Messages:sendServer("PlaySoundServer", "Shop2", shop.Platform.Position, "Static")
+		if time() - lastSound > 2 then
+			Messages:sendServer("PlaySoundServer", "Shop2", shop.Platform.Position, "Static")
+			lastSound = time()
+		end
 	end
 end
 
@@ -63,10 +69,15 @@ local function open(shop)
 		shop.PrimaryPart = shop.Base
 		local tween = TweenService:Create(shop.PlatformDisplay,tweenInfoFast, {Color = Color3.new(startCol.r + .2, startCol.g + .2, startCol.b + .2)})
 		tween:Play()
-		Messages:sendServer("PlaySoundServer", "Unlift", shop.Platform.Position)
+		if time() - lastSound > 2 then
+			Messages:sendServer("PlaySoundServer", "Unlift", shop.Platform.Position)
+		end
 		tween = TweenService:Create(shop.Platform,tweenInfo, {CFrame = shop.Platform.CFrame * CFrame.new(0,1,0)})
 		tween:Play()
-		Messages:sendServer("PlaySoundServer", "Shop1", shop.Platform.Position, "Static")
+		if time() - lastSound > 2 then
+			Messages:sendServer("PlaySoundServer", "Shop1", shop.Platform.Position, "Static")
+			lastSound = time()
+		end
 	end
 end
 

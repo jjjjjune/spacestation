@@ -2,20 +2,23 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 
-local Flashlight = {}
-Flashlight.__index = Flashlight
+local Keycard = {}
+Keycard.__index = Keycard
 
-function Flashlight:instance(tool)
+function Keycard:instance(tool)
 	self.player = tool.Parent.Parent
+	tool.Indicator.BrickColor = self.player.TeamColor
+	local teamValue = Instance.new("StringValue", tool)
+	teamValue.Name = "Team"
+	teamValue.Value = self.player.Team.Name
 	tool.Handle.Touched:connect(function(hit)
 		local door = hit.Parent
 		if CollectionService:HasTag(door, "Door") then
-			Messages:send("UnlockDoor", door)
+			Messages:send("UnlockDoor", door, tool)
 		end
 	end)
 	tool.Equipped:connect(function()
 		self:equipped(self.player.Character)
-
 	end)
 	tool.Unequipped:connect(function()
 		self:unequipped(self.player.Character)
@@ -25,17 +28,17 @@ function Flashlight:instance(tool)
 	end)
 end
 
-function Flashlight:equipped(character)
-	--character.HumanoidRootPart.PointLight.Brightness = 1
+function Keycard:equipped(character)
+
 end
 
-function Flashlight:unequipped(character)
-	--character.HumanoidRootPart.PointLight.Brightness = .2
+function Keycard:unequipped(character)
+
 end
 
-function Flashlight.new()
+function Keycard.new()
 	local tool = {}
-	return setmetatable(tool, Flashlight)
+	return setmetatable(tool, Keycard)
 end
 
-return Flashlight
+return Keycard

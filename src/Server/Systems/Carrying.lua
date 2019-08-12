@@ -55,6 +55,7 @@ function Carrying:start()
 			object.Base.Attach1:Destroy()
 			player.Character["RightHand"].Attach2:Destroy()
 			Messages:send("PlaySound", "ErrorLight", object.Base.Position)
+			Messages:send("OnObjectReleased", player, object)
 		end
 	end)
 end

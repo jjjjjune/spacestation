@@ -18,6 +18,8 @@ local function getTimeString(timeRemaining)
 			hoursString = "0"
 		end
 	end
+	minutes = math.floor(minutes/5)*5
+	minutesString = minutes..""
 	if minutes < 10 and hours ~= 0 then
 		minutesString = "0"..minutesString
 		if minutes == 0 then
@@ -43,7 +45,7 @@ local Clocks = {}
 
 function Clocks:start()
 	game:GetService("RunService").Heartbeat:connect(function()
-		seconds = seconds + 2.5
+		seconds = seconds + 4
 		if seconds > day then
 			seconds= 0
 			onNewDay()

@@ -3,6 +3,7 @@ local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 local PhysicsService = game:GetService("PhysicsService")
+local TeamData = import "Shared/Data/TeamData"
 
 local DEBOUNCE_TIME = .5
 local LOCKED_ICON = "rbxassetid://3484562953"
@@ -105,6 +106,25 @@ local function open(door)
 	door.OpenValue.Value = true
 end
 
+local function canUnlockDoor(door, tool)
+	local neededAccess = "Generic"
+	if door:FindFirstChild("Access") then
+		neededAccess = door.Access.Value
+	end
+	local team = tool.Team.Value
+	local accessTable = TeamData[team].access
+	for _, accessType in pairs(accessTable) do
+		if accessType == neededAccess then
+			unlock(door)
+			return
+		else
+			print(accessType, neededAccess)
+		end
+	end
+	local player = game.Players:GetPlayerFromCharacter(tool.Parent)
+	Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
+end
+
 local function prepareDoor(door)
 	local openButton = door:WaitForChild("Open")
 	local openOutsideButton = door:WaitForChild("OpenOutside")
@@ -120,6 +140,14 @@ local function prepareDoor(door)
 	openValue.Value = false
 
 	local function attemptOpen(player)
+		local tool = player.Backpack:FindFirstChild("Keycard")
+		if not tool then
+			tool = player.Character.Keycard
+		end
+		if not canUnlockDoor(door, tool) then -- player needs keycard access
+			Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
+			return
+		end
 		if not debounced(door) then
 			local isLocked = lockedValue.Value == true
 			local isOpen = openValue.Value == true
@@ -164,10 +192,11 @@ local Doors = {}
 function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
-		--open(door)
 	end
-	Messages:hook("UnlockDoor", function(door)
-		unlock(door)
+	Messages:hook("UnlockDoor", function(door, tool)
+		if canUnlockDoor(door, tool) then
+			unlock(door)
+		end
 	end)
 	game:GetService("RunService").Stepped:connect(function()
 		for door, t in pairs(lockTable) do

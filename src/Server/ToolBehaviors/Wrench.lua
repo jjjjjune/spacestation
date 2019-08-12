@@ -72,7 +72,6 @@ function Wrench:activated()
 		local person = part.Parent
 		LowerHealth(self.player, person, DAMAGE)
 		Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
-		Messages:sendAllClients("DoDamageEffect", person)
 		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
 		Messages:send("PlayParticle", "Sparks", 10, part.Position)
 	end

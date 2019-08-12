@@ -1,10 +1,10 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 
-local Flashlight = {}
-Flashlight.__index = Flashlight
+local Keycard = {}
+Keycard.__index = Keycard
 
-function Flashlight:instance(tool)
+function Keycard:instance(tool)
 	self.player = game.Players.LocalPlayer
 	tool.Equipped:connect(function()
 		self:equipped(self.player.Character)
@@ -18,20 +18,20 @@ function Flashlight:instance(tool)
 	self.lastFire = time()
 end
 
-function Flashlight:activated()
+function Keycard:activated()
 end
 
-function Flashlight:equipped(character)
-
-end
-
-function Flashlight:unequipped(character)
+function Keycard:equipped(character)
 
 end
 
-function Flashlight.new()
+function Keycard:unequipped(character)
+
+end
+
+function Keycard.new()
 	local tool = {}
-	return setmetatable(tool, Flashlight)
+	return setmetatable(tool, Keycard)
 end
 
-return Flashlight
+return Keycard

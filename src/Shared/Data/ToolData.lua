@@ -6,11 +6,11 @@ return {
 		description = "Illuminates the station in times of darkness.",
 		element = "ELECTRONIC"
 	},
-	["Security Keycard"] = {
-		name = "Security Keycard",
+	["Keycard"] = {
+		name = "Keycard",
 		model = "Assets/Tools/Keycard",
 		icon = "rbxassetid://3489626364",
-		description = "Warrant? Buddy, I /am/ the warrant.",
+		description = "For opening doors.",
 		element =  "PLASTIC"
 	},
 	["Pistol"] = {
@@ -65,8 +65,22 @@ return {
 	["Eat"] = {
 		name = "Eat",
 		model = "Assets/Tools/Consume",
-		icon = "rbxassetid://3488930216", --rbxassetid://3553758865",
+		icon = "rbxassetid://3488930216",
 		description = "Tap things to nom them.",
 		element = "NONE",
+	},
+	["Watering Can"] = {
+		name = "Watering Can",
+		model = "Assets/Tools/Watering Can",
+		icon = "rbxassetid://3576099564",
+		description = "Tap wells to add water. Tap plants to water them.",
+		element = "WATER",
+	},
+	["Medigun"] = {
+		name = "Medigun",
+		model = "Assets/Tools/Medigun",
+		icon = "rbxassetid://3601393029",
+		description = "First: do no harm. Second: remember to load up on goo.",
+		element = "WATER",
 	}
 }

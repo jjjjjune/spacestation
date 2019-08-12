@@ -6,6 +6,7 @@ local AddCash = import "Shared/Utils/AddCash"
 local TeamData = import "Shared/Data/TeamData"
 
 local CYCLE_TIME =5
+local PAY_SCALE = 2
 
 local thisCycle = {}
 
@@ -24,6 +25,9 @@ local defaultPaycheckInfo = function()
 end
 
 local function addPaycheckStat(player, stat, value)
+	if value ~= nil then
+		value = value * PAY_SCALE
+	end
 	local checkInfo = thisCycle[player]
 	if not checkInfo[stat] then
 		checkInfo[stat] = value
@@ -34,7 +38,7 @@ end
 
 local function awardAll(stat, value)
 	for player, payData in pairs(thisCycle) do
-		addPaycheckStat(player, stat, value)
+		addPaycheckStat(player, stat, value*PAY_SCALE)
 	end
 end
 

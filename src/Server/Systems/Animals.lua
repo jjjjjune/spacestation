@@ -80,6 +80,11 @@ function Animals:start()
 				setupMonster(model, scripts)
 			end
 		end
+		CollectionService:GetInstanceAddedSignal(tagName):connect(function(model)
+			if model:IsDescendantOf(workspace) then
+				setupMonster(model, scripts)
+			end
+		end)
 	end
 
 	Messages:hook("OnSucessfulTame",function(player, animal)

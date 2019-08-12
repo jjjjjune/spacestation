@@ -64,6 +64,7 @@ function Explosions:start()
 				delay(3, function()
 					unragdoll(hit.Parent)
 				end)
+				Messages:send("Burn", hit.Parent)
 			end
 		end)
 		local particlePart = game.ReplicatedStorage.Assets.Particles.Explosion:Clone()

@@ -4,6 +4,7 @@ local OnPlayerKilledMonster = import "Shared/Utils/OnPlayerKilledMonster"
 local OnPlayerDamagedPlayer = import "Shared/Utils/OnPlayerDamagedPlayer"
 local OnPlayerDamagedMonster = import "Shared/Utils/OnPlayerDamagedMonster"
 local CollectionService = game:GetService("CollectionService")
+local Messages = import "Shared/Utils/Messages"
 
 local badRoles  = {
 	"Criminal",
@@ -16,6 +17,10 @@ local canHarmRoles = {
 }
 
 return function(owner, victim, amount)
+	if CollectionService:HasTag(victim, "TeamSwitch") then
+		return
+	end
+	Messages:sendAllClients("DoDamageEffect", victim)
 	local victimPlayer = game.Players:GetPlayerFromCharacter(victim)
 	if owner and owner.Parent == game.Players then
 		if victimPlayer then

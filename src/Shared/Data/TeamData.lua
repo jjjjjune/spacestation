@@ -2,9 +2,10 @@ return {
 	["Workers"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
-			"Flashlight",
 			"Wrench",
+			"Flashlight",
 		},
 		bodyParts = {
 			Torso = 28269799,
@@ -15,13 +16,18 @@ return {
 		},
 		limit = 100000,
 		pay = 35,
+		access = {
+			"Generic",
+		}
 	},
 	["Security"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
+			"Wrench",
 			"Flashlight",
-			"Security Keycard"
+			"Pistol",
 		},
 		bodyParts = {
 			Torso = 3091081187,
@@ -32,12 +38,22 @@ return {
 		},
 		limit = 2,
 		pay = 35,
+		access = {
+			"Generic",
+			"Cook",
+			"Police",
+			"Science",
+			"Medic",
+			"Botany",
+		}
 	},
 	--6818709
 	["Space Police"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
+			"Wrench",
 			"Flashlight",
 			"Security Keycard",
 			"Pistol",
@@ -52,11 +68,22 @@ return {
 		gamepass = 6818709,
 		limit = 1000,
 		pay = 55,
+		access = {
+			"Generic",
+			"Keycard",
+			"Cook",
+			"Police",
+			"Science",
+			"Medic",
+			"Botany",
+		}
 	},
 	["Cooks"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
+			"Wrench",
 			"Flashlight",
 		},
 		bodyParts = {
@@ -68,11 +95,17 @@ return {
 		},
 		limit = 3,
 		pay = 45,
+		access = {
+			"Generic",
+			"Cook",
+		}
 	},
 	["Scientists"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
+			"Wrench",
 			"Flashlight",
 			"Friendship Gun",
 		},
@@ -85,11 +118,17 @@ return {
 		},
 		limit = 3,
 		pay = 45,
+		access = {
+			"Science",
+		}
 	},
 	["Medics"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
+			"Medigun",
+			"Wrench",
 			"Flashlight",
 		},
 		bodyParts = {
@@ -100,13 +139,20 @@ return {
 			LeftArm = 2807204915,
 		},
 		limit = 3,
-		pay = 45,
+		pay = 65,
+		access = {
+			"Generic",
+			"Medic",
+		}
 	},
 	["Botanists"] = {
 		starterPack = {
 			"Grab",
+			"Keycard",
 			"Eat",
+			"Wrench",
 			"Flashlight",
+			"Watering Can",
 		},
 		bodyParts = {
 			Torso = 3040324777,
@@ -116,6 +162,10 @@ return {
 			LeftArm = 3040323138,
 		},
 		limit = 3,
-		pay = 45,
+		pay = 50,
+		access = {
+			"Generic",
+			"Botany",
+		}
 	},
 }

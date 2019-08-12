@@ -21,15 +21,6 @@ function Wrench:instance(tool)
 end
 
 function Wrench:activated()
-	if not self.lastSwing then
-		self.lastSwing = time()
-	else
-		if time() - self.lastSwing < .5 then
-			return
-		else
-			self.lastSwing = time()
-		end
-	end
 	local pos = self.player.Character.PrimaryPart.Position
 	Messages:sendServer("PlaySoundServer", "HeavyWhoosh", pos)
 	Messages:send("PlayAnimationClient", "Swing4")
