@@ -68,6 +68,7 @@ function Tools:start()
 	Messages:hook("GiveTool", function(player, toolName)
 		local tool = getToolObject(toolName)
 		tool.Parent = player.Backpack
+		Messages:sendClient(player, "OnToolGiven", tool)
 	end)
 	Messages:hook("RemoveTool", function(player, toolName)
 		player.Backpack[toolName]:Destroy()

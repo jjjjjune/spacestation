@@ -38,6 +38,13 @@ function Tools:start()
 				alreadyAdded[tool.Name] = true
 			end
 		end
+		Messages:hook("OnToolGiven", function(tool)
+			initTool(tool)
+			if not alreadyAdded[tool.Name] then
+				Messages:send("Notify", "+ 1 "..tool.Name)
+				alreadyAdded[tool.Name] = true
+			end
+		end)
 		player.CharacterAdded:connect(function(character) -- we do this because of a wierd bug wehre childadded doesnt fire on Backpack
 			-- when the character first gets added
 			alreadyAdded = {}

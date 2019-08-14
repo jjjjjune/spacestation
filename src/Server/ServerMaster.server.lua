@@ -39,6 +39,8 @@ local loadOrder = {
 	"../Systems/Fire",
 	"../Systems/GreenGoo",
 	"../Systems/Station",
+	"../Systems/Arrests",
+	"../Systems/Checkpoints",
 }
 
 for _, path in ipairs(loadOrder) do

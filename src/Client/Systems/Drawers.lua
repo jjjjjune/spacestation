@@ -2,7 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 
-local MAX_DISTANCE = 10
+local MAX_DISTANCE = 5
 
 local player = game.Players.LocalPlayer
 local lastDrawer
@@ -23,7 +23,11 @@ end
 local function close(drawer)
 	if drawer.Open.Value == true then
 		drawer.PrimaryPart = drawer.Base
-		drawer:SetPrimaryPartCFrame(drawer.PrimaryPart.CFrame * CFrame.new(0,0,drawer.Base.Size.Z*.75))
+		if not drawer:FindFirstChild("Handle") then
+			drawer:SetPrimaryPartCFrame(drawer.PrimaryPart.CFrame * CFrame.new(0,0,drawer.Base.Size.Z*.75))
+		else
+			drawer:SetPrimaryPartCFrame(drawer.PrimaryPart.CFrame * CFrame.new(0,0,-drawer.PrimaryPart.Size.X/2) * CFrame.Angles(0, -math.rad(90),0))
+		end
 		drawer.Open.Value = false
 		Messages:send("PlaySoundClient", "DrawerClose")
 	end
@@ -42,7 +46,11 @@ local function open(drawer)
 		end
 		lastDrawer = drawer
 		drawer.PrimaryPart = drawer.Base
-		drawer:SetPrimaryPartCFrame(drawer.PrimaryPart.CFrame * CFrame.new(0,0,-drawer.Base.Size.Z*.75))
+		if not drawer:FindFirstChild("Handle") then
+			drawer:SetPrimaryPartCFrame(drawer.PrimaryPart.CFrame * CFrame.new(0,0,-drawer.Base.Size.Z*.75))
+		else
+			drawer:SetPrimaryPartCFrame(drawer.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(90),0) * CFrame.new(0,0,drawer.PrimaryPart.Size.X/2))
+		end
 		drawer.Open.Value = true
 		Messages:send("PlaySoundClient", "DrawerOpen")
 	end
@@ -58,11 +66,19 @@ local function drawerLoop()
 			if root then
 				local drawer = getClosestDrawer(root.Position)
 				if drawer then
+					if lastDrawer then
+						if drawer ~= lastDrawer and lastDrawer.Open.Value == true then
+							if math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) <= (MAX_DISTANCE + .5) then
+								debug.profileend()
+								return
+							end
+						end
+					end
 					open(drawer)
 					Messages:send("SetDrawer", drawer)
 					found = true
 				else
-					if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > (MAX_DISTANCE + 2) then
+					if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > (MAX_DISTANCE + .5) then
 						close(lastDrawer)
 						lastDrawer = nil
 					end

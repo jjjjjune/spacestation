@@ -26,12 +26,12 @@ local function getMaxGrowthPhase(plantName)
 	end
 end
 
-local function onWaterValueChanged(plant)
+local function updatePlantModel(plant)
 	if plant:FindFirstChild("PlantDisplayModel") and not CollectionService:HasTag(plant.PlantDisplayModel, "Finished") then
 		local display = plant.PlantDisplayModel
 		for _, p in pairs(display:GetChildren()) do
 			if p:IsA("BasePart") then
-				if not originalColorsTable[p] then 
+				if not originalColorsTable[p] then
 					originalColorsTable[p] = p.BrickColor
 				end
 			end
@@ -46,6 +46,10 @@ local function onWaterValueChanged(plant)
 		end
 		Messages:send("PlayParticle", "Leaf", 15, display.Base.Position)
 	end
+end
+
+local function onWaterValueChanged(plant)
+	updatePlantModel(plant)
 	local p = plant.Dirt
 	local start = BrickColor.new("Cashmere").Color
 	local goal = start:lerp(BrickColor.new("Dark taupe").Color, plant.Water.Value/plant.Water.MaxValue)
@@ -81,6 +85,7 @@ local function onAttemptPlantSeed(player, plant, seed)
 			lastGrow = time(),
 			name = seed.Plant.Value
 		})
+		plant.Plant.Value = seed.Plant.Value
 		plantModel.PrimaryPart = plantModel.Base
 		plantModel:SetPrimaryPartCFrame(plant.Base.CFrame)
 		plantModel.Name = "PlantDisplayModel"
@@ -97,6 +102,47 @@ local function onAttemptPlantSeed(player, plant, seed)
 	end
 end
 
+local function grow(plantInfoTable)
+	plantInfoTable.growthPhase = plantInfoTable.growthPhase + 1
+	local newPlant = game.ReplicatedStorage.Assets.Plants[plantInfoTable.name][plantInfoTable.growthPhase..""]:Clone()
+	newPlant.Parent = plantInfoTable.plant.Parent
+	newPlant.Name = "PlantDisplayModel"
+	plantInfoTable.plant:Destroy()
+	plantInfoTable.plant = newPlant
+	newPlant.PrimaryPart = newPlant.Base
+	newPlant:SetPrimaryPartCFrame(newPlant.Parent.PrimaryPart.CFrame)
+	Messages:send("PlayParticle", "Leaf", 15, newPlant.Base.Position)
+	Messages:send("PlaySound", "Leaves", newPlant.Base.Position)
+	plantInfoTable.lastGrow = time()
+end
+
+local function makeHarvestable(plantInfoTable)
+	local collectBox = Instance.new("Part", plantInfoTable.plant)
+	collectBox.Size = Vector3.new(3,3,3)
+	collectBox.Transparency = 1
+	collectBox.CFrame = plantInfoTable.plant.PrimaryPart.CFrame * CFrame.new(0,3,0)
+	collectBox.Anchored = true
+	collectBox.Name = "CollectBox"
+	local detector = Instance.new("ClickDetector", collectBox)
+	Messages:send("RegisterDetector",detector, function(player)
+		local contents = PlantData[plantInfoTable.name].products
+		for _, productName in pairs(contents) do
+			if math.random(1,5) <= 4 then
+				AddCash(player, math.random(2,3))
+				local product = game.ReplicatedStorage.Assets.Objects[productName]:Clone()
+				product.Parent = workspace
+				product.PrimaryPart = product.Base
+				product:SetPrimaryPartCFrame(plantInfoTable.plant.Base.CFrame * CFrame.new(0,3,0))
+			end
+		end
+		Messages:send("PlayParticle", "Leaf", 15, collectBox.Position)
+		Messages:send("PlaySound", "Leaves", collectBox.Position)
+		plantInfoTable.plant.Parent.Plant.Value = ""
+		plantInfoTable.plant:Destroy()
+		collectBox:Destroy()
+	end)
+end
+
 local Plants = {}
 
 function Plants:start()
@@ -106,7 +152,7 @@ function Plants:start()
 	Messages:hook("OnObjectReleased", function(player, object)
 		for _, plant in pairs(CollectionService:GetTagged("Plant")) do
 			if CollectionService:HasTag(object, "Seed") then
-				if plant:FindFirstChild("Base") and plant:FindFirstChild("Plant") and (plant.Base.Position - object.Base.Position).magnitude < 6 then
+				if object:FindFirstChild("Base") and plant:FindFirstChild("Base") and plant:FindFirstChild("Plant") and (plant.Base.Position - object.Base.Position).magnitude < 6 then
 					onAttemptPlantSeed(player, plant, object)
 				end
 			end
@@ -129,43 +175,11 @@ function Plants:start()
 			for _, plantInfoTable in pairs(growingPlants) do
 				if time() - plantInfoTable.lastGrow > PlantData[plantInfoTable.name].growTime then
 					if plantInfoTable.growthPhase < plantInfoTable.maxGrowthPhase then
-						plantInfoTable.growthPhase = plantInfoTable.growthPhase + 1
-						local newPlant = game.ReplicatedStorage.Assets.Plants[plantInfoTable.name][plantInfoTable.growthPhase..""]:Clone()
-						newPlant.Parent = plantInfoTable.plant.Parent
-						newPlant.Name = "PlantDisplayModel"
-						plantInfoTable.plant:Destroy()
-						plantInfoTable.plant = newPlant
-						newPlant.PrimaryPart = newPlant.Base
-						newPlant:SetPrimaryPartCFrame(newPlant.Parent.PrimaryPart.CFrame)
-						Messages:send("PlayParticle", "Leaf", 15, newPlant.Base.Position)
-						Messages:send("PlaySound", "Leaves", newPlant.Base.Position)
-						plantInfoTable.lastGrow = time()
+						grow(plantInfoTable)
 					else
 						if not CollectionService:HasTag(plantInfoTable.plant, "Finished") then
 							if not plantInfoTable.plant:FindFirstChild("CollectBox") then
-								local collectBox = Instance.new("Part", plantInfoTable.plant)
-								collectBox.Size = Vector3.new(3,3,3)
-								collectBox.Transparency = 1
-								collectBox.CFrame = plantInfoTable.plant.PrimaryPart.CFrame * CFrame.new(0,3,0)
-								collectBox.Anchored = true
-								collectBox.Name = "CollectBox"
-								local detector = Instance.new("ClickDetector", collectBox)
-								Messages:send("RegisterDetector",detector, function(player)
-									local contents = PlantData[plantInfoTable.name].products
-									for _, productName in pairs(contents) do
-										if math.random(1,5) <= 4 then
-											AddCash(player, math.random(2,3))
-											local product = game.ReplicatedStorage.Assets.Objects[productName]:Clone()
-											product.Parent = workspace
-											product.PrimaryPart = product.Base
-											product:SetPrimaryPartCFrame(plantInfoTable.plant.Base.CFrame * CFrame.new(0,3,0))
-										end
-									end
-									Messages:send("PlayParticle", "Leaf", 15, collectBox.Position)
-									Messages:send("PlaySound", "Leaves", collectBox.Position)
-									plantInfoTable.plant:Destroy()
-									collectBox:Destroy()
-								end)
+								makeHarvestable(plantInfoTable)
 							end
 						end
 						CollectionService:AddTag(plantInfoTable.plant, "Finished")

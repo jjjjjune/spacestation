@@ -35,12 +35,17 @@ function DrawerButton:render()
 		local camera = workspace.CurrentCamera
 		local vector, _= camera:WorldToScreenPoint(worldPoint)
 		local screenPoint = Vector2.new(vector.X, vector.Y)
+		local color = Color3.new(1,1,1)
+		if myDrawer.Tool.Value ~= nil then
+			color = Color3.fromRGB(240,255,234)
+		end
 		return Roact.createElement("ImageButton", {
 			Size = UDim2.new(0,64,0,64),
 			Position = UDim2.new(0,screenPoint.X,0,screenPoint.Y),
 			AnchorPoint = Vector2.new(.5,.5),
 			BackgroundTransparency = 1,
 			Image = "rbxassetid://3493248592",
+			ImageColor3 = color,
 			[Roact.Event.Activated] = function()
 				if hasTool then
 					if myDrawer.Tool.Value == nil then

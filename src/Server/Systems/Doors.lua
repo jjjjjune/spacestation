@@ -74,6 +74,22 @@ local function countDoors(door)
 	return n
 end
 
+local function onOpened(door)
+	for _, part in pairs(door:GetChildren()) do
+		if part.Name == "Indicator" then
+			part.BrickColor = BrickColor.new("Olivine")
+		end
+	end
+end
+
+local function onClosed(door)
+	for _, part in pairs(door:GetChildren()) do
+		if part.Name == "Indicator" then
+			part.BrickColor = BrickColor.new("Terra Cotta")
+		end
+	end
+end
+
 local function close(door)
 	if countDoors(door) == 1 then
 		local tween = TweenService:Create(door.Door,tweenInfo, {CFrame = door.Door.CFrame * CFrame.new(0,-14.5,0)})
@@ -88,6 +104,7 @@ local function close(door)
 	end
 	Messages:send("PlaySound","Door", door.Door.Position)
 	door.OpenValue.Value = false
+	onClosed(door)
 end
 
 local function open(door)
@@ -104,6 +121,7 @@ local function open(door)
 	end
 	Messages:send("PlaySound","Door", door.Door.Position)
 	door.OpenValue.Value = true
+	onOpened(door)
 end
 
 local function canUnlockDoor(door, tool)
@@ -115,14 +133,10 @@ local function canUnlockDoor(door, tool)
 	local accessTable = TeamData[team].access
 	for _, accessType in pairs(accessTable) do
 		if accessType == neededAccess then
-			unlock(door)
-			return
-		else
-			print(accessType, neededAccess)
+			return true
 		end
 	end
-	local player = game.Players:GetPlayerFromCharacter(tool.Parent)
-	Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
+	return false
 end
 
 local function prepareDoor(door)
@@ -145,6 +159,7 @@ local function prepareDoor(door)
 			tool = player.Character.Keycard
 		end
 		if not canUnlockDoor(door, tool) then -- player needs keycard access
+			beep(door)
 			Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
 			return
 		end
@@ -193,9 +208,15 @@ function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
 	end
-	Messages:hook("UnlockDoor", function(door, tool)
+	Messages:hook("UnlockDoor", function(door, tool) -- this is actually just opening the door
 		if canUnlockDoor(door, tool) then
-			unlock(door)
+			if door.OpenValue.Value == false then
+				open(door)
+			end
+		else
+			local player = game.Players:GetPlayerFromCharacter(tool.Parent)
+			beep(door)
+			Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
 		end
 	end)
 	game:GetService("RunService").Stepped:connect(function()

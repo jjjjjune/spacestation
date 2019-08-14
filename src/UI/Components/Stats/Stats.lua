@@ -32,6 +32,7 @@ function Stats:render()
 				amount = stat.current,
 				maxAmount = stat.max,
 				icon = stat.icon,
+				secondaryColor = stat.secondaryColor
 			})
 		end
 

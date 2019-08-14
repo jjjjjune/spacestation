@@ -9,6 +9,7 @@ local swimPlaying = false
 local idlePlaying = false
 local zeroGravity = false
 local sprinting = false
+local playerStats = {}
 
 local FALL = .4
 
@@ -36,14 +37,23 @@ local function handleFlyingAnimations(moveDir)
 	end
 end
 
+local function determineWalkspeed(base, hunger)
+	local speed = math.max(16, base + (hunger - 25)/5)
+	return speed
+end
+
 function Controller:start()
 	local player = game.Players.LocalPlayer
 	RunService.RenderStepped:connect(function()
+		local hunger = (playerStats[2] and playerStats[2].current) or 0
+		if not root then
+			root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		end
 		if root and root.Parent ~= nil and root.Parent:FindFirstChild("Humanoid") then
 			if sprinting then
-				root.Parent.Humanoid.WalkSpeed = 28
+				root.Parent.Humanoid.WalkSpeed = determineWalkspeed(28, hunger)
 			else
-				root.Parent.Humanoid.WalkSpeed = 16
+				root.Parent.Humanoid.WalkSpeed = determineWalkspeed(16, hunger)
 			end
 			if zeroGravity then
 				workspace.Gravity = 1
@@ -101,6 +111,9 @@ function Controller:start()
 	end)
 	Messages:hook("ToggleGravity", function()
 		zeroGravity = not zeroGravity
+	end)
+	Messages:hook("UpdateStats", function(stats)
+		playerStats = stats
 	end)
 end
 

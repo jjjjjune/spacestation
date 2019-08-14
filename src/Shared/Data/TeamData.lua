@@ -25,6 +25,7 @@ return {
 			"Grab",
 			"Keycard",
 			"Eat",
+			"Handcuffs",
 			"Wrench",
 			"Flashlight",
 			"Pistol",

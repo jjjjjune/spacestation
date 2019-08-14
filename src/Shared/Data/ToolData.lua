@@ -82,5 +82,12 @@ return {
 		icon = "rbxassetid://3601393029",
 		description = "First: do no harm. Second: remember to load up on goo.",
 		element = "WATER",
+	},
+	["Handcuffs"] = {
+		name = "Handcuffs",
+		model = "Assets/Tools/Handcuffs",
+		icon = "rbxassetid://3646161668",
+		description = "No, you can't arrest people for liking fortnite.",
+		element = "WATER",
 	}
 }

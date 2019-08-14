@@ -7,7 +7,8 @@ local player = game.Players.LocalPlayer
 local playerStats = {
 	[1] = {
 		name = "Oxygen",
-		color = BrickColor.new("Bright blue").Color,
+		color = BrickColor.new("Bright bluish green").Color,
+		secondaryColor = BrickColor.new("Toothpaste").Color,
 		max = 100,
 		current = 100,
 		damageTime = 4,
@@ -17,11 +18,12 @@ local playerStats = {
 	},
 	[2] = {
 		name = "Hunger",
-		color = BrickColor.new("Mint").Color,
-		max = 100,
-		current = 100,
-		damageTime = 5,
-		damage = 5,
+		color = BrickColor.new("Persimmon").Color,
+		secondaryColor = BrickColor.new("Salmon").Color,
+		max = 50,
+		current = 50,
+		damageTime = 100,
+		damage = 0,
 		lastDamage = time(),
 		icon = "rbxassetid://3489170655"
 	}
@@ -69,6 +71,7 @@ local function hungerLoop()
 			if character:FindFirstChild("Humanoid") and stat.current <= 0 then
 				Messages:sendServer("DamageMe", stat.damage)
 			end
+
 		end
 		updateStats()
 	end
