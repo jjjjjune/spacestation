@@ -8,7 +8,11 @@ local TweenService = game:GetService("TweenService")
 local lastColors = {}
 
 local BREAK_TIME = 120
+local FUEL_TICK_TIME = 10
+local FuelTank = CollectionService:GetTagged("FuelHolder")[1]
+
 local lastBreak = time()
+local lastFuelTick = time()
 
 local function breakMachine(machine)
 	if not CollectionService:HasTag(machine, "Broken") then
@@ -81,28 +85,67 @@ local function establishMachineBreakLoop()
 	end)
 end
 
+local function toggleMachine(machine)
+	if CollectionService:HasTag(machine, "Broken") then
+		return
+	end
+	local data = MachineData[machine.Name]
+	if not machine:FindFirstChild("On") then
+		local onValue = Instance.new("BoolValue", machine)
+		onValue.Name = "On"
+		onValue.Value = false
+	else
+		machine.On.Value = not machine.On.Value
+	end
+	if machine.On.Value == true then
+		data.on(machine)
+	else
+		data.off(machine)
+	end
+end
+
+local function establishFuelConsumptionLoop()
+	game:GetService("RunService").Stepped:connect(function()
+		local machines = CollectionService:GetTagged("Machine")
+		for _, machine in pairs(machines) do
+			if not CollectionService:HasTag(machine, "Broken") then
+				local data = MachineData[machine.Name]
+				local fuelConsumption = data.fuelConsumption
+				if FuelTank.Amount.Value - fuelConsumption <= 0 then
+					if not machine:FindFirstChild("On") then
+						toggleMachine(machine)
+						CollectionService:AddTag(machine, "FuelOutToggled")
+					else
+						if machine.On.Value == true then
+							toggleMachine(machine)
+							CollectionService:AddTag(machine, "FuelOutToggled")
+						end
+					end
+				else
+					if machine:FindFirstChild("On") and machine.On.Value == false and CollectionService:HasTag(machine, "FuelOutToggled") then
+						CollectionService:RemoveTag(machine, "FuelOutToggled")
+						toggleMachine(machine)
+					end
+					if time() - lastFuelTick > FUEL_TICK_TIME then
+						FuelTank.Amount.Value = FuelTank.Amount.Value - fuelConsumption
+					end
+				end
+			end
+		end
+		if time() - lastFuelTick > FUEL_TICK_TIME then
+			lastFuelTick= time()
+		end
+	end)
+end
+
 local Machines = {}
 
 function Machines:start()
 	initializeMachines()
 	establishMachineBreakLoop()
+	establishFuelConsumptionLoop()
 	Messages:hook("ToggleMachine", function(machine)
-		if CollectionService:HasTag(machine, "Broken") then
-			return
-		end
-		local data = MachineData[machine.Name]
-		if not machine:FindFirstChild("On") then
-			local onValue = Instance.new("BoolValue", machine)
-			onValue.Name = "On"
-			onValue.Value = false
-		else
-			machine.On.Value = not machine.On.Value
-		end
-		if machine.On.Value == true then
-			data.on(machine)
-		else
-			data.off(machine)
-		end
+		toggleMachine(machine)
 	end)
 	Messages:hook("BreakMachine", function(machine)
 		breakMachine(machine)

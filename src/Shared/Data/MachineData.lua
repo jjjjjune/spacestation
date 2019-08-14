@@ -18,7 +18,8 @@ return {
 				model.Base.Sound:Stop()
 				model.Base.Debris.Enabled = false
 			end
-		end
+		end,
+		fuelConsumption = 1, -- consumption per fuel tick
 	},
 	["MainPower"] = {
 		init = function(model)
@@ -47,7 +48,8 @@ return {
 			game.Lighting.Ambient = Color3.fromRGB(10,10,15)
 			game.Lighting.Brightness = 0
 			game.Lighting.OutdoorAmbient = Color3.fromRGB(10,10,15)
-		end
+		end,
+		fuelConsumption = 3, -- consumption per fuel tick
 	},
 	["Oven"] = {
 		init = function(model)
@@ -73,6 +75,7 @@ return {
 			end
 			model.HeatDisplay.Fire.Rate = 0
 			model.HeatArea.Temperature.Value = 0
-		end
+		end,
+		fuelConsumption = 1, -- consumption per fuel tick
 	},
 }
