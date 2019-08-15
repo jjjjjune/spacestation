@@ -30,6 +30,48 @@ function TeamSwitch:start()
 			end,
 		})
 	end)
+	Messages:hook("OpenTeamSwitchVoteGui", function(teamName)
+		Messages:send("OpenYesNoDialogue", {
+			text = "RUN FOR: "..teamName.." (requires vote)",
+			yesCallback = function()
+				Messages:sendServer("StartVote", teamName)
+			end,
+		})
+	end)
+	Messages:hook("MakeVoteNotification", function(player, teamName, VOTE_TIME)
+		local voteText = player.Name.." is running for: "..teamName.."!"..[[
+			Type !yes or !no in the chat to vote! Vote lasts ]]..VOTE_TIME.." seconds!"
+		game.StarterGui:SetCore("ChatMakeSystemMessage",{
+			Text = voteText,
+			Color = Color3.new(1,1,1),
+			Font = Enum.Font.SourceSansBold,
+			TextSize = 24
+		})
+	end)
+	Messages:hook("MakeVoteSucceededNotification", function(running, team, yesVotes, noVotes)
+		local yesPercent = math.ceil(yesVotes/(#game.Players:GetPlayers()))*100
+		local noPercent = math.ceil(noVotes/(#game.Players:GetPlayers()))*100
+		local voteData = "\n ("..yesPercent.."% YES) ("..noPercent.."% NO)"
+		local voteText = running.Name.." has been elected "..team.."!"..voteData
+		game.StarterGui:SetCore("ChatMakeSystemMessage",{
+			Text = voteText,
+			Color = Color3.new(.7,1,.7),
+			Font = Enum.Font.SourceSansBold,
+			TextSize = 24
+		})
+	end)
+	Messages:hook("MakeVoteFailedNotification", function(running, team, yesVotes, noVotes)
+		local yesPercent = math.ceil(yesVotes/(#game.Players:GetPlayers()))*100
+		local noPercent = math.ceil(noVotes/(#game.Players:GetPlayers()))*100
+		local voteData = "\n ("..yesPercent.."% YES) ("..noPercent.."% NO)"
+		local voteText = running.Name.." has NOT been elected "..team.."!"..voteData
+		game.StarterGui:SetCore("ChatMakeSystemMessage",{
+			Text = voteText,
+			Color = Color3.new(1,.7,.7),
+			Font = Enum.Font.SourceSansBold,
+			TextSize = 24
+		})
+	end)
 end
 
 return TeamSwitch

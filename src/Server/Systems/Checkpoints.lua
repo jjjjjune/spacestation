@@ -16,7 +16,7 @@ local function beep(checkpoint, character)
 		end
 	end
 	local player = game.Players:GetPlayerFromCharacter(character)
-	if HasContraband(player) then
+	if HasContraband(player) or CollectionService:HasTag(character, "Alien") then
 		CollectionService:AddTag(character,"Searched")
 		Messages:send("PlaySound","Error", character.PrimaryPart.Position)
 		spawn(function()
@@ -36,7 +36,6 @@ local function beep(checkpoint, character)
 		Messages:send("PlaySound","Chime", character.PrimaryPart.Position)
 		CollectionService:RemoveTag(character,"Searched")
 	end
-
 end
 
 local function onCharacterTouchedCheckpoint(character, checkpoint)

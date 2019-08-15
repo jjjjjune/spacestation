@@ -16,7 +16,9 @@ local function destroyModel(model)
 	for _, p in pairs(model:GetDescendants()) do
 		if p:IsA("BasePart") then
 			if p.Anchored == false then
-				p:Destroy()
+				if p.Name ~= "Base" and p.Name ~= "Platform" and p.Name ~= "PlatformDisplay" and p.Name ~= "Label" then
+					p:Destroy()
+				end
 				--return
 			else
 				p:BreakJoints()
@@ -30,7 +32,7 @@ local function destroyModel(model)
 					--madeExplosion = true
 					Messages:send("CreateExplosion", p.Position, math.random(10, 30))
 				end
-				if math.random(1, 6) == 1 then
+				if math.random(1, 6) == 1 and p.Name ~= "Base" and p.Name ~= "Platform" and p.Name ~= "PlatformDisplay" and p.Name ~= "Label" then
 					p:Destroy()
 				end
 			end
@@ -69,7 +71,7 @@ end
 local function initializeEngine(engine)
 	engine.Health:GetPropertyChangedSignal("Value"):connect(function()
 		local goalColor = Color3.fromRGB(109, 166, 96)
-		local baseColor = BrickColor.new("Terra Cotta").Color
+		local baseColor = BrickColor.new("Bright red").Color
 		local newColor = baseColor:lerp(goalColor, engine.Health.Value/engine.Health.MaxValue)
 		local tween = TweenService:Create(engine.Indicator, tweenInfo, {Color = newColor})
 		tween:Play()

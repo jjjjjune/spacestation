@@ -43,6 +43,7 @@ local loadOrder = {
 	"../Systems/Checkpoints",
 	"../Systems/Fuel",
 	"../Systems/Engine",
+	"../Systems/Votes",
 }
 
 for _, path in ipairs(loadOrder) do

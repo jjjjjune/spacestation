@@ -19,6 +19,7 @@ local function countMembersOfTeam(teamName)
 end
 
 local function switchTeam(player, teamName, bypassPass)
+	print("TO TEAM: ", teamName)
 	local data = TeamData[teamName]
 	local amount = countMembersOfTeam(teamName)
 	if amount >= data.limit then
@@ -62,8 +63,13 @@ function Teams:start()
 		hitbox.Parent = switch
 		local switchDetector = Instance.new("ClickDetector", hitbox)
 		Messages:send("RegisterDetector", switchDetector, function(player)
-			Messages:send("PlaySound", "Cop2", hitbox.Position)
-			Messages:sendClient(player, "OpenTeamSwitchGui", switch.Team.Value)
+			if not switch:FindFirstChild("Vote") then
+				Messages:send("PlaySound", "Cop2", hitbox.Position)
+				Messages:sendClient(player, "OpenTeamSwitchGui", switch.Team.Value)
+			else
+				Messages:send("PlaySound", "Cop2", hitbox.Position)
+				Messages:sendClient(player, "OpenTeamSwitchVoteGui", switch.Team.Value)
+			end
 		end)
 		for n = 1, 18 do
 			if n ~= 16 then

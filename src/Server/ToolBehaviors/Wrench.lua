@@ -9,6 +9,19 @@ local nearbyMachine = function(pos)
 	return GetNearestTagToPosition("Machine", pos, 10)
 end
 
+local nearEngine = function(start, range)
+	local vec1 = (start + Vector3.new(-range,-(range),-range))
+	local vec2 = (start + Vector3.new(range,(range),range))
+	local region = Region3.new(vec1, vec2)
+	local parts = workspace:FindPartsInRegion3(region,nil, 10000)
+	for _, part in pairs(parts) do
+		if CollectionService:HasTag(part.Parent, "Engine") then
+			return true
+		end
+	end
+end
+
+
 local DAMAGE = 8
 
 local Wrench = {}
@@ -74,6 +87,9 @@ function Wrench:activated()
 		Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
 		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
 		Messages:send("PlayParticle", "Sparks", 10, part.Position)
+	end
+	if nearEngine(pos, 10) then
+		Messages:send("HealEngine", math.random(10, 20))
 	end
 end
 
