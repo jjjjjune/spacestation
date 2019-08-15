@@ -10,6 +10,7 @@ function Grab:instance(tool)
 	self.player = game.Players.LocalPlayer
 	self.carryObject = nil
 	self.tool = tool
+	self.wasThrowDown = false
 	tool.Equipped:connect(function()
 		self:equipped(self.player.Character)
 	end)
@@ -50,6 +51,8 @@ end
 function Grab:activated()
 	if self.carryObject then
 		Messages:sendServer("ReleaseObject", self.carryObject)
+		self.carryObject.Base.CarryPos:Destroy()
+		self.carryObject.Base.Velocity = self.player.Character.PrimaryPart.Velocity * 5
 		self.carryObject = nil
 		self.tool.Handle.BrickColor = BrickColor.new("Salmon")
 	else
