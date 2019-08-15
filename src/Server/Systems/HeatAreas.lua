@@ -90,6 +90,11 @@ local function calculateReaction(item)
 			item:Destroy()
 		end
 	end
+	if CollectionService:HasTag(item, "Supply") then
+		for i = 1, item.Quantity.Value do
+			Messages:send("OrderSupply", item)
+		end
+	end
 end
 
 local function doRadiusStepOnly()
@@ -156,6 +161,16 @@ local function cookStep()
 	end
 end
 
+local function heatContactAt(position, radius) -- for things like lasers
+	for _, item in pairs(CollectionService:GetTagged("Carryable")) do
+		if item.Parent == workspace then
+			if (item.Base.Position - position).magnitude < radius then
+				calculateReaction(item)
+			end
+		end
+	end
+end
+
 local heatLoop = function()
 	while wait(COOK_TIME) do
 		cookStep()
@@ -171,6 +186,9 @@ function HeatAreas:start()
 			lastForceStep = time()
 			doRadiusStepOnly()
 		end
+	end)
+	Messages:hook("HeatContact", function(position)
+		heatContactAt(position, 5)
 	end)
 end
 

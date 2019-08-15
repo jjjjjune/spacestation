@@ -16,15 +16,22 @@ local function destroyModel(model)
 	for _, p in pairs(model:GetDescendants()) do
 		if p:IsA("BasePart") then
 			if p.Anchored == false then
-				return
+				p:Destroy()
+				--return
 			else
 				p:BreakJoints()
 				p.Anchored = false
+				p.CanCollide = false
 				if p.Size.Magnitude > 10 then
-					p.CanCollide = false
+					p.Velocity = Vector3.new(1,1,1) * ((math.random(0,1000)/1000)-.5)
+					p.CanCollide = true
 				end
-				if not madeExplosion then
+				if math.random(1, 20) == 1 then
+					--madeExplosion = true
 					Messages:send("CreateExplosion", p.Position, math.random(10, 30))
+				end
+				if math.random(1, 6) == 1 then
+					p:Destroy()
 				end
 			end
 		end
@@ -37,20 +44,24 @@ local function destroySpaceship()
 	else
 		hasDestroyed = true
 	end
+	workspace.MainPower:MoveTo(Vector3.new(0,10000,0))
+	workspace.MainPower.Parent = game.ServerStorage
+	game.Lighting.Brightness = 0
+	game.Lighting.OutdoorAmbient = Color3.fromRGB(7,58,72)
+	game.Lighting.Ambient = Color3.new(0,0,0)
+	Messages:sendAllClients("NoGrav")
 	workspace.Terrain:Clear()
 	workspace.Gravity = 0
 	local queue = {}
 	for _, model in pairs(workspace:GetChildren()) do
-		if not model:FindFirstChild("Humanoid") then
+		if not game.Players:GetPlayerFromCharacter(model) and model:IsA("Model") then
 			table.insert(queue, model)
 		end
 	end
 	spawn(function()
 		for i, model in pairs(queue) do
 			destroyModel(model)
-			if i%8 == 0 then
-				wait(.5)
-			end
+			wait(.1)
 		end
 	end)
 end
@@ -78,12 +89,6 @@ function Engine:start()
 	end)
 	Messages:hook("HealEngine", function(damage)
 		engine.Health.Value = engine.Health.Value + damage
-	end)
-	spawn(function()
-		for i = 1, 10 do
-			wait(1)
-			Messages:send("DamageEngine", 100)
-		end
 	end)
 end
 

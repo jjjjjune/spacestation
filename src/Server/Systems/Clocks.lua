@@ -37,7 +37,9 @@ end
 
 local function displayTime()
 	for _, clock in pairs(CollectionService:GetTagged("Clock")) do
-		clock.Display.SurfaceGui.TextLabel.Text = getTimeString(seconds)
+		if clock:FindFirstChild("Display") then
+			clock.Display.SurfaceGui.TextLabel.Text = getTimeString(seconds)
+		end
 	end
 end
 

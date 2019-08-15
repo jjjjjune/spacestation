@@ -52,6 +52,9 @@ local function ragdoll(character)
 end
 
 local function unragdoll(character)
+	if character.Humanoid.Health <= 0 then
+		return -- no unragdoll for the dead
+	end
 	CollectionService:RemoveTag(character, "Ragdolled")
 	local d = character:GetDescendants()
 	for i=1,#d do
