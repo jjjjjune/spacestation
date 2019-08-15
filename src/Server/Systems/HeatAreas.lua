@@ -70,6 +70,7 @@ local function calculateReaction(item)
 		return
 	end
 	if ObjectReactions[item.Name] then
+		print("has reaction", item.Name)
 		if not CollectionService:HasTag(item, "Cooked") then
 			CollectionService:AddTag(item, "Cooked")
 			-- uh oh

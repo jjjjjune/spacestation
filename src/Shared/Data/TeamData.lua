@@ -169,4 +169,31 @@ return {
 			"Botany",
 		}
 	},
+	["Captain"] = {
+		starterPack = {
+			"Grab",
+			"Keycard",
+			"Eat",
+			"Wrench",
+			"Flashlight",
+		},
+		bodyParts = {
+			Torso = 3040324777,
+			RightLeg = 3040324412,
+			RightArm = 3040323974,
+			LeftLeg = 3040323560,
+			LeftArm = 3040323138,
+		},
+		limit = 1,
+		pay = 150,
+		access = {
+			"Generic",
+			"Cook",
+			"Police",
+			"Science",
+			"Medic",
+			"Botany",
+			"Captain",
+		}
+	},
 }

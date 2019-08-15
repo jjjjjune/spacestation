@@ -5,4 +5,7 @@ return {
 	["Green Goo"] = {
 		HEAT = "EXPLODE"
 	},
+	["Fuel"] = {
+		HEAT = "EXPLODE"
+	}
 }

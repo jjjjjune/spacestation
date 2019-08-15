@@ -66,6 +66,9 @@ function Explosions:start()
 				end)
 				Messages:send("Burn", hit.Parent)
 			end
+			if CollectionService:HasTag(hit.Parent, "Machine") then
+				Messages:send("BreakMachine", hit.Parent)
+			end
 		end)
 		local particlePart = game.ReplicatedStorage.Assets.Particles.Explosion:Clone()
 		local p = particlePart:Clone()
