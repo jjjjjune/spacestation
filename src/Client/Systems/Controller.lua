@@ -5,6 +5,7 @@ local root
 local flying = false
 local UserInputService = game:GetService("UserInputService")
 
+local permanentZeroGravity = false
 local swimPlaying = false
 local idlePlaying = false
 local zeroGravity = false
@@ -55,10 +56,14 @@ function Controller:start()
 			else
 				root.Parent.Humanoid.WalkSpeed = determineWalkspeed(16, hunger)
 			end
-			if zeroGravity then
-				workspace.Gravity = 1
+			if permanentZeroGravity then
+				workspace.Gravity = 0
 			else
-				workspace.Gravity = 40
+				if zeroGravity then
+					workspace.Gravity = 1
+				else
+					workspace.Gravity = 40
+				end
 			end
 		else
 			if root and root.Parent == nil then
@@ -114,6 +119,9 @@ function Controller:start()
 	end)
 	Messages:hook("UpdateStats", function(stats)
 		playerStats = stats
+	end)
+	Messages:hook("NoGrav", function()
+		permanentZeroGravity = true
 	end)
 end
 
