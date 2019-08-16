@@ -9,6 +9,7 @@ local function getToolObject(toolName)
 	local data = ToolData[toolName]
 	tool.ToolTip = data.description
 	tool.TextureId = data.icon
+	tool.CanBeDropped = false
 	local model = import(data.model):Clone()
 	for _, n in pairs(model:GetChildren()) do
 		n.Parent = tool
@@ -21,18 +22,20 @@ local function getKeycardWithAccess(access)
 		local keycard = getToolObject("Keycard")
 		keycard.Parent = game.ServerStorage
 		keycardsWithAccess[keycard] = keycard
-		keycard.Access.Value = access
+		keycard.Team.Value = access
+		keycard.Indicator.BrickColor = game.Teams[access].TeamColor
+		keycard.ToolTip = keycard.ToolTip.." ["..access:upper().."]"
+		return keycard
 	else
 		return keycardsWithAccess[access]
 	end
 end
 
-
 return {
-	Police = {
+	Security = {
 		getKeycardWithAccess("Security"),
-		getKeycardWithAccess("Cook"),
-		getToolObject("Security"),
+		getKeycardWithAccess("Cooks"),
+		getToolObject("Pistol"),
 	},
 	Captain = {
 		getKeycardWithAccess("Captain"),

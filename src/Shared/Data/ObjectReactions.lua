@@ -2,9 +2,9 @@ return {
 	["Oxygen"] = {
 		HEAT = "EXPLODE"
 	},
-	["Green Goo"] = {
+	--[[["Green Goo"] = {
 		HEAT = "EXPLODE"
-	},
+	},--]]
 	["Fuel"] = {
 		HEAT = "EXPLODE"
 	}

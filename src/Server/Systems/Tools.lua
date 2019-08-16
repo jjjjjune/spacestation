@@ -1,10 +1,8 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local ToolData = import "Shared/Data/ToolData"
-local TeamData = import "Shared/Data/TeamData"
 local PlayerData = import "Shared/PlayerData"
 
-local behaviorsCache = {}
 local instanced = {}
 
 local function connectEvents(tool)
@@ -23,6 +21,7 @@ local function getToolObject(toolName)
 	local data = ToolData[toolName]
 	tool.ToolTip = data.description
 	tool.TextureId = data.icon
+	tool.CanBeDropped = false
 	local model = import(data.model):Clone()
 	for _, n in pairs(model:GetChildren()) do
 		n.Parent = tool
@@ -36,9 +35,31 @@ local function getToolObject(toolName)
 	return tool
 end
 
+local function buyTool(player, shop)
+	local unlocks = PlayerData:get(player, "unlocks")
+	local cash = PlayerData:get(player, "cash")
+	local price = shop.Price.Value
+	if shop:FindFirstChild("UnlockPrice") then
+		if not unlocks[shop.Tool.Value] then
+			price = shop.UnlockPrice.Value
+		end
+	end
+	if cash >= price then
+		unlocks[shop.Tool.Value] = true
+		PlayerData:set(player, "unlocks", unlocks)
+		PlayerData:add(player, "cash", -price)
+		Messages:send("GiveTool", player, shop.Tool.Value)
+		Messages:send("PlaySound", "Chime", shop.Base.Position)
+		Messages:sendClient(player, "SuccesfulBuy", shop)
+	else
+		Messages:send("PlaySound", "Error", shop.Base.Position)
+	end
+end
+
 local Tools = {}
 
 function Tools:start()
+	-- commented out stuff is tool dropping, havent decided whether or not i want this in the game
 	--[[workspace.ChildAdded:connect(function(tool)
 		if tool:IsA("Tool") then
 			for _, player in pairs(game.Players:GetChildren()) do
@@ -74,24 +95,10 @@ function Tools:start()
 		player.Backpack[toolName]:Destroy()
 	end)
 	Messages:hook("BuyTool", function(player, shop)
-		local unlocks = PlayerData:get(player, "unlocks")
-		local cash = PlayerData:get(player, "cash")
-		local price = shop.Price.Value
-		if shop:FindFirstChild("UnlockPrice") then
-			if not unlocks[shop.Tool.Value] then
-				price = shop.UnlockPrice.Value
-			end
-		end
-		if cash >= price then
-			unlocks[shop.Tool.Value] = true
-			PlayerData:set(player, "unlocks", unlocks)
-			PlayerData:add(player, "cash", -price)
-			Messages:send("GiveTool", player, shop.Tool.Value)
-			Messages:send("PlaySound", "Chime", shop.Base.Position)
-			Messages:sendClient(player, "SuccesfulBuy", shop)
-		else
-			Messages:send("PlaySound", "Error", shop.Base.Position)
-		end
+		buyTool(player, shop)
+	end)
+	Messages:hook("ConnectEvents", function(tool)
+		connectEvents(tool)
 	end)
 end
 

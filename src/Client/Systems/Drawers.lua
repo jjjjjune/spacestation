@@ -78,7 +78,7 @@ local function drawerLoop()
 					Messages:send("SetDrawer", drawer)
 					found = true
 				else
-					if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > (MAX_DISTANCE + .5) then
+					if lastDrawer and lastDrawer ~= drawer and math.ceil((lastDrawer.Base.Position - player.Character.PrimaryPart.Position).magnitude) > (MAX_DISTANCE + 1) then
 						close(lastDrawer)
 						lastDrawer = nil
 					end

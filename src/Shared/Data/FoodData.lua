@@ -9,9 +9,15 @@ local function genericEat(character, item)
 	return
 end
 
+local function turnInvisible(character, item)
+
+end
+
 return {
 	["Dough"] = genericEat,
 	["Bread"] = genericEat,
 	["Space Fruit"] = genericEat,
 	["Cooked Space Fruit"] = genericEat,
+	["Questionable Substance"] = genericEat,
+	["Cube of Transprency"] = turnInvisible,
 }

@@ -21,7 +21,7 @@ function Tools:start()
 	spawn(function()
 		player.ChildAdded:connect(function(ch)
 			if ch.Name == "Backpack" then
-				player:WaitForChild("Backpack").ChildAdded:connect(function(tool)
+				player.Backpack.ChildAdded:connect(function(tool)
 					initTool(tool)
 					if not alreadyAdded[tool.Name] then
 						Messages:send("Notify", "+ 1 "..tool.Name)

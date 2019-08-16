@@ -8,9 +8,9 @@ Keycard.__index = Keycard
 function Keycard:instance(tool)
 	self.player = tool.Parent.Parent
 	tool.Indicator.BrickColor = self.player.TeamColor
-	local teamValue = Instance.new("StringValue", tool)
+	--[[local teamValue = Instance.new("StringValue", tool)
 	teamValue.Name = "Team"
-	teamValue.Value = self.player.Team.Name
+	teamValue.Value = self.player.Team.Name--]]
 	tool.Handle.Touched:connect(function(hit)
 		local door = hit.Parent
 		if CollectionService:HasTag(door, "Door") then

@@ -16,7 +16,7 @@ function Alien:start()
 	Messages:hook("ConsumePlayerPart", function(player, part)
 		local character = part.Parent
 		local victimPlayer = game.Players:GetPlayerFromCharacter(character)
-		if victimPlayer then
+		if victimPlayer and part.Name ~= "UpperTorso" and part.Name ~= "HumanoidRootPart" and part.Name ~= "Head" and part.Name ~= "LowerTorso" then
 			PlayerData:add(player, "cash", 3)
 			Messages:sendClient(player, "Notify", "+ $3")
 			Messages:send("PlaySound", "Eating", part.Position)

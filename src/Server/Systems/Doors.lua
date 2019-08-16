@@ -124,16 +124,31 @@ local function open(door)
 	onOpened(door)
 end
 
-local function canUnlockDoor(door, tool)
+local function canUnlockDoor(door, tool, player)
 	local neededAccess = "Generic"
 	if door:FindFirstChild("Access") then
 		neededAccess = door.Access.Value
 	end
 	local team = tool.Team.Value
-	local accessTable = TeamData[team].access
-	for _, accessType in pairs(accessTable) do
-		if accessType == neededAccess then
-			return true
+	if team ~= "" then -- first we check the keycard they tried this with
+		local accessTable = TeamData[team].access
+		for _, accessType in pairs(accessTable) do
+			if accessType == neededAccess then
+				return true
+			end
+		end
+	end
+	for _, ownedTool in pairs(player.Backpack:GetChildren()) do -- then we check their whole inventory
+		if ownedTool:FindFirstChild("Team") then
+			local team = ownedTool.Team.Value
+			if team.Value ~= "" then
+				local accessTable = TeamData[team].access
+				for _, accessType in pairs(accessTable) do
+					if accessType == neededAccess then
+						return true
+					end
+				end
+			end
 		end
 	end
 	return false
@@ -158,7 +173,7 @@ local function prepareDoor(door)
 		if not tool then
 			tool = player.Character.Keycard
 		end
-		if not canUnlockDoor(door, tool) then -- player needs keycard access
+		if not canUnlockDoor(door, tool, player) then -- player needs keycard access
 			beep(door)
 			Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
 			return
@@ -209,12 +224,12 @@ function Doors:start()
 		prepareDoor(door)
 	end
 	Messages:hook("UnlockDoor", function(door, tool) -- this is actually just opening the door
-		if canUnlockDoor(door, tool) then
+		local player = game.Players:GetPlayerFromCharacter(tool.Parent)
+		if canUnlockDoor(door, tool, player) then
 			if door.OpenValue.Value == false then
 				open(door)
 			end
 		else
-			local player = game.Players:GetPlayerFromCharacter(tool.Parent)
 			beep(door)
 			Messages:sendClient(player, "Notify", "You need "..door.Access.Value.." access!")
 		end
