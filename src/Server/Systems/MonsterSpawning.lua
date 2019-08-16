@@ -7,7 +7,7 @@ local ENVIORMENTS = {
 		name = "Spawn greenling on plants",
 		alive = {},
 		limit = 2,
-		checkDebounce = 120,
+		checkDebounce = 180,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Greenling"],
 		getAnimalSpawnPos = function()
@@ -19,7 +19,7 @@ local ENVIORMENTS = {
 		name = "Spawn blueling on machines",
 		alive = {},
 		limit = 2,
-		checkDebounce = 120,
+		checkDebounce = 240,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Blueling"],
 		getAnimalSpawnPos = function()

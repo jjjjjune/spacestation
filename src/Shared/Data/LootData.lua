@@ -40,4 +40,8 @@ return {
 	Captain = {
 		getKeycardWithAccess("Captain"),
 	},
+	Scientists = {
+		getKeycardWithAccess("Scientists"),
+		getToolObject("Friendship Gun"),
+	},
 }

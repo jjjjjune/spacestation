@@ -5,7 +5,7 @@ local LootData = import "Shared/Data/LootData"
 
 local wasLootSpawned = {}
 
-local LOOT_SPAWN_TIME = 1 -- new loot every 1 second babey
+local LOOT_SPAWN_TIME = 60 -- new loot babey
 
 local function searchDrawer(player, drawer)
 	local tool = drawer.Tool.Value

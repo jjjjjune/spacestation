@@ -138,10 +138,18 @@ local function canUnlockDoor(door, tool, player)
 			end
 		end
 	end
+	team = player.Team.Name
+	local accessTable = TeamData[team].access
+	for _, accessType in pairs(accessTable) do
+		if accessType == neededAccess then
+			return true
+		end
+	end
 	for _, ownedTool in pairs(player.Backpack:GetChildren()) do -- then we check their whole inventory
 		if ownedTool:FindFirstChild("Team") then
 			local team = ownedTool.Team.Value
 			if team.Value ~= "" then
+				print("TEEEAAAAM",team, type(team))
 				local accessTable = TeamData[team].access
 				for _, accessType in pairs(accessTable) do
 					if accessType == neededAccess then

@@ -48,7 +48,7 @@ local function onCookedItem(transformItem)
 end
 
 local function calculateReaction(item)
-	if CollectionService:HasTag(item, "Food") then
+	if CollectionService:HasTag(item, "Food") or Recipes[item.Name] then
 		if not CollectionService:HasTag(item, "Cooked") and Recipes[item.Name] then
 			CollectionService:AddTag(item, "Cooked")
 			Messages:send("PlaySound", "Burn", item.Base.Position)
@@ -189,6 +189,9 @@ function HeatAreas:start()
 	end)
 	Messages:hook("HeatContact", function(position)
 		heatContactAt(position, 5)
+	end)
+	Messages:hook("ForceCalculateHeatReaction", function(item)
+		calculateReaction(item)
 	end)
 end
 

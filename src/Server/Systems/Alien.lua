@@ -32,7 +32,7 @@ function Alien:start()
 			if alienNeeded then
 			    if math.random(1, 5) == 1 then
 					CollectionService:AddTag(character, "Alien")
-					Messages:sendClient(player, "Notify", "You are an alien! Try to consume players without being spotted.")
+					Messages:sendClient(player, "Notify", "You are an alien! Try to consume players and destroy the ship!")
 					Messages:send("GiveTool", player, "Consume")
 					player.Backpack["Eat"]:Destroy()
 				end

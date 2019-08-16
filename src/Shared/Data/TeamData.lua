@@ -41,7 +41,7 @@ return {
 		pay = 35,
 		access = {
 			"Generic",
-			"Cook",
+			"Cooks",
 			"Police",
 			"Science",
 			"Medic",
@@ -72,7 +72,7 @@ return {
 		access = {
 			"Generic",
 			"Keycard",
-			"Cook",
+			"Cooks",
 			"Police",
 			"Science",
 			"Medic",
@@ -98,7 +98,7 @@ return {
 		pay = 45,
 		access = {
 			"Generic",
-			"Cook",
+			"Cooks",
 		}
 	},
 	["Scientists"] = {
@@ -188,7 +188,7 @@ return {
 		pay = 150,
 		access = {
 			"Generic",
-			"Cook",
+			"Cooks",
 			"Police",
 			"Science",
 			"Medic",

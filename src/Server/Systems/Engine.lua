@@ -65,6 +65,10 @@ local function destroySpaceship()
 			destroyModel(model)
 			wait(.1)
 		end
+		wait(45)
+		for _, p in pairs(game.Players:GetPlayers()) do
+			p:Kick("The space station has died.")
+		end
 	end)
 end
 

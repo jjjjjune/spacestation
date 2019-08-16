@@ -1,5 +1,8 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
+local CollectionService = game:GetService("CollectionService")
+
+local INVISIBLE_TIME = 120
 
 local function genericEat(character, item)
 	local player = game.Players:GetPlayerFromCharacter(character)
@@ -10,7 +13,7 @@ local function genericEat(character, item)
 end
 
 local function turnInvisible(character, item)
-
+	Messages:send("TurnInvisible", character, INVISIBLE_TIME)
 end
 
 return {
@@ -19,5 +22,5 @@ return {
 	["Space Fruit"] = genericEat,
 	["Cooked Space Fruit"] = genericEat,
 	["Questionable Substance"] = genericEat,
-	["Cube of Transprency"] = turnInvisible,
+	["Cube of Transparency"] = turnInvisible,
 }
