@@ -3,8 +3,8 @@ local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 
 local function makeVisible(character, originalTransparencies)
-	Messages:send("PlayParticle", "Smoke", 15, character.PrimaryPart.Position)
-	Messages:send("PlaySound", "Smoke", character.PrimaryPart.Position)
+	Messages:send("PlayParticle", "Smoke", 15, character:GetModelCFrame().p)
+	Messages:send("PlaySound", "Smoke", character:GetModelCFrame().p)
     CollectionService:RemoveTag(character, "vanished")
     for _, p in pairs(character:GetDescendants()) do
         if p:IsA("BasePart") then
@@ -22,8 +22,8 @@ local function makeInvisible(character, t)
     if CollectionService:HasTag(character, "vanished") then
         return
     end
-	Messages:send("PlayParticle", "Smoke", 15, character.PrimaryPart.Position)
-	Messages:send("PlaySound", "Smoke", character.PrimaryPart.Position)
+	Messages:send("PlayParticle", "Smoke", 15, character:GetModelCFrame().p)
+	Messages:send("PlaySound", "Smoke", character:GetModelCFrame().p)
     local originalTransparencies = {}
     spawn(function()
 		CollectionService:AddTag(character, "vanished")
