@@ -231,6 +231,20 @@ function Doors:start()
 	for _, door in pairs(CollectionService:GetTagged("Door")) do
 		prepareDoor(door)
 	end
+	Messages:hook("OpenAllDoors", function(noValue)
+		if noValue then
+			noValue:Kick()
+		end
+		for _, door in pairs(CollectionService:GetTagged("Door")) do
+			Messages:send("ForceOpenDoor",door)
+		end
+	end)
+	Messages:hook("ForceOpenDoor", function(door)
+		unlock(door)
+		if door.OpenValue.Value == false then
+			open(door)
+		end
+	end)
 	Messages:hook("UnlockDoor", function(door, tool) -- this is actually just opening the door
 		local player = game.Players:GetPlayerFromCharacter(tool.Parent)
 		if canUnlockDoor(door, tool, player) then

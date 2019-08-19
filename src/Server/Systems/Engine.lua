@@ -2,6 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
+local AddCash = import "Shared/Utils/AddCash"
 
 local hasDestroyed = false
 
@@ -45,6 +46,13 @@ local function destroySpaceship()
 		return
 	else
 		hasDestroyed = true
+	end
+	for _, p in pairs(game.Players:GetPlayers()) do
+		if p.Character then
+			if CollectionService:HasTag(p.Character, "Alien") then
+				AddCash(p, 250)
+			end
+		end
 	end
 	workspace.MainPower:MoveTo(Vector3.new(0,10000,0))
 	workspace.MainPower.Parent = game.ServerStorage

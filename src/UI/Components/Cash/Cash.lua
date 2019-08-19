@@ -15,11 +15,9 @@ function Cash:init()
 		end
 	end)
 	game:GetService("RunService").Stepped:connect(function()
-		debug.profilebegin("cash")
 		self:setState({
 			["cash"] = _G.Data["cash"] or 0
 		})
-		debug.profileend()
 	end)
 end
 

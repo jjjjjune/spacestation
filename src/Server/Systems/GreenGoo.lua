@@ -10,7 +10,7 @@ local tweenInfo = TweenInfo.new(
 )
 
 local function refillGoo(well)
-	well.Amount.Value = 10
+	well.Amount.Value = well.Amount.MaxValue
 end
 
 local function updateGoo(well)
@@ -23,8 +23,8 @@ end
 
 local function initializeGoo(well)
 	local amount = Instance.new("IntConstrainedValue")
-	amount.MaxValue = 10
-	amount.Value = 5
+	amount.MaxValue = 100
+	amount.Value = 50
 	amount.Name = "Amount"
 	amount.Parent = well
 	amount:GetPropertyChangedSignal("Value"):connect(function()
@@ -54,7 +54,7 @@ function GreenGoo:start()
 	end)
 	Messages:hook("FillMedigun", function(player, gooHolder)
 		if gooHolder.Amount.Value > 0 then
-			gooHolder.Amount.Value = gooHolder.Amount.Value - 1
+			gooHolder.Amount.Value = gooHolder.Amount.Value - 10
 			player.Character.Medigun.Amount.Value = 300
 			local medigun = player.Character.Medigun
 			local scale = medigun.Amount.Value/medigun.Amount.MaxValue

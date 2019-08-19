@@ -4,12 +4,23 @@ local Roact = import "Roact"
 local StyleConstants = import "Shared/Data/StyleConstants"
 
 return function(props, children)
-	children.TopTab = Roact.createElement("Frame", {
+	--[[children.TopTab = Roact.createElement("Frame", {
 		BackgroundColor3 = StyleConstants.TAB_COLOR,
-		Size = UDim2.new(1,0,0.15,0),
+		Size = UDim2.new(1,0,0.25,0),
 		BorderSizePixel = 0,
 		BackgroundTransparency = 0,
 		Position = UDim2.new(0,0,0,0),
+		ZIndex = 1,
+	})--]]
+	children.Outline = Roact.createElement("ImageLabel", {
+		Size = UDim2.new(1,0,1,0),
+		Position = UDim2.new(0,0,0,0),
+		BorderSizePixel = 0,
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://3684238393",--rbxassetid://3677918992",
+		ScaleType = "Slice",
+		SliceCenter = Rect.new(512,512,512,512),
+		ImageColor3 = Color3.new(1,1,1),
 		ZIndex = 1,
 	})
 	children.CloseButton = Roact.createElement("ImageButton", {
@@ -19,7 +30,7 @@ return function(props, children)
 		SizeConstraint = "RelativeYY",
 		BorderSizePixel = 0,
 		Visible = false,
-		BackgroundTransparency = .2,
+		BackgroundTransparency = 0,
 		BackgroundColor3 = StyleConstants.CLOSE_COLOR,
 		[Roact.Event.Activated] = function()
 			props.closeCallback()
@@ -35,7 +46,7 @@ return function(props, children)
 		Position = props.position,
 		Visible = props.visible,
 		BorderSizePixel = 0,
-		BackgroundTransparency = .2,
+		BackgroundTransparency = 1,
 		BackgroundColor3 = StyleConstants.WINDOW_BG,
 		AnchorPoint = props.anchorPoint,
 		[Roact.Ref] = props.ref or Roact.createRef(),

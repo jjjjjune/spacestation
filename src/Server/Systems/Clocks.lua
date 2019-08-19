@@ -35,10 +35,25 @@ local function onNewDay()
 	Messages:send("PayAll")
 end
 
+local function getShipHealthPercent()
+	local engine = CollectionService:GetTagged("Engine")[1]
+	return engine.Health.Value/engine.Health.MaxValue
+end
+
+local function getShipFuelPercent()
+	local engine = CollectionService:GetTagged("FuelHolder")[1]
+	return engine.Amount.Value/engine.Amount.MaxValue
+end
+
 local function displayTime()
 	for _, clock in pairs(CollectionService:GetTagged("Clock")) do
 		if clock:FindFirstChild("Display") then
-			clock.Display.SurfaceGui.TextLabel.Text = getTimeString(seconds)
+			local gui = clock.Display.SurfaceGui
+			gui.TextLabel.Text = getTimeString(seconds)
+			local percent = getShipHealthPercent()
+			gui.ShipHealth.BarFrame.Design.Size = UDim2.new(percent,0,1,0)
+			percent = getShipFuelPercent()
+			gui.ShipFuel.BarFrame.Design.Size = UDim2.new(percent,0,1,0)
 		end
 	end
 end

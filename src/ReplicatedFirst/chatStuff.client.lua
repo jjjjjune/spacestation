@@ -10,3 +10,5 @@ while not pcall(function()
 	end) do
 	wait()
 end
+
+game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, true)

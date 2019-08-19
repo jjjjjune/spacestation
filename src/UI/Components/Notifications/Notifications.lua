@@ -64,10 +64,10 @@ function Notifications:render()
 					TextScaled = true,
 					BorderSizePixel = 0,
 					Text = notification.text,
-					Font = "SciFi",
-					TextStrokeTransparency = .9,
+					Font = "SourceSans",
+					TextStrokeTransparency = 1,
 					TextStrokeColor3 = Color3.new(0,0,0),
-					TextColor3 = Color3.new(1,1,1),
+					TextColor3 = Color3.new(0,0,0),
 					ZIndex = 2,
 					AnchorPoint = Vector2.new(.5,0),
 				})}

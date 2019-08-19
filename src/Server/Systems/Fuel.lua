@@ -66,6 +66,9 @@ local function updateFuel(well)
 	tween:Play()
 	percent = math.ceil(percent * 100)
 	well.Display.SurfaceGui.TextLabel.Text = "FUEL REMAINING: "..percent.."%"
+	if well.Amount.Value <= 0 then
+		Messages:send("OpenAllDoors")
+	end
 end
 
 local function initializeFuel(well)

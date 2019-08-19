@@ -7,25 +7,25 @@ local player = game.Players.LocalPlayer
 local playerStats = {
 	[1] = {
 		name = "Oxygen",
-		color = BrickColor.new("Bright bluish green").Color,
-		secondaryColor = BrickColor.new("Toothpaste").Color,
+		color = Color3.fromRGB(157,255,183),
+		secondaryColor = Color3.fromRGB(186,255,222),
 		max = 100,
 		current = 100,
 		damageTime = 4,
 		damage = 15,
 		lastDamage = time(),
-		icon = "rbxassetid://3489184613"
+		icon = "rbxassetid://3678020046"
 	},
 	[2] = {
 		name = "Hunger",
-		color = BrickColor.new("Persimmon").Color,
-		secondaryColor = BrickColor.new("Salmon").Color,
+		color = Color3.fromRGB(255,141,141),
+		secondaryColor = Color3.fromRGB(255,212,212),
 		max = 50,
 		current = 50,
 		damageTime = 100,
 		damage = 0,
 		lastDamage = time(),
-		icon = "rbxassetid://3489170655"
+		icon = "rbxassetid://3678024836"
 	}
 }
 
@@ -63,7 +63,7 @@ local function oxygenLoop()
 end
 
 local function hungerLoop()
-	while wait(5) do
+	while wait(10) do
 		local character = player.Character
 		if character then
 			local stat = playerStats[2]

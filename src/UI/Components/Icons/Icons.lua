@@ -28,16 +28,12 @@ function Icons:render()
 		FillDirection = "Horizontal",
 		HorizontalAlignment = "Center",
 		VerticalAlignment = "Center",
-		Padding = UDim.new(0,8),
-	})
-
-	childFrames[#childFrames+1] = Roact.createElement("UIAspectRatioConstraint", {
-		AspectRatio = 12,
+		Padding = UDim.new(.085,0),
 	})
 
 	return Roact.createElement("Frame", {
-		Size = UDim2.new(.5,0,.04*scale,0),
-		Position = UDim2.new(.5,0,0.04*scale,0),
+		Size = UDim2.new(.3,0,1,0),
+		--Position = UDim2.new(.5,0,0.04*scale,0),
 		AnchorPoint = Vector2.new(.5,0),
 		BackgroundTransparency = 1,
 	}, childFrames)

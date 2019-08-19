@@ -26,7 +26,7 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 		else
 			LowerHealth(owner, humanoid.Parent, damage)
 			Messages:send("PlayAnimation", humanoid.Parent, "Hit2")
-			Messages:send("Knockback", hit.Parent, direction*60,.4)
+			--Messages:send("Knockback", hit.Parent, direction*60,.4)
 		end
 	end
 	if (not owner) and CollectionService:HasTag(hit.Parent, "Plant") then

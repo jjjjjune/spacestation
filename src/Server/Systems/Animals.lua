@@ -16,14 +16,11 @@ local tags = {
 	},
 	["Blueling"] = {
 		"Blueling",
+	},
+	["Orangeling"] = {
+		"Orangeling"
 	}
 }
-
---[[
-	idea, monsters should literally just randomly lay eggs
-	so if you want the pet you have to farm the animal forever basically
-	take egg to egg altar to hatch...
-]]
 
 local function setupMonster(monster, scripts)
 	for _, scriptName in pairs(scripts) do

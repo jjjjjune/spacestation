@@ -84,7 +84,7 @@ function Wrench:activated()
 	if part then
 		local person = part.Parent
 		LowerHealth(self.player, person, DAMAGE)
-		Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
+		--Messages:send("Knockback", person, character.HumanoidRootPart.CFrame.lookVector*20,.4)
 		Messages:send("PlaySound", "DamagedLight" ,character.Head.Position)
 		Messages:send("PlayParticle", "Sparks", 10, part.Position)
 	end

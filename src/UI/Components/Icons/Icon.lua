@@ -28,19 +28,19 @@ local function onPressed(ui, isToggled)
 		goalRotation = 35
 	end
 	local goalSize = UDim2.new(1,0,1,0)
-	if not isToggled then
+	if isToggled then
 		goalSize = UDim2.new(.75,0,.75,0)
 	end
-	local goalColor = Color3.new(.9,1,.95,0)
-	if not isToggled then
-		goalColor = Color3.new(.5,.5,.5)
+	local goalColor = Color3.new(1,1,1)
+	if isToggled then
+		goalColor = Color3.new(.8,.8,.8)
 	end
 	local tween = TweenService:Create(ui,tweenInfo, {ImageColor3 = goalColor})
 	tween:Play()
 	tween = TweenService:Create(ui,tweenInfo, {Size = goalSize})
 	tween:Play()
-	tween = TweenService:Create(ui,tweenInfo, {Rotation = goalRotation})
-	tween:Play()
+	--[[local tween = TweenService:Create(ui,tweenInfo, {Rotation = goalRotation})
+	tween:Play()--]]
 end
 
 function Icon:render()
@@ -51,12 +51,12 @@ function Icon:render()
 		BackgroundTransparency = 1,
 	}, {
 		Inside = Roact.createElement("ImageButton", {
-			Size = UDim2.new(.75,0,.75,0),
-			Image = self.info.icon,
+			Size = UDim2.new(1,0,1,0),
+			Image = "rbxassetid://3678512862",
 			SizeConstraint = "RelativeYY",
 			BackgroundTransparency = 1,
 			AnchorPoint = Vector2.new(.5,.5),
-			ImageColor3 = Color3.new(.5,.5,.5),
+			ImageColor3 = Color3.new(1,1,1),
 			Position = UDim2.new(.5,0,.5,0),
 			[Roact.Ref] = self.ref,
 			[Roact.Event.Activated] = function()
@@ -67,7 +67,20 @@ function Icon:render()
 				self.info.pressed()
 				onPressed(self.ref.current, self.state.toggled)
 			end,
-		})
+		}, {
+			UiPadding = Roact.createElement("UIPadding", {
+				PaddingLeft = UDim.new(0.2,0),
+				PaddingRight = UDim.new(0.2,0),
+				PaddingTop = UDim.new(0.2,0),
+				PaddingBottom = UDim.new(0.2,0),
+			}),
+			Icon = Roact.createElement("ImageLabel", {
+				Size = UDim2.new(1,0,1,0),
+				Image = self.info.icon,
+				BackgroundTransparency = 1,
+				Active = false
+			})
+		}),
 	})
 end
 

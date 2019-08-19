@@ -20,6 +20,15 @@ function FriendshipGun:instance(tool)
 end
 
 function FriendshipGun:activated()
+	if not self.lastFire then
+		self.lastFire = time()
+	else
+		if time() - self.lastFire > .5 then
+			self.lastFire = time()
+		else
+			return
+		end
+	end
 	Messages:send("PlayAnimationClient", "Shoot")
 	local mouse = game.Players.LocalPlayer:GetMouse()
 	local target = mouse.Hit.p

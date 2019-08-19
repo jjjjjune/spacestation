@@ -3,7 +3,7 @@ local Messages = import "Shared/Utils/Messages"
 
 return {
 	{
-		icon = "rbxassetid://3536828297",
+		icon = "rbxassetid://3678544294",
 		hotkey = "SHIFT",
 		pressed = function()
 			Messages:send("ToggleSprint")
@@ -11,7 +11,7 @@ return {
 		name = "Sprint"
 	},
 	{
-		icon = "rbxassetid://3536828221",
+		icon = "rbxassetid://3678568074",
 		hotkey = "G",
 		name = "Gravity",
 		pressed = function()
@@ -19,7 +19,7 @@ return {
 		end,
 	},
 	{
-		icon = "rbxassetid://3559802858",
+		icon = "rbxassetid://3678630131",
 		hotkey = "X",
 		name = "Helmet",
 		pressed = function()

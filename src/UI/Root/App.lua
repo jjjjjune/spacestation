@@ -19,11 +19,11 @@ local function App()
 		Roact.createElement("ScreenGui", {ResetOnSpawn = false}, {
 			Stats = Roact.createElement(Stats, {}),
 			DrawerButton = Roact.createElement(DrawerButton, {}),
-			Cash = Roact.createElement(Cash, {}),
+			--Cash = Roact.createElement(Cash, {}),
 			YesNoDialogue = Roact.createElement(YesNoDialogue, {}),
 			ShopDisplay = Roact.createElement(ShopDisplay, {}),
 			Notifications = Roact.createElement(Notifications, {}),
-			Icons = Roact.createElement(Icons, {}),
+			--Icons = Roact.createElement(Icons, {}),
 			ClickDetectorIcons = Roact.createElement(ClickDetectorIcons, {}),
 			AnimalControlIcons = Roact.createElement(AnimalControlIcons, {}),
 			Paycheck = Roact.createElement(Paycheck, {}),

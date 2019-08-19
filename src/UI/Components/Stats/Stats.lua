@@ -2,6 +2,8 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local UserInputService = game:GetService("UserInputService")
 
+local Icons = import "UI/Components/Icons/Icons"
+
 local Roact = import "Roact"
 local Bar = import "../Bar"
 
@@ -10,16 +12,31 @@ local Stats = Roact.PureComponent:extend("Stats")
 local playerStats
 
 function Stats:init()
+	self:setState({
+		cash = 0,
+	})
 	Messages:hook("UpdateStats", function(stats)
 		playerStats = stats
 		self:setState({})
+	end)
+	Messages:hook("PlayerDataSet", function(stat, value)
+		if stat == "cash" then
+			self:setState({
+				["cash"] = value
+			})
+		end
+	end)
+	game:GetService("RunService").Stepped:connect(function()
+		self:setState({
+			["cash"] = _G.Data["cash"] or 0
+		})
 	end)
 end
 
 function Stats:render()
 	if playerStats then
 		local n = #playerStats
-		local size = UDim2.new(.5/n,0,1,0)
+		local size = UDim2.new(.5/n,0,.5,0)
 
 		local childFrames = {}
 
@@ -38,26 +55,69 @@ function Stats:render()
 
 		childFrames[#childFrames+1] = Roact.createElement("UIListLayout", {
 			FillDirection = "Horizontal",
-			HorizontalAlignment = "Center",
+			HorizontalAlignment = "Left",
 			VerticalAlignment = "Center",
-			Padding = UDim.new(0,8),
+			Padding = UDim.new(.035,0),
 		})
-		childFrames[#childFrames+1] = Roact.createElement("UIAspectRatioConstraint", {
+
+		childFrames[#childFrames+1] = Roact.createElement("UIPadding", {
+			PaddingLeft = UDim.new(0,22),
+			PaddingRight = UDim.new(0,4),
+			PaddingTop = UDim.new(0,4),
+			PaddingBottom = UDim.new(0,4),
+		})
+
+		childFrames[#childFrames+1] = Roact.createElement("TextLabel", {
+			Size = UDim2.new(.1,0,1,0),
+			BackgroundTransparency = 1,
+			TextScaled = true,
+			Text = "$ "..self.state.cash,
+			Font = "SourceSansBold",
+			TextXAlignment = "Left",
+		})
+
+		childFrames[#childFrames+1] = Roact.createElement(Icons, {})
+
+		--[[childFrames[#childFrames+1] = Roact.createElement("UIAspectRatioConstraint", {
 			AspectRatio = 14,
-		})
+		})--]]
 
 
 		local scale =  1.25
 		if UserInputService.TouchEnabled then
 			scale = 1
 		end
-
-		return Roact.createElement("Frame", {
-			Size = UDim2.new(.5,0,.03*scale,0),
+		--childFrames
+		return Roact.createElement("ImageLabel", {
+			Size = UDim2.new(.4,0,.055*scale,0),
 			Position = UDim2.new(.5,0,0,6),
 			AnchorPoint = Vector2.new(.5,0),
 			BackgroundTransparency = 1,
-		}, childFrames)
+			Image = "rbxassetid://3677918992",
+			ScaleType = "Slice",
+			SliceCenter = Rect.new(512,512,512,512),
+			ImageColor3 = Color3.new(0,0,0),
+			ZIndex = 0,
+		}, {
+			Ratio  = Roact.createElement("UIAspectRatioConstraint", {
+				AspectRatio = 10,
+			}),
+			Padding = Roact.createElement("UIPadding", {
+				PaddingLeft = UDim.new(0,4),
+				PaddingRight = UDim.new(0,4),
+				PaddingTop = UDim.new(0,4),
+				PaddingBottom = UDim.new(0,4),
+			}),
+			Contents = Roact.createElement("ImageLabel", {
+				Size = UDim2.new(1,0,1,0),
+				BackgroundTransparency = 1,
+				Image = "rbxassetid://3677918992",
+				ScaleType = "Slice",
+				SliceCenter = Rect.new(512,512,512,512),
+				ImageColor3 = Color3.fromRGB(122,235,217),
+				ZIndex = 0,
+			}, childFrames)
+		})
 	end
 end
 

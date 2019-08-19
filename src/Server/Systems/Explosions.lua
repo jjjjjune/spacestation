@@ -69,6 +69,9 @@ local function onExplosionHit(hit, dist, damaged)
 			end)
 		end
 	end
+	if CollectionService:HasTag(hit.Parent, "Door") then
+		Messages:send("ForceOpenDoor", hit.Parent)
+	end
 	if CollectionService:HasTag(hit.Parent, "Engine") then
 		if not damaged[hit.Parent] then
 			damaged[hit.Parent] = true

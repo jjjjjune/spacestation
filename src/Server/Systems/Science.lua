@@ -12,6 +12,17 @@ local function getRegion(part)
 	return region
 end
 
+local function emptyGoo(console, number)
+	local holder = console["Goo Holder"]
+	print(holder.Amount.Value)
+	if holder.Amount.Value >= number then
+		holder.Amount.Value = holder.Amount.Value - number
+		return true
+	else
+		return false
+	end
+end
+
 local function getReactableObjects(console)
 	local region = getRegion(console.Area)
 	local reactable = {}
@@ -28,29 +39,38 @@ local function getReactableObjects(console)
 	return reactable
 end
 
-local function activateHeat(console)
-	local objects = getReactableObjects(console)
-	for _, object in pairs(objects) do
-		Messages:send("ForceCalculateHeatReaction", object)
-		if object:FindFirstChild("Humanoid") then
-			Messages:send("Burn", object)
+local function activateHeat(console, player)
+	if emptyGoo(console, 5) then
+		console.HeatDisplay.Fire:Emit(100)
+		local objects = getReactableObjects(console)
+		for _, object in pairs(objects) do
+			Messages:send("ForceCalculateHeatReaction", object)
+			if object:FindFirstChild("Humanoid") then
+				Messages:send("Burn", object)
+			end
 		end
+	else
+		Messages:sendClient(player, "Notify", "You need more goo!")
 	end
 end
 
-local function activateInvisible(console)
-	local objects = getReactableObjects(console)
-	for _, object in pairs(objects) do
-		Messages:send("TurnInvisible", object, 120)
+local function activateInvisible(console, player)
+	if emptyGoo(console, 5) then
+		local objects = getReactableObjects(console)
+		for _, object in pairs(objects) do
+			Messages:send("TurnInvisible", object, 120)
+		end
+	else
+		Messages:sendClient(player, "Notify", "You need more goo!")
 	end
 end
 
 local function initializeConsole(console)
 	Messages:send("RegisterDetector", console.Heat.ClickDetector, function(player)
-		activateHeat(console)
+		activateHeat(console, player)
 	end)
 	Messages:send("RegisterDetector", console.Invisible.ClickDetector, function(player)
-		activateInvisible(console)
+		activateInvisible(console, player)
 	end)
 end
 
