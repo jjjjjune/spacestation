@@ -6,7 +6,7 @@ local ENVIORMENTS = {
 	{
 		name = "Spawn greenling on plants",
 		alive = {},
-		limit = 2,
+		limit = 3,
 		checkDebounce = 180,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Greenling"],
@@ -18,13 +18,25 @@ local ENVIORMENTS = {
 	{
 		name = "Spawn blueling on machines",
 		alive = {},
-		limit = 2,
+		limit = 3,
 		checkDebounce = 240,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Blueling"],
 		getAnimalSpawnPos = function()
 			local plants = CollectionService:GetTagged("Machine")
 			return plants[math.random(1, #plants)].Base.Position + Vector3.new(0,3,0)
+		end,
+	},
+	{
+		name = "Spawn orangeling on engines",
+		alive = {},
+		limit = 3,
+		checkDebounce = 120,
+
+		asset = game.ReplicatedStorage.Assets.Animals["Orangeling"],
+		getAnimalSpawnPos = function()
+			local plants = CollectionService:GetTagged("Engine")
+			return plants[1].MonsterSpawn.Position
 		end,
 	},
 }
@@ -36,6 +48,11 @@ local function enviormentsTick()
 		else
 			if time() - enviorment.lastCheck > enviorment.checkDebounce then
 				enviorment.lastCheck = time()
+				for i, animal in pairs(enviorment.alive) do
+					if CollectionService:HasTag(animal, "Friendly") then
+						table.remove(enviorment.alive, i)
+					end
+				end
 				if #enviorment.alive < enviorment.limit then
 					local clone = enviorment.asset:Clone()
 					clone.Parent = workspace

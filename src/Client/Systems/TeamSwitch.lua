@@ -49,8 +49,8 @@ function TeamSwitch:start()
 		})
 	end)
 	Messages:hook("MakeVoteSucceededNotification", function(running, team, yesVotes, noVotes)
-		local yesPercent = math.ceil(yesVotes/(#game.Players:GetPlayers()))*100
-		local noPercent = math.ceil(noVotes/(#game.Players:GetPlayers()))*100
+		local yesPercent = math.ceil(yesVotes/(#game.Players:GetPlayers())*100)
+		local noPercent = math.ceil(noVotes/(#game.Players:GetPlayers())*100)
 		local voteData = "\n ("..yesPercent.."% YES) ("..noPercent.."% NO)"
 		local voteText = running.Name.." has been elected "..team.."!"..voteData
 		game.StarterGui:SetCore("ChatMakeSystemMessage",{

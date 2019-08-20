@@ -22,7 +22,9 @@ function Knockback:start()
 	game:GetService("RunService").Stepped:connect(function()
 		for character, characterInfo in pairs(knockbackedCharacters) do
 			if time() - characterInfo.start <characterInfo.length then
-				character.HumanoidRootPart.Velocity = characterInfo.direction
+				if character:FindFirstChild("HumanoidRootPart") then
+					character.HumanoidRootPart.Velocity = characterInfo.direction
+				end
 			end
 		end
 	end)

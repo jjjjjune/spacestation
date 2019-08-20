@@ -3,35 +3,36 @@ local Messages = import "Shared/Utils/Messages"
 local TweenService = game:GetService("TweenService")
 local CollectionService = game:GetService("CollectionService")
 local LowerHealth = import "Shared/Utils/LowerHealth"
-local  HttpService = game:GetService("HttpService")
+local HttpService = game:GetService("HttpService")
 
 local tweenInfo = TweenInfo.new(
-		.8, -- Time
-		Enum.EasingStyle.Quad, -- EasingStyle
+		.2, -- Time
+		Enum.EasingStyle.Quint, -- EasingStyle
 		Enum.EasingDirection.Out
 	)
 
-local MAX_RANGE = 30
-local MAX_PLANT_RANGE = 20
-local COUGH_UP_ITEM = "Green Goo"
+local MAX_RANGE = 60
+local MAX_PLANT_RANGE = 60
+local COUGH_UP_ITEM = "Fuel"
 local COUGH_TIME = 120
+local BLOW_RANGE = 20
 
-local Greenling = {}
-Greenling.__index = Greenling
+local Orangeling = {}
+Orangeling.__index = Orangeling
 
-function Greenling:onStartedWalking()
-	Messages:send("PlayAnimation", self.model, "GreenlingWalk")
+function Orangeling:onStartedWalking()
+	Messages:send("PlayAnimation", self.model, "OrangelingWalk")
 end
 
-function Greenling:onStoppedWalking()
-	Messages:send("StopAnimation", self.model, "GreenlingWalk")
+function Orangeling:onStoppedWalking()
+	Messages:send("StopAnimation", self.model, "OrangelingWalk")
 end
 
-function Greenling:walkTo(pos)
+function Orangeling:walkTo(pos)
 	self.model.Humanoid:MoveTo(pos)
 end
 
-function Greenling:resetIdle()
+function Orangeling:resetIdle()
 	local length = math.random(1, 3)
 	self.nextIdle = time() + length
 	local walkDistX = math.random(-30,30)
@@ -40,7 +41,7 @@ function Greenling:resetIdle()
 	self.idlePosition = self.spawnPos + Vector3.new(walkDistX,0,walkDistY)
 end
 
-function Greenling:idle()
+function Orangeling:idle()
 	if not self.nextIdle then
 		self:resetIdle()
 	end
@@ -51,7 +52,7 @@ function Greenling:idle()
 	end
 end
 
-function Greenling:closeHumanNonAlien()
+function Orangeling:closeHumanNonAlien()
 	local closeHuman = nil
 	local closestDistance = MAX_RANGE
 	for _, p in pairs(game.Players:GetPlayers()) do
@@ -72,7 +73,7 @@ function Greenling:closeHumanNonAlien()
 	return closeHuman
 end
 
-function Greenling:closeHuman()
+function Orangeling:closeHuman()
 	local closeHuman = nil
 	local closestDistance = MAX_RANGE
 	for _, p in pairs(game.Players:GetPlayers()) do
@@ -91,11 +92,11 @@ function Greenling:closeHuman()
 	return closeHuman
 end
 
-function Greenling:closePlant()
+function Orangeling:closeEngine()
 	local closeHuman = nil
 	local closestDistance = MAX_PLANT_RANGE
-	for _, character in pairs(CollectionService:GetTagged("Plant")) do
-		local root = character.PrimaryPart
+	for _, character in pairs(CollectionService:GetTagged("Engine")) do
+		local root = character.Base
 		if root then
 			local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
 			if distance < closestDistance then
@@ -104,53 +105,107 @@ function Greenling:closePlant()
 			end
 		end
 	end
+	for _, character in pairs(CollectionService:GetTagged("Door")) do
+		local root = character.Door
+		if root then
+			local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
+			if distance < closestDistance and character.OpenValue.Value == false then
+				closeHuman = character
+				closestDistance = distance
+			end
+		end
+	end
 	return closeHuman
 end
 
-function Greenling:attack(character)
-	self.attacking = true
-	local t = time()
-	local goal = character.PrimaryPart.Position + Vector3.new(0,0,5)
-	local flat = Vector3.new(1,0,1)
-	spawn(function()
-		repeat
-			wait()
-			self.model.Humanoid:MoveTo(goal)
-		until
-		(
-			(not character.PrimaryPart) or
-			(time() - t > 3) or
-			((goal * flat - self.model.PrimaryPart.Position * flat).magnitude < 4)
-		)
-		if not character.PrimaryPart then
-			self.attacking = false
-			return
+function Orangeling:attack(character)
+	if (self.model.PrimaryPart.Position - character.PrimaryPart.Position).magnitude > BLOW_RANGE then
+		self:walkTo(character.PrimaryPart.Position)
+		self.model.Humanoid.WalkSpeed = 5
+		if self.attacking then
+			self:cancelAttack()
 		end
-
-		local origin = self.model.Head.Position
-		Messages:send("PlayAnimation", self.model, "GreenlingAttack")
-		self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,100000,0)
-		self.model.HumanoidRootPart.BodyGyro.CFrame = CFrame.new(self.model.PrimaryPart.Position,character.PrimaryPart.Position)
-		self.model.Eye2.Material = Enum.Material.Neon
-		local tween = TweenService:Create(self.model.Eye2, tweenInfo, {Color = BrickColor.new("Bright purple").Color})
-		Messages:send("PlaySound", "Sacrifice", character.PrimaryPart.Position)
-		tween:Play()
-		wait(1)
-
-		self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,0)
-		self.model.Eye2.BrickColor = BrickColor.new("Black")
-		Messages:send("PlaySound", "Laser", origin)
-		Messages:send("PlayParticle", "Sparks", 10, self.model.Eye2.Position)
-		local id = HttpService:GenerateGUID()
-		local cannonball = game.ReplicatedStorage.Assets.Projectiles["Alien"]
-		Messages:send("CreateProjectile", id, origin, character.PrimaryPart.Position, cannonball, self.model)
-
-		wait(1)
-		self.attacking = false
+		return
+	end
+	self.model.Head.CookSmoke:Emit(30)
+	--Messages:send("PlayParticle","Sparks", 15,self.model.Head.Position)
+	Messages:send("PlaySound", "AlienNoise2",self.model.PrimaryPart.Position)
+	self.attacking = true
+	self.model.Humanoid.WalkSpeed = 5
+	self:walkTo(character.PrimaryPart.Position)
+	local tween = TweenService:Create(self.model.Head, tweenInfo, {
+		Size = self.startSize *2
+	})
+	tween:Play()
+	tween = TweenService:Create(self.model.Eye1, tweenInfo, {
+		Size = self.eyeSize + Vector3.new(2,2,6),
+	})
+	tween:Play()
+	tween = TweenService:Create(self.model.Eye2, tweenInfo, {
+		Size = self.eyeSize + Vector3.new(2,2,6),
+	})
+	tween:Play()
+	--[[tween = TweenService:Create(self.model.Antenna.Motor6D, tweenInfo, {
+		C0 = self.starC0 * CFrame.new(0,3,0),
+	})
+	tween:Play()--]]
+	tween = TweenService:Create(self.model.Head.AntennaMotor, tweenInfo, {
+		C0 = self.antennaC0 * CFrame.new(0,0,3)
+	})
+	tween:Play()
+	spawn(function()
+		local t = .5
+		for i = 1, 20 do
+			wait(t)
+			if self.attacking then
+				t = t/1.1
+				Messages:send("PlaySound", "BombTick", self.model.PrimaryPart.Position)
+				if self.model.Star.BrickColor == BrickColor.new("Persimmon") then
+					self.model.Star.BrickColor = BrickColor.new("Brick yellow")
+				else
+					self.model.Star.BrickColor = BrickColor.new("Persimmon")
+				end
+			else
+				return
+			end
+		end
+		if self.attacking then
+			for _, p in pairs(self.model:GetChildren()) do
+				if p:IsA("BasePart") then
+					p.CanCollide = true
+				end
+			end
+			Messages:send("CreateExplosion",self.model.PrimaryPart.Position, 30)
+		end
 	end)
 end
 
-function Greenling:coughItem()
+function Orangeling:cancelAttack()
+	self.attacking = false
+	local tween = TweenService:Create(self.model.Head, tweenInfo, {
+		Size = self.startSize
+	})
+	tween:Play()
+	tween = TweenService:Create(self.model.Eye1, tweenInfo, {
+		Size = self.eyeSize,
+	})
+	tween:Play()
+	tween = TweenService:Create(self.model.Eye2, tweenInfo, {
+		Size = self.eyeSize,
+	})
+	tween:Play()
+	--[[tween = TweenService:Create(self.model.Antenna.Motor6D, tweenInfo, {
+		C0 = self.starC0
+	})
+	tween:Play()--]]
+	tween = TweenService:Create(self.model.Head.AntennaMotor, tweenInfo, {
+		C0 = self.antennaC0
+	})
+	tween:Play()
+	self.model.Humanoid.WalkSpeed = 16
+end
+
+function Orangeling:coughItem()
 	local p = (self.model.PrimaryPart.CFrame * CFrame.new(0,0,-3)).p
 	local model = game.ReplicatedStorage.Assets.Objects[COUGH_UP_ITEM]:Clone()
 	model.Parent = workspace
@@ -159,7 +214,11 @@ function Greenling:coughItem()
 	Messages:send("PlaySound","AlienCough", p)
 end
 
-function Greenling:friendlyStep()
+function Orangeling:friendlyStep()
+	self.model.Humanoid.WalkSpeed = 16
+	if self.attacking then
+		self:cancelAttack()
+	end
 	if not self.lastCough then
 		self.lastCough = time()
 	end
@@ -189,27 +248,30 @@ function Greenling:friendlyStep()
 	end
 end
 
-function Greenling:hostileStep()
+function Orangeling:hostileStep()
 	local human = self:closeHumanNonAlien()
-	local plant = self:closePlant()
+	local engine = self:closeEngine()
 	if human then
 		if self.attacking then
 			return
 		else
 			self:attack(human)
 		end
-	elseif plant then
+	elseif engine then
 		if self.attacking then
 			return
 		else
-			self:attack(plant)
+			self:attack(engine)
 		end
 	else
+		if self.attacking then
+			self:cancelAttack()
+		end
 		self:idle()
 	end
 end
 
-function Greenling:step()
+function Orangeling:step()
 	if CollectionService:HasTag(self.model, "Friendly") then
 		self:friendlyStep()
 	else
@@ -217,12 +279,16 @@ function Greenling:step()
 	end
 end
 
-function Greenling:onSpawn()
+function Orangeling:onSpawn()
 	self.spawnPos = self.model.HumanoidRootPart.Position
 end
 
-function Greenling:init()
+function Orangeling:init()
 	local connect
+	self.startSize = self.model.Head.Size
+	self.eyeSize = self.model.Eye1.Size
+	self.starC0 = self.model.Antenna.Motor6D.C0
+	self.antennaC0 = self.model.Head.AntennaMotor.C0
 	connect = game:GetService("RunService").Stepped:connect(function()
 		if self.dead then
 			connect:disconnect()
@@ -247,12 +313,10 @@ function Greenling:init()
 	end)
 end
 
-function Greenling:onDied()
+function Orangeling:onDied()
 	self:onStoppedWalking()
 	self.dead = true
 	Messages:send("PlaySound", "AlienNoise2",self.model.PrimaryPart.Position)
-	self.model.HumanoidRootPart.BodyGyro.MaxTorque = Vector3.new(0,0,10000)
-	self.model.HumanoidRootPart.BodyGyro.CFrame = self.model.HumanoidRootPart.CFrame * CFrame.Angles(0,0,-math.pi/2)
 	self.model.HumanoidRootPart.PointLight:Destroy()
 	for _, p in pairs(self.model:GetChildren()) do
 		if p:IsA("BasePart") then
@@ -266,12 +330,12 @@ function Greenling:onDied()
 	end)
 end
 
-function Greenling.new(model)
+function Orangeling.new(model)
 	local self = {}
 	self.model = model
-	setmetatable(self, Greenling)
+	setmetatable(self, Orangeling)
 
 	return self
 end
 
-return Greenling
+return Orangeling

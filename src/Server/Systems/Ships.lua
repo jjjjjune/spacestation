@@ -28,7 +28,7 @@ local function makeShip(item)
 	rope.Attachment0 = attach1
 	rope.Attachment1 = attach2
 	rope.Visible = true
-	rope.Restitution = 1
+	rope.Restitution = 0
 	local dist = (startPoint.Position - endPoint.Position).magnitude
 	local frames = FRAMES
 	local amountPer = dist/frames
@@ -41,16 +41,14 @@ local function makeShip(item)
 		end
 		wait(2)
 		shipInstance.Base.BodyPosition.Position = shipInstance.Base.Position - Vector3.new(0,20,0)
-		cf = cf * CFrame.new(0,-20,0)
+		cf = cf * CFrame.new(0,-24,0)
 		wait(1)
 		Messages:send("PlaySound","DoorLight", shipInstance.Base.Position)
 		rope:Destroy()
-		wait(1)
-		cf = cf * CFrame.new(0,0,100)
-		shipInstance.Base.BodyPosition.Position = cf.p
-		wait(3)
+		wait(2)
+		shipInstance.Base.BodyPosition.P = shipInstance.Base.BodyPosition.P/6
 		shipInstance.Base.BodyPosition.Position = shipInstance.Base.Position + Vector3.new(0,5000,0)
-		wait(6)
+		wait(22)
 		shipInstance:Destroy()
 	end)
 end

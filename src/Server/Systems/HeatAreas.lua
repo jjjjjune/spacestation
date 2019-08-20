@@ -139,7 +139,7 @@ local function cookStep()
 				end
 			end
 			for _, animal in pairs(CollectionService:GetTagged("Animal")) do
-				if animal.Parent == workspace then
+				if animal.Parent == workspace and animal:FindFirstChild("PrimaryPart") then
 					if isWithin(animal.PrimaryPart.Position, heatArea) then
 						Messages:send("Burn", animal)
 					end

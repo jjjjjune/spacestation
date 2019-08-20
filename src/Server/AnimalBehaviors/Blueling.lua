@@ -11,7 +11,7 @@ local MAX_RANGE = 60
 local TONGUE_RANGE = 40
 local MAX_MACHINE_RANGE = 50
 local COUGH_UP_ITEM = "Water"
-local COUGH_TIME = 300
+local COUGH_TIME = 120
 
 local tweenInfo = TweenInfo.new(.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local tweenInfoRope = TweenInfo.new(.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)

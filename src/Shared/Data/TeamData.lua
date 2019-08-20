@@ -6,6 +6,7 @@ return {
 			"Eat",
 			"Wrench",
 			"Flashlight",
+			--"Friendship Gun",
 		},
 		bodyParts = {
 			Torso = 28269799,
@@ -39,6 +40,7 @@ return {
 		},
 		limit = 2,
 		pay = 35,
+		lives = 3,
 		access = {
 			"Generic",
 			"Cooks",

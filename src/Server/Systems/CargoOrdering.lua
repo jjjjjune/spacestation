@@ -4,15 +4,19 @@ local CollectionService = game:GetService("CollectionService")
 
 local lastOrderedTable = {}
 local erroring = {}
+local lastColors = {}
 
 local function error(button)
+	if not lastColors[button] then
+		lastColors[button] = time()
+	end
 	if not erroring[button] then
 		erroring[button]= true
 		spawn(function()
 			Messages:send("PlaySound","Error", button.Position)
 			button.BrickColor = BrickColor.new("Dusty Rose")
 			delay(.2, function()
-				button.BrickColor = BrickColor.new("Steel blue")
+				button.BrickColor = lastColors[button]
 				erroring[button] = false
 			end)
 		end)

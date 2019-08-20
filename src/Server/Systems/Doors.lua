@@ -175,6 +175,7 @@ local function prepareDoor(door)
 	local openValue = Instance.new("BoolValue", door)
 	openValue.Name = "OpenValue"
 	openValue.Value = false
+	door.PrimaryPart = door.Door
 
 	local function attemptOpen(player)
 		local tool = player.Backpack:FindFirstChild("Keycard")

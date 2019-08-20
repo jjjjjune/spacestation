@@ -31,4 +31,7 @@ local function App()
 	})
 end
 
+
+game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, true)
+
 return App
