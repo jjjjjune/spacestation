@@ -1,7 +1,31 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
+local PlayerData = import "Shared/PlayerData"
 local RunService = game:GetService("RunService")
+
+local VEHICLE_DESPAWN_TIME = 300
+local BUILT_ON_VEHICLE_DESPAWN_TIME = 660
+
+local lastWasInVehicle = {}
+
+local function buyVehicle(player, shop)
+	local unlocks = PlayerData:get(player, "unlocks")
+	local cash = PlayerData:get(player, "cash")
+	if shop:FindFirstChild("UnlockPrice") then
+		if not unlocks[shop.Vehicle.Value] then
+			local price = shop.UnlockPrice.Value
+			if cash >= price then
+				unlocks[shop.Vehicle.Value] = true
+				PlayerData:set(player, "unlocks", unlocks)
+				PlayerData:add(player, "cash", -price)
+				Messages:send("PlaySound", "Chime", shop.Base.Position)
+			else
+				Messages:send("PlaySound", "Error", shop.Base.Position)
+			end
+		end
+	end
+end
 
 local function initializeVehicle(vehicle)
 	vehicle.VehicleSeat:GetPropertyChangedSignal("Occupant"):connect(function()
@@ -14,11 +38,13 @@ local function initializeVehicle(vehicle)
 				vehicle.Base:SetNetworkOwner(player)
 				Messages:sendClient(player, "ClaimVehicle", vehicle)
 			end
+			lastWasInVehicle[vehicle] = time()
 		else
 			vehicle.Base.ShipEngine:Stop()
+			lastWasInVehicle[vehicle] = time()
 		end
 	end)
-
+	lastWasInVehicle[vehicle] = time()
 end
 
 local function adjustVehicleVolumes()
@@ -31,18 +57,56 @@ end
 local function setupVehicleSpawn(spawn)
 	local vehicle = spawn.Vehicle.Value
 	local previewModel = game.ReplicatedStorage.Assets.Vehicles[vehicle]:Clone()
+	previewModel.Name = "Preview"
 	previewModel.VehicleSeat:Destroy()
 	previewModel:SetPrimaryPartCFrame(spawn.Base.CFrame * CFrame.new(0,2,0))
-	previewModel.Parent = workspace
 	CollectionService:RemoveTag(previewModel, "Vehicle")
+	previewModel.Parent =spawn
 	for _, v in pairs(previewModel:GetChildren()) do
 		if v:IsA("BasePart") then
 			v.Anchored = true
 			if v.Transparency == 0 then
-				v.Transparency = .5
+				v.Transparency = .7
 			end
-			v.BrickColor = BrickColor.new("Teal")
-			v.Material = Enum.Material.Neon
+			--v.BrickColor = BrickColor.new("Teal")
+			--v.Material = Enum.Material.Neon
+			v.CanCollide = false
+		end
+	end
+	Messages:send("RegisterDetector", spawn.Button.ClickDetector, function(player)
+		if spawn:FindFirstChild("UnlockPrice") then
+			local unlocks = PlayerData:get(player, "unlocks")
+			if not unlocks[spawn.Vehicle.Value] then
+				Messages:sendClient(player, "OpenVehicleBuyDialog", spawn)
+				print("sending!!!!")
+				--Messages:send("PlaySound", "Error", spawn.Base.Position)
+				return
+			else
+				Messages:send("PlaySound", "Chime", spawn.Base.Position)
+			end
+		end
+		local vehicleModel =game.ReplicatedStorage.Assets.Vehicles[vehicle]:Clone()
+		vehicleModel.Parent = workspace
+		vehicleModel:SetPrimaryPartCFrame(spawn.Base.CFrame * CFrame.new(0,2,0))
+	end)
+end
+
+local function checkVehicleDespawn()
+	for vehicle, t in pairs(lastWasInVehicle) do
+		if vehicle.VehicleSeat.Occupant ~= nil then
+			lastWasInVehicle[vehicle] = time()
+		else
+			local threshold = VEHICLE_DESPAWN_TIME
+			local parts = vehicle.Base:GetConnectedParts(true)
+			for _, p in pairs(parts) do
+				if not p:IsDescendantOf(vehicle) then
+					threshold = BUILT_ON_VEHICLE_DESPAWN_TIME
+				end
+			end
+			if time() - t > threshold then
+				vehicle:Destroy()
+				lastWasInVehicle[vehicle] = nil
+			end
 		end
 	end
 end
@@ -51,13 +115,16 @@ local Vehicles = {}
 
 function Vehicles:start()
 	for _, vehicle in pairs(CollectionService:GetTagged("Vehicle")) do
-		initializeVehicle(vehicle)
+		if vehicle:IsDescendantOf(workspace) then
+			initializeVehicle(vehicle)
+		end
 	end
 	CollectionService:GetInstanceAddedSignal("Vehicle"):connect(function(vehicle)
 		initializeVehicle(vehicle)
 	end)
 	RunService.Stepped:connect(function()
 		adjustVehicleVolumes()
+		checkVehicleDespawn()
 	end)
 	Messages:hook("DestroyVehicle", function(vehicle)
 		vehicle:BreakJoints()
@@ -67,6 +134,9 @@ function Vehicles:start()
 			end
 		end
 		game:GetService("Debris"):AddItem(vehicle, 5)
+	end)
+	Messages:hook("BuyVehicle", function(player, vehicle)
+		buyVehicle(player, vehicle)
 	end)
 	for _, spawn in pairs(CollectionService:GetTagged("VehicleSpawn")) do
 		setupVehicleSpawn(spawn)

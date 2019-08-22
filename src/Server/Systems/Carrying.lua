@@ -33,6 +33,8 @@ function Carrying:start()
 			carryPos.P = 20000
 			carryPos.Position = object.Base.Position
 			carryPos.MaxForce = Vector3.new(200000,200000,200000)
+			local carryGyro = Instance.new("BodyGyro", object.Base)
+			carryGyro.Name = "CarryGyro"
 			local beam = game.ReplicatedStorage.Assets.Particles.Beam:Clone()
 			beam.Parent = object.Base
 			local attach1 = Instance.new("Attachment", object.Base)
@@ -53,6 +55,7 @@ function Carrying:start()
 					PhysicsService:SetPartCollisionGroup(p, "Default")
 				end
 			end
+			object.Base.CarryGyro:Destroy()
 			object.Base.CarryPos:Destroy()
 			object.Base.Beam:Destroy()
 			object.Base.Attach1:Destroy()

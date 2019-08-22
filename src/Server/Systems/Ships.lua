@@ -15,6 +15,31 @@ local function makeShip(item)
 	shipInstance.PrimaryPart = shipInstance.Base
 	shipInstance:SetPrimaryPartCFrame(startPoint.CFrame)
 	shipInstance.Base.BodyPosition.Position = startPoint.Position
+	for _, v in pairs(shipInstance:GetChildren()) do
+		if v:IsA("BasePart") then
+			v.Touched:connect(function(hit)
+				if CollectionService:HasTag(hit.Parent, "Ship") and not hit:IsDescendantOf(v.Parent) then
+					if not CollectionService:HasTag(shipInstance, "Exploded") then
+						print("going")
+						CollectionService:AddTag(shipInstance, "Exploded")
+						shipInstance.Base.BodyGyro:Destroy()
+						shipInstance.Base.RotVelocity = Vector3.new(math.random(), math.random(), math.random())*100
+						for _, v in pairs(shipInstance:GetChildren()) do
+							if math.random(1,3) == 1 then
+								if v:IsA("BasePart") then
+									v:BreakJoints()
+								end
+							end
+						end
+						Messages:send("CreateExplosion", hit.Position, 30)
+						shipInstance.Base.BodyPosition.Name = "BreakTheLoopTho"
+						shipInstance.Base.ShipEngine:Destroy()
+						game:GetService("Debris"):AddItem(shipInstance, 30)
+					end
+				end
+			end)
+		end
+	end
 	itemInstance.Parent = workspace
 	itemInstance.PrimaryPart = itemInstance.Base
 	itemInstance:SetPrimaryPartCFrame(shipInstance.Base.CFrame * CFrame.new(0,-10,0))

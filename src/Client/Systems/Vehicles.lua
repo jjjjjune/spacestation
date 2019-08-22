@@ -1,6 +1,6 @@
 local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import 'Shared/Utils/Messages'
-
+local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 
 local player = game.Players.LocalPlayer
@@ -48,7 +48,7 @@ local function doSteering(vehicle, seat)
 
 	local turn = -steer * math.rad(3)
 	local roll = steer * math.rad(5)
-	local pitch = throttle*math.rad(-5)
+	local pitch = throttle*math.rad(-5- vehicle.VehicleSeat.TurnSpeed)
 
 	gyro.CFrame = CFrame.Angles(0, yaw + turn, 0) * CFrame.Angles(0, 0, roll) * CFrame.Angles(pitch,0,0)
 
@@ -72,14 +72,37 @@ local function vehicleTick()
 	end
 end
 
+local function vehicleShopTick()
+	for _, shop in pairs(CollectionService:GetTagged("VehicleSpawn")) do
+		if shop:FindFirstChild("UnlockPrice") then
+			if _G.Data.unlocks[shop.Vehicle.Value] ~= true then
+				shop.Button.BrickColor = BrickColor.new("Terra Cotta")
+			else
+				shop.Button.Color = Color3.fromRGB(114, 171, 162)
+			end
+		end
+	end
+end
+
 local Vehicles = {}
 
 function Vehicles:start()
 	Messages:hook("ClaimVehicle", function(vehicle)
 		myVehicle = vehicle
 	end)
+	Messages:hook("OpenVehicleBuyDialog", function(shop)
+		print("openbyesno")
+		local price = shop.UnlockPrice.Value
+		Messages:send("OpenYesNoDialogue", {
+			text = "UNLOCK: "..shop.Vehicle.Value.." ( $"..price.." )",
+			yesCallback = function()
+				Messages:sendServer("BuyVehicle", shop)
+			end,
+		})
+	end)
 	RunService.RenderStepped:connect(function()
 		vehicleTick()
+		vehicleShopTick()
 	end)
 end
 
