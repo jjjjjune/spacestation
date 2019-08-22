@@ -78,6 +78,9 @@ local function onExplosionHit(hit, dist, damaged)
 			Messages:send("DamageEngine", math.max(0, 50 - dist))
 		end
 	end
+	if CollectionService:HasTag(hit.Parent, "Vehicle") then
+		Messages:send("DestroyVehicle", hit.Parent)
+	end
 	if CollectionService:HasTag(hit.Parent, "Supply") then
 		for _ = 1, hit.Parent.Quantity.Value do
 			Messages:send("OrderSupply", hit.Parent)

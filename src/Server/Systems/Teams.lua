@@ -46,6 +46,7 @@ local function switchTeam(player, teamName, bypassPass)
 			Messages:send("GiveTool", player, tool)
 		end
 		Messages:send("ApplyTeamAppearance",player,player.Character)
+		Messages:send("OnTeamSwitched", player, teamName)
 	end
 end
 

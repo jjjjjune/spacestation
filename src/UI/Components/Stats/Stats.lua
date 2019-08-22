@@ -6,6 +6,7 @@ local Icons = import "UI/Components/Icons/Icons"
 
 local Roact = import "Roact"
 local Bar = import "../Bar"
+local LivesFrame = import "../LivesFrame"
 
 local Stats = Roact.PureComponent:extend("Stats")
 
@@ -14,6 +15,7 @@ local playerStats
 function Stats:init()
 	self:setState({
 		cash = 0,
+		lives = 0,
 	})
 	Messages:hook("UpdateStats", function(stats)
 		playerStats = stats
@@ -25,6 +27,12 @@ function Stats:init()
 				["cash"] = value
 			})
 		end
+	end)
+	Messages:hook("NotifyLivesLeft", function(lives)
+		print("notify lives left")
+		self:setState({
+			lives = lives,
+		})
 	end)
 	game:GetService("RunService").Stepped:connect(function()
 		self:setState({
@@ -116,7 +124,8 @@ function Stats:render()
 				SliceCenter = Rect.new(512,512,512,512),
 				ImageColor3 = Color3.fromRGB(122,235,217),
 				ZIndex = 0,
-			}, childFrames)
+			}, childFrames),
+			LivesDisplayFrame = LivesFrame(self.state.lives),
 		})
 	end
 end

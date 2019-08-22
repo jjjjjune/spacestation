@@ -121,7 +121,7 @@ end
 function Orangeling:attack(character)
 	if (self.model.PrimaryPart.Position - character.PrimaryPart.Position).magnitude > BLOW_RANGE then
 		self:walkTo(character.PrimaryPart.Position)
-		self.model.Humanoid.WalkSpeed = 5
+		self.model.Humanoid.WalkSpeed = 16
 		if self.attacking then
 			self:cancelAttack()
 		end
@@ -314,6 +314,7 @@ function Orangeling:init()
 end
 
 function Orangeling:onDied()
+	Messages:send("CreateExplosion",self.model.PrimaryPart.Position, 30)
 	self:onStoppedWalking()
 	self.dead = true
 	Messages:send("PlaySound", "AlienNoise2",self.model.PrimaryPart.Position)

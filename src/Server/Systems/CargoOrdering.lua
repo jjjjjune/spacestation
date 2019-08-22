@@ -8,7 +8,7 @@ local lastColors = {}
 
 local function error(button)
 	if not lastColors[button] then
-		lastColors[button] = time()
+		lastColors[button] = button.BrickColor
 	end
 	if not erroring[button] then
 		erroring[button]= true

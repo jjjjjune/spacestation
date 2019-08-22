@@ -21,6 +21,7 @@ local loadOrder = {
 	"../Systems/Carrying",
 	"../Systems/ClickDetectors",
 	"../Systems/HeatAreas",
+	"../Systems/Vehicles",
 }
 
 local lastStart = time()

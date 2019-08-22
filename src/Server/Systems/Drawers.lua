@@ -23,6 +23,9 @@ end
 
 local function depositTool(player, drawer)
 	local tool = player.Character:FindFirstChildOfClass("Tool")
+	if tool.Name == "Consume" then
+		return
+	end
 	tool.Parent = game.Lighting
 	drawer.Tool.Value = tool
 end

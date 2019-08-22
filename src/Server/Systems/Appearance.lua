@@ -60,6 +60,7 @@ local Appearance = {}
 function Appearance:start()
 	Players.PlayerAdded:connect(function(player)
 		player.CharacterAdded:connect(function(character)
+			Messages:send("CharacterAdded", player, character)
 			applyTeamAppearance(player, character)
 			--humanoid:BuildRigFromAttachments()
 			character:WaitForChild("Health"):Destroy()

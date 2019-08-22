@@ -31,13 +31,6 @@ local function isInFuel(object)
 			end
 		end
 	end
-	if object:FindFirstChild("Base") and object.Base.Anchored == false then
-		for _, v in pairs(object.Base:GetConnectedParts()) do -- if an item is connected to something it wont despawn
-			if v.Parent ~= object then
-				return true
-			end
-		end
-	end
 	return false
 end
 

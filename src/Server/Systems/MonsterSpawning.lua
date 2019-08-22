@@ -24,7 +24,7 @@ local ENVIORMENTS = {
 		asset = game.ReplicatedStorage.Assets.Animals["Blueling"],
 		getAnimalSpawnPos = function()
 			local plants = CollectionService:GetTagged("Machine")
-			return plants[math.random(1, #plants)].Base.Position + Vector3.new(0,3,0)
+			return (plants[math.random(1, #plants)].Base.CFrame * CFrame.new(-6,0,-6)).p + Vector3.new(0,3,0)
 		end,
 	},
 	{

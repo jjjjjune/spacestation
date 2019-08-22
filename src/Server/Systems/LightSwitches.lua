@@ -60,11 +60,12 @@ local function debounced(door)
 end
 
 local function prepareDoor(door)
-	local switch = door:WaitForChild("OnOff")
-	local onOffDetector = Instance.new("ClickDetector", switch)
 	local onValue = Instance.new("BoolValue", door)
 	onValue.Name = "OnValue"
 	onValue.Value = true
+	--[[local switch = door:WaitForChild("OnOff")
+	local onOffDetector = Instance.new("ClickDetector", switch)
+
 
 	local function attemptOpen(player)
 		if not debounced(door) then
@@ -75,11 +76,11 @@ local function prepareDoor(door)
 				turnOff(player, door)
 			end
 		end
-	end
+	end--]]
 
-	Messages:send("RegisterDetector", onOffDetector, function(player)
+	--[[Messages:send("RegisterDetector", onOffDetector, function(player)
 		attemptOpen(player)
-	end)
+	end)--]]
 end
 
 local Switches = {}

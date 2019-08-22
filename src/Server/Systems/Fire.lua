@@ -29,7 +29,9 @@ local function getRegion(character)
 end
 
 local function manageBurningHumanoid(object)
-	LowerHealth(nil, object, BURN_DAMAGE)
+	if object.Humanoid.Health > 0 then
+		LowerHealth(nil, object, BURN_DAMAGE)
+	end
 end
 
 local function manageBurningBuilding(object)

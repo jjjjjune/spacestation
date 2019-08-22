@@ -186,6 +186,7 @@ return {
 			LeftLeg = 3040323560,
 			LeftArm = 3040323138,
 		},
+		lives = 3,
 		limit = 1,
 		pay = 150,
 		access = {

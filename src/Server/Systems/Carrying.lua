@@ -16,6 +16,9 @@ local Carrying = {}
 function Carrying:start()
 	Messages:hook("CarryObject", function(player, object)
 		if object.Parent == workspace then
+			if object.Base:FindFirstChild("VehicleWeld") then
+				object.Base.VehicleWeld:Destroy()
+			end
 			unanchor(object)
 			object.Parent = player.Character
 			object.Base:SetNetworkOwner(player)

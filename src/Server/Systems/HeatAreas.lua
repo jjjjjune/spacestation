@@ -41,7 +41,7 @@ local function onCookedItem(transformItem)
 	if transformItem:FindFirstChild("Hunger") then
 		for _, p in pairs(game.Players:GetChildren()) do
 			if p.Team.Name == "Cooks" then
-				AddCash(p, transformItem.Hunger.Value)
+				AddCash(p, math.ceil(transformItem.Hunger.Value/3))
 			end
 		end
 	end
