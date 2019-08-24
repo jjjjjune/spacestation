@@ -1,3 +1,3 @@
-# space station
+# doomspire
 
-a tiny space station game by matthew and suzy
+the doom cometh
