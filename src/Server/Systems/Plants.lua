@@ -15,7 +15,7 @@ local originalColorsTable = {}
 local growingPlants = {}
 local lastWaterDecay = time()
 
-local WATER_DECAY_TIME = 240
+local WATER_DECAY_TIME = 60
 
 local function getMaxGrowthPhase(plantName)
 	local folder = game.ReplicatedStorage.Assets.Plants[plantName]
@@ -27,7 +27,7 @@ local function getMaxGrowthPhase(plantName)
 end
 
 local function updatePlantModel(plant)
-	if plant:FindFirstChild("PlantDisplayModel") and not CollectionService:HasTag(plant.PlantDisplayModel, "Finished") then
+	if plant:FindFirstChild("PlantDisplayModel") then
 		local display = plant.PlantDisplayModel
 		for _, p in pairs(display:GetChildren()) do
 			if p:IsA("BasePart") then
@@ -51,7 +51,7 @@ end
 local function onWaterValueChanged(plant)
 	updatePlantModel(plant)
 	local p = plant.Dirt
-	local start = BrickColor.new("Cashmere").Color
+	local start = BrickColor.new("Nougat").Color
 	local goal = start:lerp(BrickColor.new("Dark taupe").Color, plant.Water.Value/plant.Water.MaxValue)
 	local tween = TweenService:Create(p, tweenInfo, {Color = goal})
 	tween:Play()

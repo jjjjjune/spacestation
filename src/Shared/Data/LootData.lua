@@ -44,4 +44,8 @@ return {
 		getKeycardWithAccess("Scientists"),
 		getToolObject("Friendship Gun"),
 	},
+	Botanist = {
+		getKeycardWithAccess("Botanists"),
+		getToolObject("Chainsaw"),
+	},
 }

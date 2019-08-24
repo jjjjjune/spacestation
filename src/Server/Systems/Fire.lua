@@ -30,7 +30,8 @@ end
 
 local function manageBurningHumanoid(object)
 	if object.Humanoid.Health > 0 then
-		LowerHealth(nil, object, BURN_DAMAGE)
+		local dmg = object.Humanoid.MaxHealth*.025
+		LowerHealth(nil, object, dmg)
 	end
 end
 
@@ -62,7 +63,8 @@ local function checkNearbyBurnables(object)
 			local isPlant = false--CollectionService:HasTag(object, "Plant")
 			local isMonster = object:FindFirstChild("Humanoid")
 			local isFlammableBuilding =(CollectionService:HasTag(object, "Building") and CollectionService:HasTag(object, "Flammable"))
-			if isPlant or isMonster or isFlammableBuilding then
+			local isFlammableObject = (CollectionService:HasTag(object, "Carryable")) and CollectionService:HasTag(object, "Flammable")
+			if isPlant or isMonster or isFlammableBuilding or isFlammableObject then
 				if not CollectionService:HasTag(object, "Burning") then
 					Messages:send("Burn", object)
 				end
@@ -134,6 +136,10 @@ function Fire:start()
 		end
 		CollectionService:AddTag(object, "Burning")
 		onStartedBurning(object)
+	end)
+	Messages:hook("Extinguish", function(object)
+		CollectionService:RemoveTag(object, "Burning")
+		onStoppedBurning(object)
 	end)
 	Messages:hook("Unburn", function(player, object)
 		if not player:IsDescendantOf(game.Players) then

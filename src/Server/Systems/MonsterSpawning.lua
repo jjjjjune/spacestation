@@ -7,7 +7,7 @@ local ENVIORMENTS = {
 		name = "Spawn greenling on plants",
 		alive = {},
 		limit = 3,
-		checkDebounce = 180,
+		checkDebounce = 360,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Greenling"],
 		getAnimalSpawnPos = function()
@@ -16,10 +16,27 @@ local ENVIORMENTS = {
 		end,
 	},
 	{
+		name = "Spawn weed on plants",
+		alive = {},
+		limit = 3,
+		checkDebounce = 420,
+
+		asset = game.ReplicatedStorage.Assets.Animals["Weed"],
+		getAnimalSpawnPos = function()
+			local plants = CollectionService:GetTagged("Plant")
+			for i, p in pairs(plants) do
+				if not p:IsDescendantOf(workspace) then
+					plants[i] = nil
+				end
+			end
+			return plants[math.random(1, #plants)].Base.Position
+		end,
+	},
+	{
 		name = "Spawn blueling on machines",
 		alive = {},
 		limit = 3,
-		checkDebounce = 240,
+		checkDebounce = 300,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Blueling"],
 		getAnimalSpawnPos = function()
@@ -30,8 +47,8 @@ local ENVIORMENTS = {
 	{
 		name = "Spawn orangeling on engines",
 		alive = {},
-		limit = 3,
-		checkDebounce = 120,
+		limit = 2,
+		checkDebounce = 300,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Orangeling"],
 		getAnimalSpawnPos = function()
@@ -55,9 +72,9 @@ local function enviormentsTick()
 				end
 				if #enviorment.alive < enviorment.limit then
 					local clone = enviorment.asset:Clone()
-					clone.Parent = workspace
 					local pos = enviorment.getAnimalSpawnPos()
-					clone:SetPrimaryPartCFrame(CFrame.new(pos))
+					clone.PrimaryPart.CFrame = CFrame.new(pos)
+					clone.Parent = workspace
 					table.insert(enviorment.alive, clone)
 					clone.Humanoid.Died:connect(function()
 						for i, monster in pairs(enviorment.alive) do

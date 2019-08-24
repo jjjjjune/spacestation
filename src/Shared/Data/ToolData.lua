@@ -34,6 +34,13 @@ return {
 		description = "Can fix things!",
 		element =  "METAL"
 	},
+	["Chainsaw"] = {
+		name = "Wrench",
+		model = "Assets/Tools/Chainsaw",
+		icon = "rbxassetid://3711823664",
+		description = "Some plants are REALLY hard to deal with.",
+		element =  "METAL"
+	},
 	["Grab"] = {
 		name = "Grab",
 		model = "Assets/Tools/Grab",
@@ -89,5 +96,13 @@ return {
 		icon = "rbxassetid://3646161668",
 		description = "No, you can't arrest people for liking fortnite.",
 		element = "WATER",
+	},
+	["Fire"] = {
+		name = "Fire",
+		model = "Assets/Tools/Fire",
+		icon = "rbxassetid://3711589466",
+		description = "No, you can't fire people for liking fortnite.",
+		element = "WATER",
 	}
+	--
 }

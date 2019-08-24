@@ -150,7 +150,7 @@ local function cookStep()
 					if player.Character then
 						local animal = player.Character
 						if animal.Parent == workspace then
-							if isWithin(animal.PrimaryPart.Position, heatArea) then
+							if animal.PrimaryPart and isWithin(animal.PrimaryPart.Position, heatArea) then
 								Messages:send("Burn", animal)
 							end
 						end
@@ -171,10 +171,16 @@ local function heatContactAt(position, radius) -- for things like lasers
 	end
 end
 
+local lastStep = time()
+
 local heatLoop = function()
-	while wait(COOK_TIME) do
-		cookStep()
-	end
+	game:GetService("RunService").Stepped:connect(function()
+		if time() - lastStep > COOK_TIME then
+			print("cook step")
+			cookStep()
+			lastStep = time()
+		end
+	end)
 end
 
 local HeatAreas = {}

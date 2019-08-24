@@ -19,7 +19,10 @@ local tags = {
 	},
 	["Orangeling"] = {
 		"Orangeling"
-	}
+	},
+	["Weed"] = {
+		"Weed"
+	},
 }
 
 local function setupMonster(monster, scripts)

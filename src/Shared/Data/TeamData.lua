@@ -156,6 +156,7 @@ return {
 			"Wrench",
 			"Flashlight",
 			"Watering Can",
+			"Chainsaw",
 		},
 		bodyParts = {
 			Torso = 3040324777,
@@ -178,6 +179,7 @@ return {
 			"Eat",
 			"Wrench",
 			"Flashlight",
+			"Fire",
 		},
 		bodyParts = {
 			Torso = 3040324777,

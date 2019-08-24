@@ -79,6 +79,9 @@ local function checkOxygen()
 				CollectionService:AddTag(player.Character,"Breathing")
 			else
 				CollectionService:RemoveTag(player.Character,"Breathing")
+				if CollectionService:HasTag(player.Character, "Burning") then
+					Messages:send("Extinguish", player.Character)
+				end
 			end
 		end
 	end

@@ -50,6 +50,8 @@ local function switchTeam(player, teamName, bypassPass)
 	end
 end
 
+local lastSound = time()
+
 function Teams:start()
 	Messages:hook("SwitchTeam", function(player, teamName)
 		spawn(function() switchTeam(player, teamName) end)
@@ -65,10 +67,16 @@ function Teams:start()
 		local switchDetector = Instance.new("ClickDetector", hitbox)
 		Messages:send("RegisterDetector", switchDetector, function(player)
 			if not switch:FindFirstChild("Vote") then
-				Messages:send("PlaySound", "Cop2", hitbox.Position)
+				if time() - lastSound > 2 then
+					lastSound = time()
+					Messages:send("PlaySound", "Cop2", hitbox.Position)
+				end
 				Messages:sendClient(player, "OpenTeamSwitchGui", switch.Team.Value)
 			else
-				Messages:send("PlaySound", "Cop2", hitbox.Position)
+				if time() - lastSound > 2 then
+					lastSound = time()
+					Messages:send("PlaySound", "Cop2", hitbox.Position)
+				end
 				Messages:sendClient(player, "OpenTeamSwitchVoteGui", switch.Team.Value)
 			end
 		end)
@@ -97,6 +105,11 @@ function Teams:start()
 				Messages:send("GiveTool", player, toolName)
 			end
 		end)
+	end)
+	Messages:hook("FireFromJob",  function(player, playerToFire)
+		if player.Team.Name == "Captain" then
+			switchTeam(playerToFire, "Workers")
+		end
 	end)
 end
 

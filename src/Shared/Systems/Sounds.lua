@@ -30,7 +30,10 @@ local function playSound(soundName, position, group)
         sound = SoundsFolder[soundName]:Clone()
     end
     sound.Parent = part or workspace
-    sound:Play()
+	sound:Play()
+	if sound.Parent == workspace then
+		game:GetService("Debris"):AddItem(sound, 5)
+	end
 end
 
 function Sounds:start()

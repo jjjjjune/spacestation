@@ -12,7 +12,7 @@ return function(props, children)
 		Position = UDim2.new(0,0,0,0),
 		ZIndex = 1,
 	})--]]
-	children.Outline = Roact.createElement("ImageLabel", {
+	children.Frame = Roact.createElement("ImageLabel", {
 		Size = UDim2.new(1,0,1,0),
 		Position = UDim2.new(0,0,0,0),
 		BorderSizePixel = 0,
@@ -22,6 +22,24 @@ return function(props, children)
 		SliceCenter = Rect.new(512,512,512,512),
 		ImageColor3 = Color3.new(1,1,1),
 		ZIndex = 1,
+	}, {
+		RealOutline = Roact.createElement("ImageLabel", {
+			Size = UDim2.new(1,6,1,6),
+			Position = UDim2.new(0,-3,0,-3),
+			BorderSizePixel = 0,
+			BackgroundTransparency = 1,
+			Image = "rbxassetid://3684238393",--rbxassetid://3677918992",
+			ScaleType = "Slice",
+			SliceCenter = Rect.new(512,512,512,512),
+			ImageColor3 = Color3.new(0,0,0),
+			ZIndex = -10,
+		})
+	})
+	children.Padding1 = Roact.createElement("UIPadding", {
+		PaddingLeft = UDim.new(0,6),
+		PaddingRight = UDim.new(0,6),
+		PaddingBottom = UDim.new(0,6),
+		PaddingTop = UDim.new(0,6),
 	})
 	children.CloseButton = Roact.createElement("ImageButton", {
 		Size = UDim2.new(0.1,0,0.1,0),

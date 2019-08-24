@@ -61,8 +61,8 @@ local function onExplosionHit(hit, dist, damaged)
 	end
 	if ObjectReactions[hit.Parent.Name] then
 		if ObjectReactions[hit.Parent.Name].HEAT == "EXPLODE" and not CollectionService:HasTag(hit.Parent, "Chained") then
+			CollectionService:AddTag(hit.Parent, "Chained")
 			spawn(function()
-				CollectionService:AddTag(hit.Parent, "Chained")
 				wait(.25)
 				Messages:send("CreateExplosion", hit.Position, 20)
 				hit.Parent:Destroy()

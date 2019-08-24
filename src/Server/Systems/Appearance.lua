@@ -81,9 +81,15 @@ function Appearance:start()
 				end
 			end
 			character:WaitForChild("Humanoid").Died:connect(function()
+				Messages:send("PlayParticle", "Skulls", 15, character.Head.Position)
+				character.Head.face.Texture = "rbxassetid://3713453606"
 				Messages:send("PlayerDied", player)
 				Messages:send("CharacterDied", character)
+				Messages:send("RagdollCharacter", character)
 			end)
+			character.Humanoid.BodyHeightScale.Value = 1
+			character.Humanoid.HeadScale.Value = 1
+			character.Humanoid.BodyWidthScale.Value = 1
 		end)
 	end)
 	Messages:hook("ApplyTeamAppearance", function(player, character)

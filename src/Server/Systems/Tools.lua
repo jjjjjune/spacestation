@@ -19,7 +19,7 @@ local function getToolObject(toolName)
 	local tool = Instance.new("Tool")
 	tool.Name = toolName
 	local data = ToolData[toolName]
-	tool.ToolTip = data.description
+	tool.ToolTip = (tool.Name:upper())..": "..data.description
 	tool.TextureId = data.icon
 	tool.CanBeDropped = false
 	local model = import(data.model):Clone()

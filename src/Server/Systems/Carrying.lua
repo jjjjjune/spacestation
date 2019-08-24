@@ -45,6 +45,21 @@ function Carrying:start()
 			attach2.Name = "Attach2"
 			attach2.Parent = player.Character["RightHand"]
 			Messages:send("PlaySound", "ErrorLight", attach2.WorldPosition)
+			for _, p in pairs(object.Base:GetConnectedParts(true)) do
+				local pParent = p.Parent
+				if CollectionService:HasTag(pParent, "Carryable") then
+					if pParent ~= object then
+						pParent.Parent = player.Character
+						if p:IsA("BasePart") then
+							p.Massless = true
+						end
+					else
+						if p:IsA("BasePart") then
+							p.Massless = false
+						end
+					end
+				end
+			end
 		end
 	end)
 	Messages:hook("ReleaseObject", function(player, object)
@@ -61,6 +76,23 @@ function Carrying:start()
 			object.Base.Attach1:Destroy()
 			player.Character["RightHand"].Attach2:Destroy()
 			Messages:send("PlaySound", "ErrorLight", object.Base.Position)
+			if object:FindFirstChild("Base") then
+				for _, p in pairs(object.Base:GetConnectedParts(true)) do
+					local pParent = p.Parent
+					if CollectionService:HasTag(pParent, "Carryable") then
+						if pParent ~= object then
+							pParent.Parent = workspace
+							if p:IsA("BasePart") then
+								p.Massless = false
+							end
+						else
+							if p:IsA("BasePart") then
+								p.Massless = false
+							end
+						end
+					end
+				end
+			end
 			Messages:send("OnObjectReleased", player, object)
 		end
 	end)

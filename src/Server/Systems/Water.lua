@@ -81,6 +81,32 @@ local function setupWells()
 	end
 end
 
+local function onPlantWatered(player, plant, wateringCan)
+	if plant:FindFirstChild("PlantDisplayModel") then
+		if CollectionService:HasTag(plant.PlantDisplayModel, "Dead") then
+			if player then
+				Messages:sendClient(player, "Notify", "This plant is dead!")
+			end
+			return
+		end
+	end
+	if player then
+		AddCash(player, math.random(1,2))
+	end
+
+	if wateringCan then
+		Messages:send("PlaySound", "Drinking", wateringCan.Handle.Position)
+		wateringCan.Water.Value = wateringCan.Water.Value - 1
+		if wateringCan.Water.Value == 0 then
+			wateringCan.TextureId = "rbxassetid://3576099564"
+			CollectionService:RemoveTag(wateringCan, "Full")
+		end
+	end
+
+	plant.Water.Value = plant.Water.Value + 5
+	Messages:send("PlayParticle", "Water", 15, plant.Base.Position)
+end
+
 local Water = {}
 
 function Water:start()
@@ -125,39 +151,31 @@ function Water:start()
 		end
 	end)
 	Messages:hook("WaterPlant", function(player, plant)
-		local wateringCan = player.Character:FindFirstChild("Watering Can")
+		local wateringCan = player and player.Character and player.Character:FindFirstChild("Watering Can")
 		if wateringCan then
 			if CollectionService:HasTag(wateringCan, "Full") then
 				if plant.Water.Value < plant.Water.MaxValue then
 					if wateringCan.Water.Value > 0 then
-						if plant:FindFirstChild("PlantDisplayModel") then
-							if CollectionService:HasTag(plant.PlantDisplayModel, "Dead") then
-								Messages:sendClient(player, "Notify", "This plant is dead!")
-								return
-							end
-						end
-						Messages:send("PlaySound", "Drinking", wateringCan.Handle.Position)
-						AddCash(player, math.random(1,2))
-						plant.Water.Value = plant.Water.Value + 5
-						wateringCan.Water.Value = wateringCan.Water.Value - 1
-						if wateringCan.Water.Value == 0 then
-							wateringCan.TextureId = "rbxassetid://3576099564"
-							CollectionService:RemoveTag(wateringCan, "Full")
-						end
-						Messages:send("PlayParticle", "Water", 15, plant.Base.Position)
+						onPlantWatered(player, plant, wateringCan)
 					else
 						Messages:sendClient(player, "Notify", "Watering can empty!")
 					end
 				else
 					Messages:sendClient(player, "Notify", "Plant doesn't need water!")
 				end
+			else
+				Messages:sendClient(player, "Notify", "Watering can empty!")
 			end
 		else
-			Messages:sendClient(player, "Notify", "Watering can empty!")
+			if player then
+				onPlantWatered(player, plant, wateringCan)
+			else
+				onPlantWatered(nil,plant,nil)
+			end
 		end
 	end)
 	Messages:hook("PutoutFire", function(player, object)
-		local wateringCan = player.Character:FindFirstChild("Watering Can")
+		local wateringCan = player and player.Character and player.Character:FindFirstChild("Watering Can")
 		if wateringCan then
 			if CollectionService:HasTag(wateringCan, "Full") then
 				if wateringCan.Water.Value > 0 then
@@ -172,6 +190,10 @@ function Water:start()
 					Messages:send("PlayParticle", "Water", 15, object.PrimaryPart.Position)
 				end
 			end
+		else
+			Messages:send("Unburn", object)
+			Messages:send("PlaySound", "Drinking", object.PrimaryPart.Position)
+			Messages:send("PlayParticle", "Water", 15, object.PrimaryPart.Position)
 		end
 	end)
 end

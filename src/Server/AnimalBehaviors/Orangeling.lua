@@ -60,7 +60,7 @@ function Orangeling:closeHumanNonAlien()
 		if character then
 			if not CollectionService:HasTag(character, "Alien") and not CollectionService:HasTag(character, "FriendOfAliens") then
 				local root = character.PrimaryPart
-				if root then
+				if root and self.model.PrimaryPart then
 					local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
 					if distance < closestDistance then
 						closeHuman = character

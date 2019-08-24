@@ -59,27 +59,27 @@ return {
 			end)
 			if not model.HeatArea.HeaterSound.IsPlaying then
 				model.HeatArea.HeaterSound:Play()
-				model.HeatDisplay.BrickColor = BrickColor.new("Bright orange")
 				model.dial.Base.BrickColor = BrickColor.new("Bright orange")
 			end
+			model.HeatDisplay.BrickColor = BrickColor.new("Bright orange")
 			model.HeatDisplay.Fire.Rate = 40
 			model.HeatArea.Temperature.Value = 1000
 		end,
 		on = function(model)
 			if not model.HeatArea.HeaterSound.IsPlaying then
 				model.HeatArea.HeaterSound:Play()
-				model.HeatDisplay.BrickColor = BrickColor.new("Bright orange")
-				model.dial.Base.BrickColor = BrickColor.new("Bright orange")
 			end
+			model.HeatDisplay.BrickColor = BrickColor.new("Bright orange")
+			model.dial.Base.BrickColor = BrickColor.new("Bright orange")
 			model.HeatDisplay.Fire.Rate = 40
 			model.HeatArea.Temperature.Value = 1000
 		end,
 		off = function(model)
 			if model.HeatArea.HeaterSound.IsPlaying then
 				model.HeatArea.HeaterSound:Stop()
-				model.HeatDisplay.BrickColor = BrickColor.new("Sand blue")
-				model.dial.Base.BrickColor = BrickColor.new("Bright blue")
 			end
+			model.HeatDisplay.BrickColor = BrickColor.new("Sand blue")
+			model.dial.Base.BrickColor = BrickColor.new("Bright blue")
 			model.HeatDisplay.Fire.Rate = 0
 			model.HeatArea.Temperature.Value = 0
 		end,

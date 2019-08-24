@@ -41,6 +41,9 @@ function TeamSwitch:start()
 	Messages:hook("MakeVoteNotification", function(player, teamName, VOTE_TIME)
 		local voteText = player.Name.." is running for: "..teamName.."!"..[[
 			Type !yes or !no in the chat to vote! Vote lasts ]]..VOTE_TIME.." seconds!"
+		if teamName == "to be kicked from the game" then
+			voteText = "Do you want "..player.Name.." to be kicked? "..[[Type !yes or !no in the chat to vote! Vote lasts ]]..VOTE_TIME.." seconds!"
+		end
 		game.StarterGui:SetCore("ChatMakeSystemMessage",{
 			Text = voteText,
 			Color = Color3.new(1,1,1),
@@ -49,8 +52,8 @@ function TeamSwitch:start()
 		})
 	end)
 	Messages:hook("MakeVoteSucceededNotification", function(running, team, yesVotes, noVotes)
-		local yesPercent = math.ceil(yesVotes/(#game.Players:GetPlayers())*100)
-		local noPercent = math.ceil(noVotes/(#game.Players:GetPlayers())*100)
+		local yesPercent = math.ceil((yesVotes/(#game.Players:GetPlayers())*100))
+		local noPercent = math.ceil((noVotes/(#game.Players:GetPlayers())*100))
 		local voteData = "\n ("..yesPercent.."% YES) ("..noPercent.."% NO)"
 		local voteText = running.Name.." has been elected "..team.."!"..voteData
 		game.StarterGui:SetCore("ChatMakeSystemMessage",{
@@ -61,8 +64,8 @@ function TeamSwitch:start()
 		})
 	end)
 	Messages:hook("MakeVoteFailedNotification", function(running, team, yesVotes, noVotes)
-		local yesPercent = math.ceil(yesVotes/(#game.Players:GetPlayers()))*100
-		local noPercent = math.ceil(noVotes/(#game.Players:GetPlayers()))*100
+		local yesPercent = math.ceil((yesVotes/(#game.Players:GetPlayers())*100))
+		local noPercent = math.ceil((noVotes/(#game.Players:GetPlayers())*100))
 		local voteData = "\n ("..yesPercent.."% YES) ("..noPercent.."% NO)"
 		local voteText = running.Name.." has NOT been elected "..team.."!"..voteData
 		game.StarterGui:SetCore("ChatMakeSystemMessage",{

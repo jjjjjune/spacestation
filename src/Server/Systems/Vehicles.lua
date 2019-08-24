@@ -8,6 +8,7 @@ local VEHICLE_DESPAWN_TIME = 300
 local BUILT_ON_VEHICLE_DESPAWN_TIME = 660
 
 local lastWasInVehicle = {}
+local currentVehicles = {}
 
 local function buyVehicle(player, shop)
 	local unlocks = PlayerData:get(player, "unlocks")
@@ -31,17 +32,28 @@ local function initializeVehicle(vehicle)
 	vehicle.VehicleSeat:GetPropertyChangedSignal("Occupant"):connect(function()
 		local newOccupantHumanoid = vehicle.VehicleSeat.Occupant
 		if newOccupantHumanoid then
+			print(newOccupantHumanoid.Parent.Name)
 			vehicle.Base.ShipEngine:Play()
 			local character = newOccupantHumanoid.Parent
 			local player = game.Players:GetPlayerFromCharacter(character)
 			if player then
 				vehicle.Base:SetNetworkOwner(player)
 				Messages:sendClient(player, "ClaimVehicle", vehicle)
+				if not currentVehicles[player] then
+					currentVehicles[player] = {}
+				end
+				currentVehicles[player][vehicle.Name] = vehicle
 			end
 			lastWasInVehicle[vehicle] = time()
 		else
+			print("no occupant")
+			vehicle.Base.BodyPosition.MaxForce = Vector3.new(0,0,0)
 			vehicle.Base.ShipEngine:Stop()
 			lastWasInVehicle[vehicle] = time()
+			spawn(function()
+				wait(.1)
+				vehicle.Base.BodyPosition.MaxForce = Vector3.new(0,0,0)
+			end)
 		end
 	end)
 	lastWasInVehicle[vehicle] = time()
@@ -78,14 +90,25 @@ local function setupVehicleSpawn(spawn)
 			local unlocks = PlayerData:get(player, "unlocks")
 			if not unlocks[spawn.Vehicle.Value] then
 				Messages:sendClient(player, "OpenVehicleBuyDialog", spawn)
-				print("sending!!!!")
-				--Messages:send("PlaySound", "Error", spawn.Base.Position)
 				return
 			else
 				Messages:send("PlaySound", "Chime", spawn.Base.Position)
 			end
 		end
+		if not currentVehicles[player] then
+			currentVehicles[player] = {}
+		end
 		local vehicleModel =game.ReplicatedStorage.Assets.Vehicles[vehicle]:Clone()
+		if not currentVehicles[player][vehicleModel.Name] then
+			currentVehicles[player][vehicleModel.Name] = vehicleModel
+		else
+			if currentVehicles[player][vehicleModel.Name].Parent == workspace then
+				Messages:sendClient(player, "Notify", "You already have a vehicle of this type spawned!")
+				return
+			else
+				currentVehicles[player][vehicleModel.Name] = vehicleModel
+			end
+		end
 		vehicleModel.Parent = workspace
 		vehicleModel:SetPrimaryPartCFrame(spawn.Base.CFrame * CFrame.new(0,2,0))
 	end)
@@ -93,20 +116,24 @@ end
 
 local function checkVehicleDespawn()
 	for vehicle, t in pairs(lastWasInVehicle) do
-		if vehicle.VehicleSeat.Occupant ~= nil then
-			lastWasInVehicle[vehicle] = time()
-		else
-			local threshold = VEHICLE_DESPAWN_TIME
-			local parts = vehicle.Base:GetConnectedParts(true)
-			for _, p in pairs(parts) do
-				if not p:IsDescendantOf(vehicle) then
-					threshold = BUILT_ON_VEHICLE_DESPAWN_TIME
+		if vehicle:FindFirstChild("VehicleSeat") then
+			if vehicle.VehicleSeat.Occupant ~= nil then
+				lastWasInVehicle[vehicle] = time()
+			else
+				local threshold = VEHICLE_DESPAWN_TIME
+				local parts = vehicle.Base:GetConnectedParts(true)
+				for _, p in pairs(parts) do
+					if not p:IsDescendantOf(vehicle) then
+						threshold = BUILT_ON_VEHICLE_DESPAWN_TIME
+					end
+				end
+				if time() - t > threshold then
+					vehicle:Destroy()
+					lastWasInVehicle[vehicle] = nil
 				end
 			end
-			if time() - t > threshold then
-				vehicle:Destroy()
-				lastWasInVehicle[vehicle] = nil
-			end
+		else
+			lastWasInVehicle[vehicle] = nil
 		end
 	end
 end

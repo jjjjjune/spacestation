@@ -66,6 +66,9 @@ local function vehicleTick()
 				local seat = myVehicle.VehicleSeat
 				if seat.Occupant == humanoid then
 					doSteering(myVehicle, seat)
+				else
+					myVehicle.Base.BodyPosition.MaxForce = Vector3.new()
+					myVehicle = nil
 				end
 			end
 		end

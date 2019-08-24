@@ -4,14 +4,19 @@ local Messages = import 'Shared/Utils/Messages'
 local THRESHOLD = .5
 local VOTE_TIME = 60
 local VOTE_DEBOUNCE = 300
+local KICK_DEBOUNCE = 20
 
 local voteGoing
 local lastRan = {}
 local lastVotes = {}
+local lastKickRan = {}
 
 local function checkVote(final)
 	local needed = (#game.Players:GetPlayers())*THRESHOLD
 	if voteGoing.yesVotes > needed then
+		if voteGoing.team == "to be kicked from the game" then
+			Messages:send("Kick", voteGoing.running)
+		end
 		for _, member in pairs(game.Teams[voteGoing.team]:GetPlayers()) do
 			Messages:send("SwitchTeam", member, "Workers")
 			--member:LoadCharacter()
@@ -85,10 +90,10 @@ function Votes:start()
 				startVote(player, teamName)
 				lastVotes[teamName] = time()
 			else
-				Messages:sendClient(player, "Notify", "You can only run for this once every 5 minutes!")
+				Messages:sendClient(player, "Notify", "You can only run once every 5 minutes!")
 			end
 		else
-			Messages:sendClient(player, "Notify", "Someone is already running for a position!")
+			Messages:sendClient(player, "Notify", "There is already a vote going!")
 		end
 	end)
 	game.Players.PlayerAdded:connect(function(player)
@@ -99,6 +104,40 @@ function Votes:start()
 				onPlayerVotedYes(player)
 			elseif string.sub(msg,1,3) == "!no" then
 				onPlayerVotedNo(player)
+			end
+			if string.sub(msg, 1, 10) == "!votekick " then
+				local playerName = string.gsub(msg, "!votekick ", "")
+				local players = game.Players:GetPlayers()
+				local bestName
+				for i, p in pairs(players) do
+					if string.lower(string.sub(p.Name, 1, string.len(playerName))) == string.lower(playerName) then
+						if not bestName or string.len(p.Name) < string.len(bestName) then
+							if p ~= game.Players.LocalPlayer then
+								bestName = p.Name
+							end
+						end
+					end
+				end
+				if not voteGoing then
+					local player = game.Players[bestName]
+					if player then
+						local teamName = "to be kicked from the game"
+						if not lastVotes[teamName] then
+							lastVotes[teamName] = time()
+						else
+							if time() - lastVotes[teamName] < VOTE_DEBOUNCE then
+								Messages:sendClient(player, "Notify", "This poisition can only be voted on once every 5 minutes!")
+							end
+						end
+						if not lastKickRan[player] then
+							lastKickRan[player] =time() - 1000
+						end
+						if time() - lastKickRan[player] > KICK_DEBOUNCE then
+							lastKickRan[player] = time()
+							startVote(player, teamName)
+						end
+					end
+				end
 			end
 		end)
 	end)

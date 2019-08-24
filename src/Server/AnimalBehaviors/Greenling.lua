@@ -98,7 +98,7 @@ function Greenling:closePlant()
 		local root = character.PrimaryPart
 		if root then
 			local distance = (root.Position - self.model.PrimaryPart.Position).magnitude
-			if distance < closestDistance then
+			if distance < closestDistance and character.Water.Value > 0 then
 				closeHuman = character
 				closestDistance = distance
 			end
