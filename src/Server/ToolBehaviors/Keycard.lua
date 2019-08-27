@@ -14,7 +14,9 @@ function Keycard:instance(tool)
 	tool.Handle.Touched:connect(function(hit)
 		local door = hit.Parent
 		if CollectionService:HasTag(door, "Door") then
-			Messages:send("UnlockDoor", door, tool)
+			if door.OpenValue.Value == false then
+				Messages:send("UnlockDoor", door, tool)
+			end
 		end
 	end)
 	tool.Equipped:connect(function()

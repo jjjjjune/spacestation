@@ -6,7 +6,6 @@ return {
 			"Eat",
 			"Wrench",
 			"Flashlight",
-			--"Friendship Gun",
 		},
 		bodyParts = {
 			Torso = 28269799,

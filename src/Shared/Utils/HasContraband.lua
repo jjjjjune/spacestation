@@ -19,7 +19,6 @@ return function(player)
 			if tool:FindFirstChild("Access") then
 				local neededAccess = tool.Access.Value
 				if not hasAccess(playerAccessTable, neededAccess) then
-					print("has no access for", tool.Name)
 					return true
 				end
 			end
@@ -30,7 +29,6 @@ return function(player)
 			if tool:FindFirstChild("Access") then
 				local neededAccess = tool.Access.Value
 				if not hasAccess(playerAccessTable, neededAccess) then
-					print("has no access for", tool.Name)
 					return true
 				end
 			end

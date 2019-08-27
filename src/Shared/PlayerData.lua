@@ -28,7 +28,8 @@ local function yieldUntilDataReady(player)
 end
 
 function data:onDataChanged(player)
-    yieldUntilDataReady(player)
+	yieldUntilDataReady(player)
+	Messages:send("PlayerDataUpdated", player, self.cache[player.UserId])
     Messages:sendClient(player, "PlayerDataSet", self.cache[player.UserId])
 end
 
@@ -108,7 +109,7 @@ function data:start()
 		Messages:send("PlayerIsRemoving",player)
 	end)
 
-	Messages:hook("DeathCheckDone", function(player)
+	Messages:hook("PlayerIsRemoving", function(player)
 		spawn(function()
 			self:save(player)
 			self:clearFromCache(player)

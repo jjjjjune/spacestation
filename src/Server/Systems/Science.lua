@@ -14,7 +14,6 @@ end
 
 local function emptyGoo(console, number)
 	local holder = console["Goo Holder"]
-	print(holder.Amount.Value)
 	if holder.Amount.Value >= number then
 		holder.Amount.Value = holder.Amount.Value - number
 		return true
@@ -28,7 +27,6 @@ local function getReactableObjects(console)
 	local reactable = {}
 	local alreadyReacted = {}
 	for _, part in pairs(workspace:FindPartsInRegion3(region, nil, 100000)) do
-		print(part.Parent.Name)
 		if CollectionService:HasTag(part.Parent, "Carryable") or part.Parent:FindFirstChild("Humanoid") then
 			if not alreadyReacted[part.Parent] then
 				alreadyReacted[part.Parent] = true

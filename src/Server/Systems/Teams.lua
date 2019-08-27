@@ -19,7 +19,6 @@ local function countMembersOfTeam(teamName)
 end
 
 local function switchTeam(player, teamName, bypassPass)
-	print("TO TEAM: ", teamName)
 	local data = TeamData[teamName]
 	local amount = countMembersOfTeam(teamName)
 	if amount >= data.limit then

@@ -7,7 +7,7 @@ local TweenService = game:GetService("TweenService")
 
 local lastColors = {}
 
-local BREAK_TIME = 120
+local BREAK_TIME = 1
 local FUEL_TICK_TIME = 10
 local FuelTank = CollectionService:GetTagged("FuelHolder")[1]
 
@@ -159,6 +159,7 @@ function Machines:start()
 		machine.FixPercent.Value = machine.FixPercent.Value + 1
 		if machine.FixPercent.Value == machine.FixPercent.MaxValue then
 			fix(machine)
+			PlayerData:add(player, "machinesFixed",1)
 		end
 	end)
 end

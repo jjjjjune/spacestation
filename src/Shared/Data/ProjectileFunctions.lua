@@ -53,7 +53,6 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 	else
 		local plant = anyNearbyPlants(pos, 6)
 		if plant and (not owner) then
-			print("asdsdasd")
 			plant.Water.Value = plant.Water.Value - 1
 			Messages:send("PlaySound", "Leaves", hit.Position)
 			Messages:send("PlayParticle", "Leaf", 15, hit.Position)

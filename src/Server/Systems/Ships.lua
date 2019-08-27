@@ -20,7 +20,6 @@ local function makeShip(item)
 			v.Touched:connect(function(hit)
 				if CollectionService:HasTag(hit.Parent, "Ship") and not hit:IsDescendantOf(v.Parent) then
 					if not CollectionService:HasTag(shipInstance, "Exploded") then
-						print("going")
 						CollectionService:AddTag(shipInstance, "Exploded")
 						shipInstance.Base.BodyGyro:Destroy()
 						shipInstance.Base.RotVelocity = Vector3.new(math.random(), math.random(), math.random())*100

@@ -6,7 +6,7 @@ local ENVIORMENTS = {
 	{
 		name = "Spawn greenling on plants",
 		alive = {},
-		limit = 3,
+		limit = 0,
 		checkDebounce = 360,
 
 		asset = game.ReplicatedStorage.Assets.Animals["Greenling"],

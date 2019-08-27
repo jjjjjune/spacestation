@@ -10,8 +10,6 @@ local function connectEvents(tool)
 		instanced[tool] = true
 		local behavior = import("Server/ToolBehaviors/"..tool.Name).new()
 		behavior:instance(tool)
-	else
-		print('already instanced', tool)
 	end
 end
 

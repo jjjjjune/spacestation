@@ -70,7 +70,6 @@ local function calculateReaction(item)
 		return
 	end
 	if ObjectReactions[item.Name] then
-		print("has reaction", item.Name)
 		if not CollectionService:HasTag(item, "Cooked") then
 			CollectionService:AddTag(item, "Cooked")
 			-- uh oh
@@ -176,7 +175,6 @@ local lastStep = time()
 local heatLoop = function()
 	game:GetService("RunService").Stepped:connect(function()
 		if time() - lastStep > COOK_TIME then
-			print("cook step")
 			cookStep()
 			lastStep = time()
 		end

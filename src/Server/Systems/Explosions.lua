@@ -67,6 +67,7 @@ local function onExplosionHit(hit, dist, damaged)
 				Messages:send("CreateExplosion", hit.Position, 20)
 				hit.Parent:Destroy()
 			end)
+			return
 		end
 	end
 	if CollectionService:HasTag(hit.Parent, "Door") then

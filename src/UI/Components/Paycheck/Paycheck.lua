@@ -36,7 +36,7 @@ function Paycheck:init()
 					x = x + 1
 					table.insert(self.state.paycheckFrames, Roact.createElement("TextLabel", {
 						Size = UDim2.new(.925,0,.075,0),
-						Position = UDim2.new(0.5,0,.15 + .085*(x-1),0),
+						Position = UDim2.new(0.5,0,.2 + .085*(x-1),0),
 						AnchorPoint = Vector2.new(.5,0),
 						Text = index..": $"..value,
 						TextXAlignment = "Left",
@@ -55,7 +55,7 @@ function Paycheck:init()
 				local state = self.state
 				table.insert(self.state.paycheckFrames, Roact.createElement("TextLabel", {
 					Size = UDim2.new(.925,0,.15,0),
-					Position = UDim2.new(0.5,0,.15 + .085*(x),0),
+					Position = UDim2.new(0.5,0,.2 + .085*(x),0),
 					AnchorPoint = Vector2.new(.5,0),
 					Text = "TOTAL: "..total,
 					TextXAlignment = "Left",
@@ -68,7 +68,7 @@ function Paycheck:init()
 				}))
 				table.insert(self.state.paycheckFrames, Roact.createElement("TextLabel", {
 					Size = UDim2.new(.925,0,.15,0),
-					Position = UDim2.new(0.5,-2,.15 + .085*(x),0),
+					Position = UDim2.new(0.5,-2,.2 + .085*(x),0),
 					AnchorPoint = Vector2.new(.5,0),
 					Text = "TOTAL: "..total,
 					TextXAlignment = "Left",

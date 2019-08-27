@@ -38,17 +38,13 @@ local function onWaterChanged(well)
 end
 
 local function onHitboxTouched(well, hit)
-	print("hitbox touched")
 	if CollectionService:HasTag(hit.Parent, "Water") then
-		print("yeah water")
 		local water = hit.Parent
 		if water.Parent == workspace then
 			if canAddWater(well) then
 				addWater(well, 10)
 				water:Destroy()
 			end
-		else
-			print(water.Parent)
 		end
 	end
 end

@@ -26,7 +26,9 @@ function Handcuffs:activated()
 		local char = target.Parent
 		local player = game.Players:GetPlayerFromCharacter(char)
 		if player then
-			Messages:sendServer("AttemptArrest", player)
+			if (mouse.Hit.p - self.player.PrimaryPart.Position).magnitude < 10 then
+				Messages:sendServer("AttemptArrest", player)
+			end
 		end
 	end
 end

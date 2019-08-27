@@ -29,7 +29,6 @@ function Stats:init()
 		end
 	end)
 	Messages:hook("NotifyLivesLeft", function(lives)
-		print("notify lives left")
 		self:setState({
 			lives = lives,
 		})

@@ -32,7 +32,6 @@ local function initializeVehicle(vehicle)
 	vehicle.VehicleSeat:GetPropertyChangedSignal("Occupant"):connect(function()
 		local newOccupantHumanoid = vehicle.VehicleSeat.Occupant
 		if newOccupantHumanoid then
-			print(newOccupantHumanoid.Parent.Name)
 			vehicle.Base.ShipEngine:Play()
 			local character = newOccupantHumanoid.Parent
 			local player = game.Players:GetPlayerFromCharacter(character)
@@ -46,7 +45,6 @@ local function initializeVehicle(vehicle)
 			end
 			lastWasInVehicle[vehicle] = time()
 		else
-			print("no occupant")
 			vehicle.Base.BodyPosition.MaxForce = Vector3.new(0,0,0)
 			vehicle.Base.ShipEngine:Stop()
 			lastWasInVehicle[vehicle] = time()
