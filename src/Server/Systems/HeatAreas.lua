@@ -4,6 +4,7 @@ local CollectionService = game:GetService("CollectionService")
 local Recipes = import "Shared/Data/Recipes"
 local ObjectReactions = import "Shared/Data/ObjectReactions"
 local AddCash = import "Shared/Utils/AddCash"
+local PlayerData = import "Shared/PlayerData"
 
 local COOK_TIME = 5
 local lastForceStep = time()
@@ -47,9 +48,18 @@ local function onCookedItem(transformItem)
 	end
 end
 
-local function calculateReaction(item)
+local function calculateReaction(item, owner)
 	if CollectionService:HasTag(item, "Food") or Recipes[item.Name] then
 		if not CollectionService:HasTag(item, "Cooked") and Recipes[item.Name] then
+			if owner then
+				PlayerData:add(owner, string.lower(item.Name).."Cooked",1)
+				PlayerData:add(owner, string.lower(item.Name).."foodCooked",1)
+			else
+				if item:FindFirstChild("LastCarry") then
+					PlayerData:add(item.LastCarry.Value, string.lower(item.Name).."Cooked",1)
+					PlayerData:add(item.LastCarry.Value, string.lower(item.Name).."foodCooked",1)
+				end
+			end
 			CollectionService:AddTag(item, "Cooked")
 			Messages:send("PlaySound", "Burn", item.Base.Position)
 			Messages:send("PlayParticle", "Smoke", 15, item.Base.Position)
@@ -85,6 +95,15 @@ local function calculateReaction(item)
 		end
 		local reaction = ObjectReactions[item.Name]
 		if reaction.HEAT == "EXPLODE" then
+			if owner then
+				PlayerData:add(owner, string.lower(item.Name).."Exploded",1)
+				PlayerData:add(owner, string.lower(item.Name).."objectsExploded",1)
+			else
+				if item:FindFirstChild("LastCarry") then
+					PlayerData:add(item.LastCarry.Value, string.lower(item.Name).."Exploded",1)
+					PlayerData:add(item.LastCarry.Value, string.lower(item.Name).."objectsExploded",1)
+				end
+			end
 			Messages:send("CreateExplosion", item.Base.Position, 12)
 			item:Destroy()
 		end
@@ -160,11 +179,11 @@ local function cookStep()
 	end
 end
 
-local function heatContactAt(position, radius) -- for things like lasers
+local function heatContactAt(position, radius, owner) -- for things like lasers
 	for _, item in pairs(CollectionService:GetTagged("Carryable")) do
 		if item.Parent == workspace then
 			if (item.Base.Position - position).magnitude < radius then
-				calculateReaction(item)
+				calculateReaction(item, owner)
 			end
 		end
 	end
@@ -191,8 +210,8 @@ function HeatAreas:start()
 			doRadiusStepOnly()
 		end
 	end)
-	Messages:hook("HeatContact", function(position)
-		heatContactAt(position, 5)
+	Messages:hook("HeatContact", function(position, owner)
+		heatContactAt(position, 5, owner)
 	end)
 	Messages:hook("ForceCalculateHeatReaction", function(item)
 		calculateReaction(item)

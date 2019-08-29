@@ -59,6 +59,7 @@ function QuestInformationFrame:render(props)
 	return Roact.createElement("Frame", {
 		Size = self.props.size,
 		BackgroundTransparency =1,
+		LayoutOrder = self.props.layoutOrder,
 	}, {
 		QuestTitle = Roact.createElement("TextLabel", {
 			Text= [[]]..questInfo.title..[[]],

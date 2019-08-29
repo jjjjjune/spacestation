@@ -104,6 +104,7 @@ function Teams:start()
 				Messages:send("GiveTool", player, toolName)
 			end
 		end)
+		Messages:send("OnTeamSwitched", player, "Workers")
 	end)
 	Messages:hook("FireFromJob",  function(player, playerToFire)
 		if player.Team.Name == "Captain" then

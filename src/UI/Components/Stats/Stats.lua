@@ -90,13 +90,13 @@ function Stats:render()
 		})--]]
 
 
-		local scale =  1.25
+		local scale =  1.2
 		if UserInputService.TouchEnabled then
 			scale = 1
 		end
 		--childFrames
 		return Roact.createElement("ImageLabel", {
-			Size = UDim2.new(.4,0,.055*scale,0),
+			Size = UDim2.new(.4,0,0,80*scale),
 			Position = UDim2.new(.5,0,0,6),
 			AnchorPoint = Vector2.new(.5,0),
 			BackgroundTransparency = 1,

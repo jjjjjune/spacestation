@@ -5,6 +5,7 @@ local Roact = import "Roact"
 local Notifications = Roact.PureComponent:extend("Notifications")
 local Frame = import "UI/Components/Frame"
 local StyleConstants = import "Shared/Data/StyleConstants"
+local UserInputService = game:GetService("UserInputService")
 
 local notifications = {}
 
@@ -23,8 +24,8 @@ function Notifications:init()
 		notificationRefs[timestamp] = Roact.createRef()
 		self:setState({})
 		local ref = self.mainFrameRef.current
-		ref:TweenPosition(UDim2.new(0,0,.5,0) + UDim2.new(0,0,0,-5), "Out", "Quad", .1, true, function()
-			ref:TweenPosition(UDim2.new(0,0,.5,0) + UDim2.new(0,0,0,5), "Out", "Quad", .1, true)
+		ref:TweenPosition(UDim2.new(1,0,.5,-120) + UDim2.new(0,0,0,-5), "Out", "Quad", .1, true, function()
+			ref:TweenPosition(UDim2.new(1,0,.5,-120) + UDim2.new(0,0,0,5), "Out", "Quad", .1, true)
 		end)
 	end)
 	game:GetService("RunService").Stepped:connect(function()
@@ -37,20 +38,20 @@ end
 function Notifications:render()
 	local notificationChildren = {}
 	table.insert(notificationChildren, Roact.createElement("UIListLayout", {
-		HorizontalAlignment = "Left",
+		HorizontalAlignment = "Right",
 		VerticalAlignment = "Bottom",
-		Padding = UDim.new(0,10),
+		Padding = UDim.new(0,4),
 	}))
 	for i, notification in pairs(notifications) do
 		local timeSince = tick() - notification.time
 		if timeSince < NOTIFICATION_TIME then
 			table.insert(notificationChildren, Frame(
 				{
-					size = UDim2.new(.95,0,.075,0),
+					size = UDim2.new(.95,0,0,60),
 					position = UDim2.new(0.5,0,0,0),
 					visible = true,
 					anchorPoint = Vector2.new(0,0.5),
-					aspectRatio = 4,
+					aspectRatio = 2.5,
 					closeCallback = function()
 						self:setState({visible = false})
 					end,
@@ -76,10 +77,14 @@ function Notifications:render()
 			Notifications[i] = nil
 		end
 	end
+	local pos = UDim2.new(1,0,0.5,-100)
+	if not UserInputService.TouchEnabled then
+		pos = UDim2.new(1,0,0.5,0)
+	end
 	return Roact.createElement("Frame", {
 		Size = UDim2.new(.15,0,.95,0),
-		Position = UDim2.new(0,0,0.5,0),
-		AnchorPoint = Vector2.new(0,0.5),
+		Position = pos,
+		AnchorPoint = Vector2.new(1,0.5),
 		BackgroundTransparency = 1,
 		[Roact.Ref] = self.mainFrameRef
 	}, notificationChildren)

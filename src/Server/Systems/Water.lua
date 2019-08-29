@@ -3,6 +3,7 @@ local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 local AddCash = import "Shared/Utils/AddCash"
+local PlayerData = import "Shared/PlayerData"
 
 local tweenInfo = TweenInfo.new(
 	.3, -- Time
@@ -23,7 +24,7 @@ end
 
 local function onWaterChanged(well)
 	Messages:send("PlaySound", "Drinking", well.Base.Position)
-	local goalCF = well.Base.CFrame * CFrame.new(0,well.Water.Value/7,0)
+	local goalCF = well.Base.CFrame * CFrame.new(0,well.Water.Value/9,0)
 	local tween = TweenService:Create(well.WaterDisplay, tweenInfo, {CFrame = goalCF})
 	tween:Play()
 	if well.Water.Value == 0 then
@@ -111,6 +112,7 @@ function Water:start()
 		for _, well in pairs(CollectionService:GetTagged("Well")) do
 			if CollectionService:HasTag(object, "Water") then
 				if (well.Base.Position - object.Base.Position).magnitude < 10 then
+					PlayerData:add(player, "wellsFilled",1)
 					onHitboxTouched(well, object.Base)
 					AddCash(player, math.random(3,6))
 					object:Destroy()
@@ -153,6 +155,7 @@ function Water:start()
 				if plant.Water.Value < plant.Water.MaxValue then
 					if wateringCan.Water.Value > 0 then
 						onPlantWatered(player, plant, wateringCan)
+						PlayerData:add(player, "plantsWatered",1)
 					else
 						Messages:sendClient(player, "Notify", "Watering can empty!")
 					end
@@ -175,6 +178,7 @@ function Water:start()
 		if wateringCan then
 			if CollectionService:HasTag(wateringCan, "Full") then
 				if wateringCan.Water.Value > 0 then
+					PlayerData:add(player, "firesPutOut",1)
 					--AddCash(player, math.random(1,2))
 					Messages:send("Unburn", object)
 					wateringCan.Water.Value = wateringCan.Water.Value - 1

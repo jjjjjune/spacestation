@@ -4,6 +4,7 @@ local HasContraband = import "Shared/Utils/HasContraband"
 local CollectionService = game:GetService("CollectionService")
 local TeamData = import "Shared/Data/TeamData"
 local AddCash = import "Shared/Utils/AddCash"
+local PlayerData = import "Shared/PlayerData"
 
 local ARREST_TIME = 120
 local lastArrests = {}
@@ -36,6 +37,8 @@ local function arrest(player, arrestTarget)
 		Messages:sendClient(player, "Notify", "Arrested this player!")
 		AddCash(player, 5)
 		Messages:sendClient(arrestTarget, "Notify", "You have been arrested for "..ARREST_TIME.." seconds!")
+		PlayerData:add(player, "playersArrested", 1)
+		PlayerData:add(arrestTarget, "gotArrested", 1)
 	end)
 end
 

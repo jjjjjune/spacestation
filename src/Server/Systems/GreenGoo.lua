@@ -2,6 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import 'Shared/Utils/Messages'
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
+local PlayerData = import "Shared/PlayerData"
 
 local tweenInfo = TweenInfo.new(
 	.3, -- Time
@@ -44,6 +45,7 @@ function GreenGoo:start()
 			local medigun = player.Character:FindFirstChild("Medigun")
 			if medigun.Amount.Value > 0 then
 				character.Humanoid.Health = character.Humanoid.Health + 1
+				PlayerData:add(player, "healthHealed", 1)
 				medigun.Amount.Value = medigun.Amount.Value - 1
 			end
 			local scale = medigun.Amount.Value/medigun.Amount.MaxValue
@@ -69,6 +71,7 @@ function GreenGoo:start()
 		for _, well in pairs(CollectionService:GetTagged("GooHolder")) do
 			if CollectionService:HasTag(object, "Goo") then
 				if (well.Base.Position - object.Base.Position).magnitude < 10 then
+					PlayerData:add(player, "greenGooFilled", 1)
 					refillGoo(well)
 					object:Destroy()
 				end

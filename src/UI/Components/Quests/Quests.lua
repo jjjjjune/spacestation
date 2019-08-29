@@ -8,11 +8,22 @@ local Quests = Roact.PureComponent:extend("Quests")
 local QuestData = import "Shared/Data/QuestData"
 local QuestListFrame = import "../QuestListFrame"
 
+local function filterQuests(questsTab)
+	local player = game.Players.LocalPlayer
+	local myQuests = {}
+	for questID, quest in pairs(questsTab) do
+		if quest.team == player.Team.Name:lower() or (not quest.isTeam) then
+			myQuests[questID] = quest
+		end
+	end
+	return myQuests
+end
+
 function Quests:init()
 	self.state = {quests = {}}
 	Messages:hook("PlayerDataSet", function(data)
 		self:setState({
-			quests = data.quests or {}
+			quests = filterQuests(data.quests) or {}
 		})
 	end)
 end
@@ -33,8 +44,9 @@ function Quests:render()
 		end
 	end
 
-	local height = 50 * (questsNumber)
-	height = height + 30 * rewardsNumber -- each reward will have about 30 pixels of size
+	local height = 50 * (questsNumber) -- 50 pixels per info frame or so
+	height = height + 36 * rewardsNumber -- each reward will have about 30 pixels of size
+	height = height + 56 -- height of the title label probably
 	local noActiveQuestsMessageShown = false
 
 	if questsNumber == 0 then
@@ -74,27 +86,27 @@ function Quests:render()
 			Text= "Jobs: ",
 			TextColor3 = Color3.new(0,0,0),
 			TextXAlignment = "Left",
-			Position = UDim2.new(0,4,0,2),
+			Position = UDim2.new(0,6,0,4),
 			ZIndex = 2,
 		}),
 		NoActiveQuestsFrame = Roact.createElement("TextLabel", {
 			TextScaled = true,
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-4,.25,10),
+			Size = UDim2.new(1,0,.3,0),
 			Font = "Gotham",
 			Text= "No active jobs!",
 			AnchorPoint = Vector2.new(0,.5),
 			TextColor3 = Color3.new(0,0,0),
 			TextXAlignment = "Left",
-			Position = UDim2.new(0,4,0.5,0),
+			Position = UDim2.new(0,4,0.7,0),
 			Visible = noActiveQuestsMessageShown,
 			ZIndex = 2,
 		}),
 		Padding = Roact.createElement("UIPadding", {
-			PaddingLeft = UDim.new(0,5),
-			PaddingRight = UDim.new(0,5),
-			PaddingTop = UDim.new(0,5),
-			PaddingBottom = UDim.new(0,5),
+			PaddingLeft = UDim.new(0,2),
+			PaddingRight = UDim.new(0,2),
+			PaddingTop = UDim.new(0,2),
+			PaddingBottom = UDim.new(0,2),
 		}),
 		QuestListFrame = Roact.createElement(QuestListFrame, {
 			quests = self.state.quests,

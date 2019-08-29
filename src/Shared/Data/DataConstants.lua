@@ -15,5 +15,5 @@ return {
 		shinyChance = 1,
 		machinesFixed = 0,
 	},
-	TEST_STORE = "11",
+	TEST_STORE = "12",
 }

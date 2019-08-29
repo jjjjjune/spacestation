@@ -4,6 +4,7 @@ local CollectionService = game:GetService("CollectionService")
 local PlantData = import "Shared/Data/PlantData"
 local TweenService = game:GetService("TweenService")
 local AddCash = import "Shared/Utils/AddCash"
+local PlayerData = import "Shared/PlayerData"
 
 local tweenInfo = TweenInfo.new(
 	.3, -- Time
@@ -76,6 +77,8 @@ end
 
 local function onAttemptPlantSeed(player, plant, seed)
 	if plant.Plant.Value == "" and plant.Water.Value > 0 then
+		PlayerData:add(player, "plantsPlanted", 1)
+		PlayerData:add(player, seed.Plant.Value:lower().."Planted", 1)
 		local plantModel = game.ReplicatedStorage.Assets.Plants[seed.Plant.Value]["1"]:Clone()
 		table.insert(growingPlants, {
 			plant = plantModel,
@@ -127,14 +130,16 @@ local function makeHarvestable(plantInfoTable)
 	Messages:send("RegisterDetector",detector, function(player)
 		local contents = PlantData[plantInfoTable.name].products
 		for _, productName in pairs(contents) do
-			if math.random(1,5) <= 4 then
+			--if math.random(1,5) <= 4 then
 				AddCash(player, math.random(2,3))
 				local product = game.ReplicatedStorage.Assets.Objects[productName]:Clone()
 				product.Parent = workspace
 				product.PrimaryPart = product.Base
 				product:SetPrimaryPartCFrame(plantInfoTable.plant.Base.CFrame * CFrame.new(0,3,0))
-			end
+			--end
 		end
+		PlayerData:add(player, "plantsHarvested", 1)
+		PlayerData:add(player, plantInfoTable.name:lower().."Harvested",1)
 		Messages:send("PlayParticle", "Leaf", 15, collectBox.Position)
 		Messages:send("PlaySound", "Leaves", collectBox.Position)
 		plantInfoTable.plant.Parent.Plant.Value = ""

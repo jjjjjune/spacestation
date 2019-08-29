@@ -23,7 +23,7 @@ local function App()
 			--Cash = Roact.createElement(Cash, {}),
 			YesNoDialogue = Roact.createElement(YesNoDialogue, {}),
 			ShopDisplay = Roact.createElement(ShopDisplay, {}),
-			--Notifications = Roact.createElement(Notifications, {}),
+			Notifications = Roact.createElement(Notifications, {}),
 			--Icons = Roact.createElement(Icons, {}),
 			ClickDetectorIcons = Roact.createElement(ClickDetectorIcons, {}),
 			AnimalControlIcons = Roact.createElement(AnimalControlIcons, {}),

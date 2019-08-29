@@ -7,7 +7,7 @@ local TweenService = game:GetService("TweenService")
 
 local lastColors = {}
 
-local BREAK_TIME = 1
+local BREAK_TIME = 120
 local FUEL_TICK_TIME = 10
 local FuelTank = CollectionService:GetTagged("FuelHolder")[1]
 

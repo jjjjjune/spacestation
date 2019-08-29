@@ -2,6 +2,7 @@ local import = require(game.ReplicatedStorage.Shared.Import)
 local Messages = import "Shared/Utils/Messages"
 local CollectionService = game:GetService("CollectionService")
 local PhysicsService = game:GetService("PhysicsService")
+local PlayerData = import "Shared/PlayerData"
 
 PhysicsService:CreateCollisionGroup("AnimalGroup")
 --PhysicsService:CollisionGroupSetCollidable("CharacterGroup","AnimalGroup", true)
@@ -98,6 +99,8 @@ function Animals:start()
 				v.BrickColor = BrickColor.new("Shamrock")
 			end
 		end
+		PlayerData:add(player, "animalsTamed", 1)
+		PlayerData:add(player, animal.Name:lower().."Tamed",1)
 	end)
 
 	Messages:hook("ToggleFollowing", function(player, animal)

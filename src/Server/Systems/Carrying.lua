@@ -16,6 +16,13 @@ local Carrying = {}
 function Carrying:start()
 	Messages:hook("CarryObject", function(player, object)
 		if object.Parent == workspace then
+			if not object:FindFirstChild("LastCarry") then
+				local lastCarry = Instance.new("ObjectValue", object)
+				lastCarry.Name = "LastCarry"
+				lastCarry.Value = player
+			else
+				object.LastCarry.Value = player
+			end
 			if object.Base:FindFirstChild("VehicleWeld") then
 				object.Base.VehicleWeld:Destroy()
 			end

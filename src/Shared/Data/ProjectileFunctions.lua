@@ -58,7 +58,7 @@ local function genericHit(hit, owner, pos, projectileName, damage, direction)
 			Messages:send("PlayParticle", "Leaf", 15, hit.Position)
 		end
 	end
-	Messages:send("HeatContact", pos)
+	Messages:send("HeatContact", pos, owner)
 end
 
 return {
